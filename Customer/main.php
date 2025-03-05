@@ -16,9 +16,9 @@
     </style>
 </head>
 
-<body class="min-h-screen bg-black text-white">
+<body class="min-h-screen  bg-black text-white">
     <!-- Header -->
-    <header class="max-w-7xl mx-auto py-4 px-4 flex items-center justify-between">
+    <header class=" py-4 lg:container mx-auto px-4 flex items-center justify-between">
         <div class="flex items-center">
             <div class="mr-2">
                 <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
@@ -71,7 +71,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="max-w-7xl mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center">
+    <section class=" lg:container h-screen mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center">
         <div class="md:w-1/2 mb-8 md:mb-0">
             <h1 class="text-5xl md:text-6xl font-bold leading-tight">
                 Grab Big Deals <br>
@@ -165,7 +165,8 @@
                 <div class="bg-zinc-800 p-6 rounded-xl hover:shadow-lg hover:shadow-yellow-500/20 transition-all">
                     <div
                         class="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mb-4 text-yellow-500">
-                        <i class="lucide-utensils w-10 h-10"></i>
+                        
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-utensils"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Premium Quality</h3>
                     <p class="text-gray-400">Only the finest ingredients sourced from trusted suppliers.</p>
@@ -175,7 +176,7 @@
                 <div class="bg-zinc-800 p-6 rounded-xl hover:shadow-lg hover:shadow-yellow-500/20 transition-all">
                     <div
                         class="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mb-4 text-yellow-500">
-                        <i class="lucide-clock w-10 h-10"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Fast Delivery</h3>
                     <p class="text-gray-400">Hot and fresh meals delivered within 30 minutes.</p>
@@ -185,7 +186,7 @@
                 <div class="bg-zinc-800 p-6 rounded-xl hover:shadow-lg hover:shadow-yellow-500/20 transition-all">
                     <div
                         class="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mb-4 text-yellow-500">
-                        <i class="lucide-truck w-10 h-10"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Free Shipping</h3>
                     <p class="text-gray-400">Free delivery on all orders over $30.</p>
@@ -195,7 +196,7 @@
                 <div class="bg-zinc-800 p-6 rounded-xl hover:shadow-lg hover:shadow-yellow-500/20 transition-all">
                     <div
                         class="w-16 h-16 bg-yellow-500/10 rounded-full flex items-center justify-center mb-4 text-yellow-500">
-                        <i class="lucide-chef-hat w-10 h-10"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></svg>
                     </div>
                     <h3 class="text-xl font-bold mb-2">Expert Chefs</h3>
                     <p class="text-gray-400">Meals prepared by professional chefs with years of experience.</p>
@@ -220,7 +221,7 @@
                 <div
                     class="bg-zinc-900 border border-zinc-800 p-6 rounded-xl hover:border-yellow-500/50 transition-all">
                     <div class="flex items-center mb-4">
-                        <img src="https://placehold.co/80x80" alt="Sarah Johnson"
+                        <img src="https://i.pinimg.com/originals/6a/74/39/6a7439644ebbd351b57dbbd12edf300e.jpg" alt="Sarah Johnson"
                             class="w-12 h-12 rounded-full object-cover">
                         <div class="ml-4">
                             <h4 class="font-bold">Sarah Johnson</h4>
@@ -242,7 +243,7 @@
                 <div
                     class="bg-zinc-900 border border-zinc-800 p-6 rounded-xl hover:border-yellow-500/50 transition-all">
                     <div class="flex items-center mb-4">
-                        <img src="https://placehold.co/80x80" alt="Michael Chen"
+                        <img src="https://i.pinimg.com/originals/11/dd/bd/11ddbd1f4f49eb045c33928dfa06ce2d.jpg" alt="Michael Chen"
                             class="w-12 h-12 rounded-full object-cover">
                         <div class="ml-4">
                             <h4 class="font-bold">Michael Chen</h4>
@@ -264,7 +265,7 @@
                 <div
                     class="bg-zinc-900 border border-zinc-800 p-6 rounded-xl hover:border-yellow-500/50 transition-all">
                     <div class="flex items-center mb-4">
-                        <img src="https://placehold.co/80x80" alt="Emily Rodriguez"
+                        <img src="https://i.pinimg.com/736x/e2/83/64/e28364f6f8334db32b1b90dcb807054e.jpg" alt="Emily Rodriguez"
                             class="w-12 h-12 rounded-full object-cover">
                         <div class="ml-4">
                             <h4 class="font-bold">Emily Rodriguez</h4>
@@ -327,7 +328,7 @@
                     <div class="flex items-center mb-4">
                         <div class="mr-2">
                             <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                                <i class="lucide-chef-hat text-black w-6 h-6"></i>
+                            <svg class="text-black" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></svg>
                             </div>
                         </div>
                         <div class="flex flex-col">
