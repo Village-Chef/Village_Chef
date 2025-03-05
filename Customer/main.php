@@ -319,6 +319,7 @@
         </div>
     </section>
 
+    
     <!-- Footer -->
     <footer class="bg-zinc-900 pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4">
