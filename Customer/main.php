@@ -81,17 +81,17 @@
                 Experience the finest culinary delights delivered right to your doorstep.
                 Fresh ingredients, authentic recipes, and unforgettable flavors.
             </p>
-            <button class="mt-8 bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-6 rounded-full">
+            <button class="mt-8 bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-3 rounded-full">
                 Get Started
             </button>
 
             <div class="mt-12 flex items-center">
                 <div class="flex -space-x-4">
-                    <img src="https://api.deepai.org/job-view-file/285a6bf4-ea09-451c-bad4-256e56d99bba/outputs/output.png"
+                    <img src="https://i.pinimg.com/originals/6a/74/39/6a7439644ebbd351b57dbbd12edf300e.jpg"
                         alt="Customer" class="w-12 h-12 rounded-full border-2 border-black object-cover">
-                    <img src="https://placehold.co/50x50" alt="Customer"
+                    <img src="https://i.pinimg.com/originals/11/dd/bd/11ddbd1f4f49eb045c33928dfa06ce2d.jpg" alt="Customer"
                         class="w-12 h-12 rounded-full border-2 border-black object-cover">
-                    <img src="https://placehold.co/50x50" alt="Customer"
+                    <img src="https://i.pinimg.com/736x/e2/83/64/e28364f6f8334db32b1b90dcb807054e.jpg" alt="Customer"
                         class="w-12 h-12 rounded-full border-2 border-black object-cover">
                 </div>
                 <div class="ml-4">
@@ -106,14 +106,14 @@
         </div>
 
         <div class="md:w-1/2 relative">
-            <div class="relative rounded-full overflow-hidden w-full aspect-square max-w-lg mx-auto">
-                <img src="https://api.deepai.org/job-view-file/285a6bf4-ea09-451c-bad4-256e56d99bba/outputs/output.png"
-                    alt="Delicious meal" class="absolute inset-0 w-full h-full object-cover">
+            <div class="relative  overflow-hidden w-full aspect-square max-w-lg mx-auto">
+                <img src="Assets\pizza2.png"
+                    alt="Delicious meal" class="absolute  inset-0 w-full h-full object-cover">
 
                 <!-- Floating elements -->
                 <div class="absolute bottom-4 right-4 bg-black/80 backdrop-blur-sm p-3 rounded-lg flex items-center">
                     <div class="mr-3">
-                        <img src="https://placehold.co/60x60" alt="Cheese Pizza"
+                        <img src="Assets\pizza2.png" alt="Cheese Pizza"
                             class="w-16 h-16 rounded-md object-cover">
                     </div>
                     <div>
@@ -136,10 +136,10 @@
                 <div class="absolute bottom-20 left-0 bg-black/80 backdrop-blur-sm p-3 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
-                            <img src="https://placehold.co/40x40" alt="Food Courier" class="w-full h-full object-cover">
+                            <img src="https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/b/bb/Tony_Stark_Promo.jpg/revision/latest?cb=20141129202546" alt="Food Courier" class="w-full h-full object-cover">
                         </div>
                         <div>
-                            <p class="font-medium">Jon Williamson</p>
+                            <p class="font-medium">Tony Stark</p>
                             <p class="text-sm text-gray-400">Food Courier</p>
                         </div>
                     </div>
