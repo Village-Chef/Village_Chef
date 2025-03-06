@@ -16,6 +16,7 @@
     </style>
 </head>
 
+
 <body class="min-h-screen bg-black text-white flex flex-col">
     <!-- Header -->
     <header class=" py-4 lg:container mx-auto px-4 flex items-center justify-between">
