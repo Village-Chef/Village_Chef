@@ -1,7 +1,7 @@
 <!-- Footer -->
 <footer class="bg-zinc-900 pt-16 pb-8">
     <div class="max-w-7xl mx-auto px-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 mb-12">
             <div>
                 <div class="flex items-center mb-4">
                     <div class="mr-2">

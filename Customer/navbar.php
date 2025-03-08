@@ -32,7 +32,7 @@
 
 <body>
     <!-- Navbar -->
-    <header class="max-w-7xl mx-auto py-4 px-4">
+    <header class="w-[100%] mx-auto  bgNavbar backdrop-blur-lg bg-opacity-30 fixed z-50  py-4 px-4">
         <div class="flex items-center justify-between">
             <!-- Logo -->
             <div class="flex items-center">
@@ -55,10 +55,10 @@
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-8">
-                <a href="home.php" class="hover:text-yellow-500 transition-colors">Home</a>
-                <a href="about.php" class="hover:text-yellow-500 transition-colors">About Us</a>
-                <a href="menu.php" class="hover:text-yellow-500 transition-colors">Menu</a>
-                <a href="contact.php" class="hover:text-yellow-500 transition-colors">Contact</a>
+                <a href="home.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Home') ? 'text-yellow-500' : 'text-white'; ?>  transition-colors">Home</a>
+                <a href="about.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'About') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">About Us</a>
+                <a href="menu.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Menu</a>
+                <a href="contact.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Contact') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Contact</a>
             </nav>
 
             <!-- Search + Cart  -->
@@ -109,15 +109,41 @@
         </div>
 
         <!-- Mobile Navigation -->
-        <div id="mobile-menu" class="mobile-menu md:hidden mt-4">
-            <nav class="flex flex-col space-y-4 py-4 border-t border-zinc-800">
-                <a href="home.php" class="hover:text-yellow-500 transition-colors">Home</a>
-                <a href="about.php" class="hover:text-yellow-500 transition-colors">About Us</a>
-                <a href="menu.php" class="hover:text-yellow-500 transition-colors">Menu</a>
-                <a href="contact.php" class="hover:text-yellow-500 transition-colors">Contact</a>
-                <button class="flex items-center justify-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full w-full">
-                    <i class="fa-solid fa-sign-in-alt mr-2"></i> Login
-                </button>
+        <div id="mobile-menu" class="mobile-menu md:hidden md:mt-4">
+            <nav class="flex flex-col space-y-4 py-4 ">
+                <a href="home.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Home') ? 'text-yellow-500' : 'text-white'; ?>  transition-colors">Home</a>
+                <a href="about.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'About') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">About Us</a>
+                <a href="menu.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Menu</a>
+                <a href="contact.php" class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Contact') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Contact</a>
+                <div class="flex flex-row gap-2">
+                    <a class="md:hidden flex" href="login.php">
+                        <button
+                            class="md:hidden text-xs flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-log-in">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                <polyline points="10 17 15 12 10 7" />
+                                <line x1="15" x2="3" y1="12" y2="12" />
+                            </svg>
+                            Login
+                        </button>
+                    </a>
+                    <a class="md:hidden flex" href="signup.php">
+                        <button
+                            class="md:hidden flex text-xs items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-log-in">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                <polyline points="10 17 15 12 10 7" />
+                                <line x1="15" x2="3" y1="12" y2="12" />
+                            </svg>
+                            Sign Up
+                        </button>
+                    </a>
+                </div>
+
             </nav>
         </div>
 
@@ -140,7 +166,7 @@
             // }
         });
     </script>
-    
+
     <!-- Add Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>

@@ -1,4 +1,4 @@
-<body class="min-h-screen bg-black text-white flex flex-col">
+<body class="min-h-screen bg-black text-white ">
 
     <!-- Navbar -->
     <?php require 'navbar.php' ?>

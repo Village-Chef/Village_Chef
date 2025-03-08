@@ -1,9 +1,11 @@
-<body class="min-h-screen bg-black text-white flex flex-col">
+<body class="min-h-screen bg-black text-white ">
 
     <!-- Navbar -->
-    <?php require 'navbar.php' ?>
+    <?php 
+    $ActivePage="About";
+    require 'navbar.php' ?>
 
-    <main class="flex-grow">
+    <main class="flex-grow pt-12">
         <div class="max-w-4xl mx-auto px-4 py-12">
             <!-- <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center">About Village Chef</h1> -->
 

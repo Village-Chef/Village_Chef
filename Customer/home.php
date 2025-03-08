@@ -1,10 +1,13 @@
 <body class="min-h-screen  bg-black text-white ">
 
     <!-- Navbar -->
-    <?php require 'navbar.php' ?>
+    <?php 
+    $ActivePage="Home";
+    require 'navbar.php' ?>
+
 
     <!-- Hero Section -->
-    <section class=" lg:container h-screen mx-auto px-4 py-12 md:py-20 flex flex-col md:flex-row items-center">
+    <section class=" lg:container h-screen mx-auto px-4  py-20 flex flex-col md:flex-row items-center">
         <div class="md:w-1/2 mb-8 md:mb-0">
             <h1 class="text-5xl md:text-6xl font-bold leading-tight">
                 Grab Big Deals <br>

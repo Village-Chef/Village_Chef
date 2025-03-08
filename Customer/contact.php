@@ -1,10 +1,12 @@
 <body class=" min-h-screen text-white bg-black">
 
   <!-- Navbar -->
-  <?php require 'navbar.php' ?>
+  <?php 
+  $ActivePage="Contact";
+  require 'navbar.php' ?>
 
   <!-- Contact Section -->
-  <main class="flex-grow">
+  <main class="flex-grow pt-12">
     <div class="max-w-4xl px-4 py-12 mx-auto">
       <h1 class="mb-8 text-4xl font-bold text-center md:text-5xl">Contact Us</h1>
 
