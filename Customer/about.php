@@ -14,7 +14,6 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
-    <!-- Hello Purv d-->
 </head>
 
 <body class="min-h-screen bg-black text-white flex flex-col">
