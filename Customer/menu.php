@@ -1,146 +1,241 @@
-<!DOCTYPE html>
-<html lang="en" class="bg-black">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Village Chef - Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://unpkg.com/lucide-icons/dist/umd/lucide.css" rel="stylesheet">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    body {
-      font-family: 'Inter', sans-serif;
-    }
-  </style>
-</head>
-<body class="min-h-screen bg-black text-white flex flex-col">
-  <!-- Header -->
-  <header class=" py-4 lg:container mx-auto px-4 flex items-center justify-between">
-        <div class="flex items-center">
-            <div class="mr-2">
-                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="text-black w-6 h-6" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-chef-hat">
-                        <path
-                            d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
-                        <path d="M6 17h12" />
-                    </svg>
-                </div>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
-                <span class="font-bold text-xl leading-none">CHEF</span>
-            </div>
-        </div>
+<script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
+<?php
+if (isset($_GET['sort'])) {
+  $sort = $_GET['sort'];
 
-        <nav class="hidden md:flex items-center space-x-8">
-            <a href="home.php" class="hover:text-yellow-500 transition-colors">Home</a>
-            <a href="about.php" class="hover:text-yellow-500 transition-colors">About Us</a>
-            <a href="menu.php" class="hover:text-yellow-500 transition-colors">Menu</a>
-            <a href="contact.php" class="hover:text-yellow-500 transition-colors">Contact</a>
-        </nav>
+  if ($sort == 'pop') {
+    $sort = "Popularity";
+  } elseif ($sort == 'ra') {
+    $sort = "Rating: High to Low";
+  } elseif ($sort == 'casc') {
+    $sort = "Cost: Low to High";
+  } elseif ($sort == 'cdesc') {
+    $sort = "Cost: High to Low";
+  }
 
-        <div class="flex items-center space-x-4">
-            <button class="p-2 hover:text-yellow-500 transition-colors">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-search">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                </svg>
-            </button>
-            <button class="p-2 hover:text-yellow-500 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-shopping-cart">
-                    <circle cx="8" cy="21" r="1" />
-                    <circle cx="19" cy="21" r="1" />
-                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                </svg>
-            </button>
-            <a href="login.php">
-            <button 
-                class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
-                Login
-            </button>
-            </a>
-        </div>
-    </header>
+}
+?>
+
+<body class="min-h-screen text-white bg-black ">
+
+  <!-- Navbar -->
+  <?php
+  $ActivePage = "Menu";
+  require 'navbar.php' ?>
 
   <!-- Menu Section -->
-  <main class="flex-grow">
-    <div class="max-w-7xl mx-auto px-4 py-12">
-      <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center">Our Menu</h1>
-      
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Appetizers</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div class="bg-zinc-900 rounded-lg overflow-hidden">
-            <img src="https://placehold.co/300x200" alt="Bruschetta" class="w-full h-48 object-cover">
-            <div class="p-4">
-              <h3 class="font-bold text-lg mb-2">Bruschetta</h3>
-              <p class="text-gray-400 mb-4">Toasted bread topped with fresh tomatoes, garlic, and basil.</p>
-              <div class="flex justify-between items-center">
-                <span class="text-yellow-500 font-bold">$8.99</span>
-                <button class="bg-yellow-500 text-black px-4 py-2 rounded-full hover:bg-yellow-600 transition-colors">
-                  Add to Cart
-                </button>
+  <main class="flex-grow py-20">
+    <div class=" flex flex-col gap-9  mx-auto max-w-7xl">
+      <!-- List of Foods -->
+      <div class="flex flex-col sm:px-4 px-2 py-6 gap-9 ">
+        <h1 class=" text-xl font-bold md:text-4xl text-start">Inspiration for your first order</h1>
+        <form method="get">
+          <div class="flex flex-row gap-4  overflow-x-scroll overflow-y-hidden md:gap-8 noscorll scroll-smooth">
+            <button type="submit" name="category" value="Pizza" class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/pizza2.png" />
               </div>
+              <p class="z-10 my-3 font-sans  text-center text-sm sm:text-md">Pizza</p>
+            </button>
+            <button type="submit" name="category" value="Burger" class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/burger.png" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Burger</p>
+            </button>
+
+            <div class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/fc641efbb73b10484257f295ef0b9b981634401116.png" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Sandwich</p>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/52eb9796bb9bcf0eba64c643349e97211634401116.png" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Gujrati Thali</p>
+            </div>
+            <div class="flex flex-col ">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/bf2d0e73add1c206aeeb9fec762438111727708719.png" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Biryani</p>
+            </div>
+
+            <div class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/dish_images/c2f22c42f7ba90d81440a88449f4e5891634806087.png" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Rolls</p>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/019409fe8f838312214d9211be010ef31678798444.jpeg" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">North Indian</p>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/2b5a5b533473aada22015966f668e30e1633434990.png" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">North Indian</p>
+            </div>
+            <div class="flex flex-col">
+              <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/icecream.png" />
+              </div>
+              <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">ice Cream</p>
             </div>
           </div>
-          <!-- Add more appetizer items here -->
+        </form>
+      </div>
+
+      <!-- Top restaurants -->
+      <!-- <div class="flex flex-col sm:px-4 px-2 py-6 gap-9">
+        <h1 class=" text-xl font-bold md:text-4xl text-start ">Top restaurants for you</h1>
+        <div class="flex flex-row gap-4 overflow-x-scroll overflow-y-hidden md:gap-8 noscorll scroll-smooth">
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/pizza2.png" />
+            </div>
+            <p class="z-10 my-3 font-sans  text-center text-sm sm:text-md">Pizza</p>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/burger.png" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Burger</p>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/fc641efbb73b10484257f295ef0b9b981634401116.png" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Sandwich</p>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/52eb9796bb9bcf0eba64c643349e97211634401116.png" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Gujrati Thali</p>
+          </div>
+          <div class="flex flex-col ">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/bf2d0e73add1c206aeeb9fec762438111727708719.png" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Biryani</p>
+          </div>
+
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/dish_images/c2f22c42f7ba90d81440a88449f4e5891634806087.png" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Rolls</p>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/019409fe8f838312214d9211be010ef31678798444.jpeg" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">North Indian</p>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/2b5a5b533473aada22015966f668e30e1633434990.png" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">North Indian</p>
+          </div>
+          <div class="flex flex-col">
+            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/icecream.png" />
+            </div>
+            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">ice Cream</p>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Filters -->
+      <div class=" <?php echo isset($_REQUEST['category']) ? 'flex' : 'hidden';  ?> gap-2 flex-row sm:px-4 px-2 py-6">
+        <!-- Filter -->
+        <button class="flex gap-3 cursor-pointer w-fit rounded-full text-md px-4 py-2 items-center bg-zinc-900 text-yellow-500" type="button" data-dropdown-toggle="dropdown">
+          Filters
+          <svg class="h-5 w-5 stroke-[2px] cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <!-- Dropdown menu -->
+        <div class="hidden text-base  z-50 list-none bg-zinc-900 divide-y divide-gray-100 rounded shadow my-4" id="dropdown">
+          <ul class="py-1" aria-labelledby="dropdown">
+            <li>
+              <a href="?category=<?php $sortM = $_REQUEST['category'];
+                                  echo $sortM;  ?>&sort=pop" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Popularity</a>
+            </li>
+            <li>
+              <a href="?category=<?php $sortM = $_REQUEST['category'];
+                                  echo $sortM;  ?>&sort=ra" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Rating: High to Low</a>
+            </li>
+            <li>
+              <a href="?category=<?php $sortM = $_REQUEST['category'];
+                                  echo $sortM;  ?>&sort=casc" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Cost: Low to High</a>
+            </li>
+            <li>
+              <a href="?category=<?php $sortM = $_REQUEST['category'];
+                                  echo $sortM;  ?>&sort=cdesc" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Cost: High to Low</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Cat & Filter -->
+        <div class="flex flex-row gap-3 ">
+          
+          <!-- category  -->
+          <div class=" <?php echo isset($_GET['category']) ? 'flex' : 'hidden' ?>  text-md gap-3 cursor-pointer rounded-full px-4 py-2 items-center bg-zinc-900 text-yellow-500">
+            <p>
+              <?php
+              if (isset($_GET['category'])) {
+                $cat = $_GET['category'];
+                echo $cat;
+              }
+              ?>
+            </p>
+            <a href="menu.php">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 stroke-[2px] cursor-pointer" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </a>
+          </div>
+
+          <span class="flex items-center text-2xl text-yellow-500">/</span>
+          
+          <!-- Sort  -->
+          <div class=" <?php echo isset($_GET['sort']) ? 'flex' : 'hidden' ?>  text-sm gap-3 cursor-pointer rounded-full px-4 py-2 items-center bg-zinc-900 text-yellow-500">
+            <p>
+              <?php
+              echo $sort;
+              ?>
+            </p>
+            <!-- <a href="menu.php">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 stroke-[2px] cursor-pointer" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </a> -->
+          </div>
         </div>
       </div>
 
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Main Courses</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div class="bg-zinc-900 rounded-lg overflow-hidden">
-            <img src="https://placehold.co/300x200" alt="Grilled Salmon" class="w-full h-48 object-cover">
-            <div class="p-4">
-              <h3 class="font-bold text-lg mb-2">Grilled Salmon</h3>
-              <p class="text-gray-400 mb-4">Fresh salmon fillet grilled to perfection, served with seasonal vegetables.</p>
-              <div class="flex justify-between items-center">
-                <span class="text-yellow-500 font-bold">$22.99</span>
-                <button class="bg-yellow-500 text-black px-4 py-2 rounded-full hover:bg-yellow-600 transition-colors">
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-          <!-- Add more main course items here -->
-        </div>
-      </div>
+      <?php require('menuCard.php') ?>
 
-      <div class="mb-12">
-        <h2 class="text-2xl font-bold mb-4">Desserts</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div class="bg-zinc-900 rounded-lg overflow-hidden">
-            <img src="https://placehold.co/300x200" alt="Tiramisu" class="w-full h-48 object-cover">
-            <div class="p-4">
-              <h3 class="font-bold text-lg mb-2">Tiramisu</h3>
-              <p class="text-gray-400 mb-4">Classic Italian dessert with layers of coffee-soaked ladyfingers and mascarpone cream.</p>
-              <div class="flex justify-between items-center">
-                <span class="text-yellow-500 font-bold">$9.99</span>
-                <button class="bg-yellow-500 text-black px-4 py-2 rounded-full hover:bg-yellow-600 transition-colors">
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-          <!-- Add more dessert items here -->
-        </div>
-      </div>
+
+    </div>
+
     </div>
   </main>
 
 
-  <!-- Add Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    lucide.createIcons();
-  </script>
+
+
+  <!-- Footer -->
+  <?php require 'footer.php' ?>
 </body>
-</html>

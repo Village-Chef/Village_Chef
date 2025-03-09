@@ -86,7 +86,7 @@ $obj = new Foodies();
 
     </div>
     <!-- Reg Section -->
-    <main class="flex-grow flex items-center  justify-center px-4 py-12">
+    <main class="flex-grow flex items-center  justify-center px-4 py-20">
         <div class="bg-zinc-900 relative p-8 rounded-xl   shadow-lg max-w-md w-full">
             <h2 class="text-3xl font-bold mb-6 text-center">Create Your Account 🍕</h2>
             <form method="POST">

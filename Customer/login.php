@@ -99,7 +99,7 @@ if (isset($_POST['btnLogin'])) {
   </header>
 
   <!-- Login Section -->
-  <main class="flex-grow flex items-center justify-center px-4 py-12">
+  <main class="flex-grow flex items-center justify-center px-4 py-20">
     <div class="bg-zinc-900 p-8 rounded-xl shadow-lg max-w-md w-full">
       <h2 class="text-3xl font-bold mb-6 text-center">Welcome Back</h2>
       <form method="POST">
@@ -128,13 +128,9 @@ if (isset($_POST['btnLogin'])) {
     </div>
   </main>
 
-
-
-  <!-- Add Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    lucide.createIcons();
-  </script>
+  <!-- Footer -->
+  <?php require 'footer.php' ?>
 </body>
+
 
 </html>
