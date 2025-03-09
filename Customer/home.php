@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en" class="bg-black">
 
@@ -76,19 +79,35 @@
                     </svg>
                 </button>
             </a>
-            <a href="login.php">
-                <button
-                    class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-log-in">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                        <polyline points="10 17 15 12 10 7" />
-                        <line x1="15" x2="3" y1="12" y2="12" />
-                    </svg>
-                    Login
-                </button>
-            </a>
+            <?php if (isset($_SESSION['user'])): ?>
+                <a href="logout.php">
+                    <button
+                        class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-log-out">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" x2="9" y1="12" y2="12" />
+                        </svg>
+                        Logout
+                    </button>
+                </a>
+            <?php else: ?>
+                <a href="login.php">
+                    <button
+                        class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-log-in">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                            <polyline points="10 17 15 12 10 7" />
+                            <line x1="15" x2="3" y1="12" y2="12" />
+                        </svg>
+                        Login
+                    </button>
+                </a>
+            <?php endif; ?>
         </div>
     </header>
 
@@ -109,11 +128,11 @@
 
             <div class="mt-12 flex items-center">
                 <div class="flex -space-x-4">
-                    <img src="https://i.pinimg.com/originals/6a/74/39/6a7439644ebbd351b57dbbd12edf300e.jpg"
-                        alt="Customer" class="w-12 h-12 rounded-full border-2 border-black object-cover">
-                    <img src="https://i.pinimg.com/originals/11/dd/bd/11ddbd1f4f49eb045c33928dfa06ce2d.jpg"
-                        alt="Customer" class="w-12 h-12 rounded-full border-2 border-black object-cover">
-                    <img src="https://i.pinimg.com/736x/e2/83/64/e28364f6f8334db32b1b90dcb807054e.jpg" alt="Customer"
+                    <img src="Assets/parthiv.jpg" alt="Customer"
+                        class="w-12 h-12 rounded-full border-2 border-black object-cover">
+                    <img src="Assets/purv.jpg" alt="Customer"
+                        class="w-12 h-12 rounded-full border-2 border-black object-cover">
+                    <img src="Assets/parthiv.jpg" alt="Customer"
                         class="w-12 h-12 rounded-full border-2 border-black object-cover">
                 </div>
                 <div class="ml-4">
@@ -156,11 +175,10 @@
                 <div class="absolute bottom-20 left-0 bg-black/80 backdrop-blur-sm p-3 rounded-lg">
                     <div class="flex items-center">
                         <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
-                            <img src="https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/b/bb/Tony_Stark_Promo.jpg/revision/latest?cb=20141129202546"
-                                alt="Food Courier" class="w-full h-full object-cover">
+                            <img src="Assets/parthiv.jpg" alt="Food Courier" class="w-full h-full object-cover">
                         </div>
                         <div>
-                            <p class="font-medium">Tony Stark</p>
+                            <p class="font-medium">Parthiv Shingala</p>
                             <p class="text-sm text-gray-400">Food Courier</p>
                         </div>
                     </div>
@@ -267,10 +285,9 @@
                 <div
                     class="bg-zinc-900 border border-zinc-800 p-6 rounded-xl hover:border-yellow-500/50 transition-all">
                     <div class="flex items-center mb-4">
-                        <img src="https://i.pinimg.com/originals/6a/74/39/6a7439644ebbd351b57dbbd12edf300e.jpg"
-                            alt="Sarah Johnson" class="w-12 h-12 rounded-full object-cover">
+                        <img src="Assets/parthiv.jpg" alt="Sarah Johnson" class="w-12 h-12 rounded-full object-cover">
                         <div class="ml-4">
-                            <h4 class="font-bold">Sarah Johnson</h4>
+                            <h4 class="font-bold">Parthiv Shingala</h4>
                             <p class="text-sm text-gray-400">Food Enthusiast</p>
                         </div>
                     </div>
@@ -289,10 +306,9 @@
                 <div
                     class="bg-zinc-900 border border-zinc-800 p-6 rounded-xl hover:border-yellow-500/50 transition-all">
                     <div class="flex items-center mb-4">
-                        <img src="https://i.pinimg.com/originals/11/dd/bd/11ddbd1f4f49eb045c33928dfa06ce2d.jpg"
-                            alt="Michael Chen" class="w-12 h-12 rounded-full object-cover">
+                        <img src="Assets/purv.jpg" alt="Michael Chen" class="w-12 h-12 rounded-full object-cover">
                         <div class="ml-4">
-                            <h4 class="font-bold">Michael Chen</h4>
+                            <h4 class="font-bold">Purv Virpariya</h4>
                             <p class="text-sm text-gray-400">Busy Professional</p>
                         </div>
                     </div>
@@ -366,7 +382,7 @@
         </div>
     </section>
 
-    
+
     <!-- Footer -->
     <footer class="bg-zinc-900 pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4">
@@ -422,8 +438,8 @@
                 <div>
                     <h4 class="font-bold text-lg mb-4">Contact Us</h4>
                     <ul class="space-y-2 text-gray-400">
-                        <li>123 Culinary Street, Foodville</li>
-                        <li>+1 (555) 123-4567</li>
+                        <li>Vraj Bhoomi Plazza , Surat</li>
+                        <li>+91 9727181143</li>
                         <li>info@villagechef.com</li>
                         <li>Mon-Sun: 10:00 AM - 10:00 PM</li>
                     </ul>

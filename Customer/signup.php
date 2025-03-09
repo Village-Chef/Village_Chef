@@ -1,3 +1,8 @@
+<?php
+require '../../dbCon.php';
+$obj = new Foodies();
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="bg-black">
 
@@ -18,7 +23,7 @@
 
 <body class="min-h-screen bg-black text-white flex flex-col">
     <!-- Header -->
-    <header class=" py-4 lg:container mx-auto px-4 flex items-center justify-between">
+    <header class="py-4 lg:container mx-auto px-4 flex items-center justify-between">
         <div class="flex items-center">
             <div class="mr-2">
                 <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
@@ -63,22 +68,28 @@
                 </svg>
             </button>
             <a href="login.php">
-            <button 
-                class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
-                Login
-            </button>
+                <button
+                    class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-log-in">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                        <polyline points="10 17 15 12 10 7" />
+                        <line x1="15" x2="3" y1="12" y2="12" />
+                    </svg>
+                    Login
+                </button>
             </a>
         </div>
     </header>
     <div class="">
-        
+
     </div>
     <!-- Reg Section -->
     <main class="flex-grow flex items-center  justify-center px-4 py-12">
         <div class="bg-zinc-900 relative p-8 rounded-xl   shadow-lg max-w-md w-full">
             <h2 class="text-3xl font-bold mb-6 text-center">Create Your Account 🍕</h2>
-            <form >
+            <form method="POST">
                 <div class="mb-4">
                     <label for="fname" class="block text-sm font-medium text-gray-400 mb-2">First Name</label>
                     <input type="text" id="fname" name="fname"
@@ -98,22 +109,14 @@
                         placeholder="example@email.com" required>
                 </div>
                 <div class="mb-4">
-                    <label for="mobile" class="block text-sm font-medium text-gray-400 mb-2">Mobile Number</label>
-                    <input type="number" maxlength="10" id="mobile" name="mobile"
+                    <label for="phone" class="block text-sm font-medium text-gray-400 mb-2">Mobile Number</label>
+                    <input type="number" maxlength="10" id="phone" name="phone"
                         class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-yellow-500 rounded-md text-white"
                         placeholder="+91 12345 12345" required>
                 </div>
                 <div class="mb-4">
                     <label for="password" class="block text-sm font-medium text-gray-400 mb-2">Password</label>
                     <input type="password" id="password" name="password"
-                        class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-yellow-500 rounded-md text-white"
-                        placeholder="••••••••" required>
-                </div>
-                
-                <div class="mb-6">
-                    <label for="confirm-password" class="block text-sm font-medium text-gray-400 mb-2">Confirm
-                        Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password"
                         class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-yellow-500 rounded-md text-white"
                         placeholder="••••••••" required>
                 </div>
@@ -126,10 +129,8 @@
                                 class="text-yellow-500 hover:underline">Privacy Policy</a></span>
                     </label>
                 </div>
-                <button type="submit"
-                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-md transition-colors">
-                    Sign Up
-                </button>
+                <input type="submit" name="btnSubmit" value="Register"
+                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded-md transition-colors" />
             </form>
             <div class="mt-6 border-t border-zinc-800 pt-6 text-center">
                 <p class="text-gray-400">Already have an account?</p>
@@ -137,7 +138,6 @@
             </div>
         </div>
     </main>
-
 
     <!-- Add Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -147,3 +147,22 @@
 </body>
 
 </html>
+
+<?php
+
+if (isset($_POST['btnSubmit'])) {
+    $fname = $_POST['fname'];
+    $lname = $_POST['lname'];
+    $email = $_POST['email'];
+    $phone = $_POST['phone'];
+    $password = $_POST['password'];
+
+    try {
+        $obj->addUser($fname, $lname, $email, $password, $phone);
+        echo "Registration successful!";
+    } catch (Exception $e) {
+        echo "Registration failed: " . $e->getMessage();
+    }
+}
+
+?>
