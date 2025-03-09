@@ -1,5 +1,5 @@
 <?php
-require '../../dbCon.php';
+require '../dbCon.php';
 session_start();
 $obj = new Foodies();
 
