@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Restaurant Closed</title>
+</head>
+
+<body>
+<div class="menu-card group relative rounded-2xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-800 opacity-60">
+    <!-- Image Section with Closed Overlay -->
+    <div class="relative overflow-hidden">
+        <img src="Assets/pizza2.png" alt="Delicious Pizza" class="w-full h-48 object-cover rounded-t-2xl grayscale"/>
+        
+        <!-- Closed Badge -->
+        <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md z-10">
+            Currently Closed
+        </span>
+        
+    </div>
+
+    <!-- Card Content (Dimmed) -->
+    <div class="p-4 flex flex-col gap-3 opacity-80">
+        <div>
+            <div class="flex justify-between items-start">
+                <h2 class="text-xl font-semibold text-white">Domino's Special Pizza</h2>
+                <span class="bg-gray-700 text-gray-400 text-xs px-2 py-1 rounded-md">Veg</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">Cheesy, Spicy, Italian, and Delicious with extra toppings!</p>
+        </div>
+
+        <!-- Features (Dimmed) -->
+        <div class="flex flex-wrap gap-2 mt-1">
+            <span class="bg-zinc-800 text-gray-500 text-xs px-2 py-1 rounded-md flex items-center">
+                Spicy
+            </span>
+            <span class="bg-zinc-800 text-gray-500 text-xs px-2 py-1 rounded-md flex items-center">
+                Italian
+            </span>
+        </div>
+
+        <!-- Delivery Time & Price (Dimmed) -->
+        <div class="flex justify-between items-center mt-1">
+            <div class="flex items-center">
+                <p class="text-sm text-gray-500">-- Min</p>
+            </div>
+            <p class="text-lg font-semibold text-gray-500">₹299</p>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

@@ -225,7 +225,7 @@ if (isset($_GET['sort'])) {
         </div>
       </div>
     <!-- Responsive Grid Layout -->
-    <div class="grid xs:grid-cols-1 grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-6 md:px-10">
+    <div class="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-6 md:px-10">
         <?php
         if (isset($_GET['category'])) {
             for ($i = 0; $i < 10; $i++) { 
