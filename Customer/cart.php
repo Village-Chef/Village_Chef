@@ -1,15 +1,166 @@
+<?php
+$tip = 0;
+if (isset($_GET['tip'])) {
+    $tip = $_GET['tip'];
+}
+
+?>
+<style>
+    /* From Uiverse.io by fthisilak */
+    .pay-btn {
+        position: relative;
+        padding: 8px 16px;
+        font-size: 16px;
+        background: transparent;
+        color: #eab308;
+        border: 1px solid #eab308;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .pay-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .icon-container {
+        position: relative;
+        width: 24px;
+        height: 24px;
+    }
+
+    .icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 24px;
+        height: 24px;
+        color: #eab308;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .default-icon {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Hover animations */
+    .pay-btn:hover .icon {
+        animation: none;
+    }
+
+    .pay-btn:hover .wallet-icon {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .pay-btn:hover .card-icon {
+        animation: iconRotate 2.5s infinite;
+        animation-delay: 0s;
+    }
+
+    .pay-btn:hover .payment-icon {
+        animation: iconRotate 2.5s infinite;
+        animation-delay: 0.5s;
+    }
+
+    .pay-btn:hover .dollar-icon {
+        animation: iconRotate 2.5s infinite;
+        animation-delay: 1s;
+    }
+
+    .pay-btn:hover .check-icon {
+        animation: iconRotate 2.5s infinite;
+        animation-delay: 1.5s;
+    }
+
+    /* Active state - show only checkmark */
+    .pay-btn:active .icon {
+        animation: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .pay-btn:active .check-icon {
+        animation: checkmarkAppear 0.6s ease forwards;
+        visibility: visible;
+    }
+
+    .btn-text {
+        font-weight: 600;
+        font-family:
+            system-ui,
+            -apple-system,
+            sans-serif;
+    }
+
+    @keyframes iconRotate {
+        0% {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px) scale(0.5);
+        }
+
+        5% {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        15% {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        20% {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.5);
+        }
+
+        100% {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.5);
+        }
+    }
+
+    @keyframes checkmarkAppear {
+        0% {
+            opacity: 0;
+            transform: scale(0.5) rotate(-45deg);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(1.2) rotate(0deg);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+    }
+</style>
+
 <body class="min-h-screen bg-black text-white ">
 
     <!-- Navbar -->
     <?php require 'navbar.php' ?>
 
-    <main class="flex-grow">
+    <main class="flex-grow pt-12">
         <div class="max-w-4xl mx-auto px-4 py-12">
             <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center">Your Cart</h1>
 
-            <div class="bg-zinc-900 rounded-lg p-6 mb-8">
+            <!-- <div class="bg-zinc-900 rounded-lg p-6 mb-8">
                 <div class="space-y-4">
-                    <!-- Cart Item -->
                     <div class="flex items-center justify-between border-b border-zinc-700 pb-4">
                         <div class="flex items-center">
                             <img src="https://placehold.co/80x80" alt="Grilled Salmon"
@@ -25,17 +176,157 @@
                         </div>
                     </div>
 
-                    <!-- Add more cart items here -->
+
+                </div> -->
+
+            <div class="flex w-full flex-row gap-6 rounded-lg">
+                <div class="w-[100%] bg-zinc-900 p-4">
 
                 </div>
+                <div class="flex w-fit flex-col gap-4 bg-zinc-900 p-4">
 
-                <div class="mt-8 flex justify-between items-center">
-                    <p class="text-xl font-bold">Total:</p>
-                    <p class="text-2xl font-bold text-yellow-500">$22.99</p>
+                    <div class=" p-2 rounded-lg shadow-md w-96">
+                        <!-- Cart Items List -->
+                        <div class="flex items-center w-full justify-between gap-5 mb-4 rounded-lg  text-white">
+                            <div
+                                class="flex h-[15px] w-[15px] items-center justify-center border-[1px] border-green-600 p-[2px]">
+                                <div class="rounded-full bg-green-600 p-[3px]"></div>
+                            </div>
+                            <div class="text-sm text-nowrap">Tandoori Paneer</div>
+                            <div class="flex items-center gap-3 rounded-full border border-white px-2 py-1 text-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-minus cursor-pointer">
+                                    <path d="M5 12h14" />
+                                </svg>
+                                <span class="text-xs">1</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-plus cursor-pointer">
+                                    <path d="M5 12h14" />
+                                    <path d="M12 5v14" />
+                                </svg>
+                            </div>
+                            <span class="text-yellow-500 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-indian-rupee">
+                                    <path d="M6 3h12" />
+                                    <path d="M6 8h12" />
+                                    <path d="m6 13 8.5 8" />
+                                    <path d="M6 13h3" />
+                                    <path d="M9 13c6.667 0 6.667-10 0-10" />
+                                </svg>
+                                <p>319</p>
+                            </span>
+                        </div>
+
+
+
+                        <!-- Any suggestions -->
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M18 10c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-9 4h2v2H9v-2zm0-8h2v6H9V6z" />
+                            </svg>
+                            <input type="text"
+                                class="text-yellow-500 w-full outline-none bg-transparent text-sm placeholder:text-white"
+                                placeholder="Any suggestions? We will pass it on..." />
+                        </div>
+
+                        <!-- No Contact Delivery -->
+                        <div class="border border-yellow-500 p-3 rounded-md flex items-start gap-2">
+                            <input type="checkbox" class="mt-1 text-yellow-500">
+                            <div>
+                                <p class="font-semibold">Opt in for No-contact Delivery</p>
+                                <p class="text-sm text-gray-500">Unwell, or avoiding contact? Please select no-contact
+                                    delivery. Partner will safely place the order outside your door (not for COD).</p>
+                            </div>
+                        </div>
+
+                        <!-- Bill -->
+                        <div class="mt-4 text-sm">
+                            <div class="flex justify-between py-2">
+                                <span class="text-white">Item Total</span>
+                                <span class="font-semibold">₹319</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-white">Delivery Fee | 1.7 kms</span>
+                                <span class="font-semibold">₹22</span>
+                            </div>
+                            <div class="flex justify-between py-2 text-yellow-500">
+                                <span>Delivery Tip</span>
+                                <div class="flex flex-row  gap-2">
+                                    <a href="?tip=20"><span
+                                            class="px-3 py-1 cursor-pointer border border-yellow-500 <?php echo ($tip == 20) ? 'bg-yellow-500' : ''; ?> text-white rounded-full">20</span></a>
+                                    <a href="?tip=30"><span
+                                            class="px-3 py-1 cursor-pointer border border-yellow-500 <?php echo ($tip == 30) ? ' bg-yellow-500 ' : ''; ?> text-white rounded-full">30</span></a>
+                                </div>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-white">Platform fee</span>
+                                <div class="flex flex-row gap-2">
+                                    <span class="font-semibold line-through text-gray-400">₹10.00</span>
+                                    <span class="font-semibold">₹6</span>
+                                </div>
+
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-white">GST and Restaurant Charges</span>
+                                <span class="font-semibold">₹48.53</span>
+                            </div>
+                            <hr class="my-2">
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>TO PAY</span>
+                                <span>₹396</span>
+                            </div>
+                        </div>
+                        <!-- From Uiverse.io by fthisilak BTN -->
+                        <div class="flex justify-end mt-5">
+                            <button class="pay-btn">
+                                <span class="btn-text">Checkout</span>
+                                <div class="icon-container">
+                                    <svg viewBox="0 0 24 24" class="icon card-icon">
+                                        <path
+                                            d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
+                                            fill="currentColor"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" class="icon payment-icon">
+                                        <path
+                                            d="M2,17H22V21H2V17M6.25,7H9V6H6V3H18V6H15V7H17.75L19,17H5L6.25,7M9,10H15V8H9V10M9,13H15V11H9V13Z"
+                                            fill="currentColor"></path>
+                                    </svg>
+                                    <svg viewBox="0 0 24 24" class="icon dollar-icon">
+                                        <path
+                                            d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+                                            fill="currentColor"></path>
+                                    </svg>
+
+                                    <svg viewBox="0 0 24 24" class="icon wallet-icon default-icon">
+                                        <path
+                                            d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
+                                            fill="currentColor"></path>
+                                    </svg>
+
+                                    <svg viewBox="0 0 24 24" class="icon check-icon">
+                                        <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                            fill="currentColor"></path>
+                                    </svg>
+                                </div>
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-zinc-900 rounded-lg p-6">
+            <!-- <div class="mt-8 flex justify-between items-center">
+                    <p class="text-xl font-bold">Total:</p>
+                    <p class="text-2xl font-bold text-yellow-500">$22.99</p>
+                </div> -->
+        </div>
+
+        <!-- <div class="bg-zinc-900 rounded-lg p-6">
                 <h2 class="text-2xl font-bold mb-4">Checkout</h2>
                 <form>
                     <div class="mb-4">
@@ -68,7 +359,7 @@
                         Place Order
                     </button>
                 </form>
-            </div>
+            </div> -->
         </div>
     </main>
 
