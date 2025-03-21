@@ -1,21 +1,17 @@
 <?php
 session_start();
-
 if (!isset($_SESSION['admin'])) {
     header("Location: login.php");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Food Ordering System</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -29,470 +25,161 @@ if (!isset($_SESSION['admin'])) {
             }
         }
     </script>
-    <!-- Heroicons (for icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-primary text-gray-100">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <div class="hidden md:flex md:flex-shrink-0">
-            <div class="flex flex-col w-64">
-                <!-- Sidebar component -->
-                <div class="flex flex-col flex-grow bg-primary pt-5 pb-4 overflow-y-auto">
-                    <div class="flex items-center flex-shrink-0 px-4">
-                        <h1 class="text-xl font-bold text-white">Food Admin</h1>
-                    </div>
-                    <div class="mt-5 flex-1 flex flex-col">
-                        <nav class="flex-1 px-2 space-y-1">
-                            <!-- Dashboard Link -->
-                            <a href="dashboard.html"
-                                class="bg-gray-900 text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <i class="fas fa-home mr-3 text-accent"></i>
-                                Dashboard
-                            </a>
-                            <!-- Users Link -->
-                            <a href="users.html"
-                                class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <i class="fas fa-users mr-3 text-gray-400 group-hover:text-accent"></i>
-                                Users
-                            </a>
-                            <!-- Restaurants Link -->
-                            <a href="restaurants.html"
-                                class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <i class="fas fa-store mr-3 text-gray-400 group-hover:text-accent"></i>
-                                Restaurants
-                            </a>
-                            <!-- Menu Items Link -->
-                            <a href="menu-items.html"
-                                class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <i class="fas fa-utensils mr-3 text-gray-400 group-hover:text-accent"></i>
-                                Menu Items
-                            </a>
-                            <!-- Orders Link -->
-                            <a href="orders.html"
-                                class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <i class="fas fa-shopping-cart mr-3 text-gray-400 group-hover:text-accent"></i>
-                                Orders
-                            </a>
-                            <!-- Payments Link -->
-                            <a href="payments.html"
-                                class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <i class="fas fa-credit-card mr-3 text-gray-400 group-hover:text-accent"></i>
-                                Payments
-                            </a>
-                            <!-- Reviews Link -->
-                            <a href="reviews.html"
-                                class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                                <i class="fas fa-star mr-3 text-gray-400 group-hover:text-accent"></i>
-                                Reviews
-                            </a>
-                        </nav>
-                    </div>
-                    <!-- Logout Button -->
-                    <div class="px-2 mt-6 mb-4">
-                        <a href="logout.php"
-                            class="text-gray-300 hover:bg-gray-700 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
-                            <i class="fas fa-sign-out-alt mr-3 text-gray-400 group-hover:text-accent"></i>
-                            Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php include 'sidebar.php'; ?>
 
         <!-- Main Content -->
         <div class="flex flex-col w-0 flex-1 overflow-hidden">
             <!-- Top Navigation -->
-            <div class="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
-                <button
-                    class="md:hidden px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:bg-gray-100 focus:text-gray-600">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="flex-1 px-4 flex justify-between">
-                    <div class="flex-1 flex">
-                        <h1 class="text-2xl font-semibold text-gray-900 my-auto">Dashboard</h1>
-                    </div>
-                    <div class="ml-4 flex items-center md:ml-6">
-                        <div class="ml-3 relative">
-                            <div>
-                                <button
-                                    class="max-w-xs flex items-center text-sm rounded-full text-white focus:outline-none focus:shadow-solid">
-                                    <img class="h-8 w-8 rounded-full"
-                                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                        alt="">
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php include 'header.php'; ?>
 
             <!-- Main Content Area -->
-            <main class="flex-1 relative overflow-y-auto focus:outline-none p-6">
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <!-- Total Users Card -->
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-accent/10 rounded-md p-3">
-                                    <i class="fas fa-users text-accent text-xl"></i>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">
-                                            Total Users
-                                        </dt>
-                                        <dd>
-                                            <div class="text-lg font-medium text-gray-900">
-                                                1,482
-                                            </div>
-                                        </dd>
-                                    </dl>
-                                </div>
+            <main class="flex-1 relative overflow-y-auto focus:outline-none p-6 space-y-8">
+                <!-- Quick Stats Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <!-- Stats Card -->
+                    <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 shadow-xl">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-gray-400 mb-2">Total Revenue</p>
+                                <p class="text-3xl font-bold text-accent">$89,432</p>
+                            </div>
+                            <div class="bg-accent/20 p-4 rounded-xl">
+                                <i class="fas fa-chart-line text-2xl text-accent"></i>
                             </div>
                         </div>
-                        <div class="bg-gray-50 px-5 py-3">
-                            <div class="text-sm">
-                                <a href="users.html" class="font-medium text-accent hover:text-accent/80">
-                                    View all
-                                </a>
+                        <div class="mt-4 flex items-center text-green-400 text-sm">
+                            <i class="fas fa-arrow-up mr-2"></i>
+                            <span>12.5% increase</span>
+                        </div>
+                    </div>
+
+                    <!-- Repeat similar cards for Orders, Users, Restaurants -->
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left Column -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <!-- Revenue Chart -->
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold">Revenue Overview</h2>
+                                <div class="bg-accent/20 text-accent px-4 py-2 rounded-lg">
+                                    Last 30 Days
+                                </div>
+                            </div>
+                            <!-- Chart placeholder -->
+                            <div class="h-64 bg-gray-700/30 rounded-xl animate-pulse"></div>
+                        </div>
+
+                        <!-- Order Status Distribution -->
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                            <h2 class="text-xl font-bold mb-6">Order Status</h2>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                                            <span>Completed</span>
+                                        </div>
+                                        <span class="font-bold">65%</span>
+                                    </div>
+                                    <div class="h-2 bg-gray-700 rounded-full">
+                                        <div class="h-2 bg-green-500 rounded-full w-3/4"></div>
+                                    </div>
+                                </div>
+                                <!-- Add other statuses -->
                             </div>
                         </div>
                     </div>
 
-                    <!-- Total Orders Card -->
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-accent/10 rounded-md p-3">
-                                    <i class="fas fa-shopping-cart text-accent text-xl"></i>
+                    <!-- Right Column -->
+                    <div class="space-y-8">
+                        <!-- Recent Activities -->
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                            <h2 class="text-xl font-bold mb-6">Recent Activities</h2>
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <div class="bg-accent/20 p-3 rounded-lg mr-4">
+                                        <i class="fas fa-user-plus text-accent"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">New customer registration</p>
+                                        <p class="text-sm text-gray-400">John Doe signed up</p>
+                                        <p class="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                    </div>
                                 </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">
-                                            Total Orders
-                                        </dt>
-                                        <dd>
-                                            <div class="text-lg font-medium text-gray-900">
-                                                12,345
-                                            </div>
-                                        </dd>
-                                    </dl>
-                                </div>
+                                <!-- Add more activities -->
                             </div>
                         </div>
-                        <div class="bg-gray-50 px-5 py-3">
-                            <div class="text-sm">
-                                <a href="orders.html" class="font-medium text-accent hover:text-accent/80">
-                                    View all
-                                </a>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Total Restaurants Card -->
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-accent/10 rounded-md p-3">
-                                    <i class="fas fa-store text-accent text-xl"></i>
+                        <!-- Top Products -->
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                            <h2 class="text-xl font-bold mb-6">Popular Menu Items</h2>
+                            <div class="space-y-6">
+                                <div class="flex items-center">
+                                    <img src="burger.jpg" class="w-12 h-12 rounded-lg object-cover mr-4">
+                                    <div class="flex-1">
+                                        <p class="font-medium">Classic Burger</p>
+                                        <p class="text-sm text-gray-400">Burger King</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-accent font-bold">$12.99</p>
+                                        <p class="text-sm text-gray-400">128 orders</p>
+                                    </div>
                                 </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">
-                                            Total Restaurants
-                                        </dt>
-                                        <dd>
-                                            <div class="text-lg font-medium text-gray-900">
-                                                248
-                                            </div>
-                                        </dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 px-5 py-3">
-                            <div class="text-sm">
-                                <a href="restaurants.html" class="font-medium text-accent hover:text-accent/80">
-                                    View all
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Total Revenue Card -->
-                    <div class="bg-white overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-accent/10 rounded-md p-3">
-                                    <i class="fas fa-dollar-sign text-accent text-xl"></i>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">
-                                            Total Revenue
-                                        </dt>
-                                        <dd>
-                                            <div class="text-lg font-medium text-gray-900">
-                                                $89,432.78
-                                            </div>
-                                        </dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 px-5 py-3">
-                            <div class="text-sm">
-                                <a href="payments.html" class="font-medium text-accent hover:text-accent/80">
-                                    View details
-                                </a>
+                                <!-- Add more menu items -->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Recent Orders Section -->
-                <div class="bg-white shadow overflow-hidden sm:rounded-md mb-8">
-                    <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Recent Orders
-                        </h3>
-                        <p class="mt-1 text-sm text-gray-500">
-                            A list of the most recent orders.
-                        </p>
+                <!-- Recent Orders Table -->
+                <div class="bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden">
+                    <div class="p-6 border-b border-gray-700">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-xl font-bold">Recent Orders</h2>
+                            <a href="#" class="bg-accent/20 text-accent px-4 py-2 rounded-lg hover:bg-accent/30 transition">
+                                View All Orders
+                            </a>
+                        </div>
                     </div>
-                    <ul class="divide-y divide-gray-200">
-                        <li>
-                            <a href="orders.html" class="block hover:bg-gray-50">
-                                <div class="px-4 py-4 sm:px-6">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-medium text-accent truncate">
-                                            Order #12345
-                                        </p>
-                                        <div class="ml-2 flex-shrink-0 flex">
-                                            <p
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Delivered
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 sm:flex sm:justify-between">
-                                        <div class="sm:flex">
-                                            <p class="flex items-center text-sm text-gray-500">
-                                                <i class="fas fa-user flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                John Doe
-                                            </p>
-                                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                <i class="fas fa-store flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                Burger King
-                                            </p>
-                                        </div>
-                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                            <i class="fas fa-calendar flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                            <p>
-                                                March 20, 2023
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="orders.html" class="block hover:bg-gray-50">
-                                <div class="px-4 py-4 sm:px-6">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-medium text-accent truncate">
-                                            Order #12344
-                                        </p>
-                                        <div class="ml-2 flex-shrink-0 flex">
-                                            <p
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                In Progress
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 sm:flex sm:justify-between">
-                                        <div class="sm:flex">
-                                            <p class="flex items-center text-sm text-gray-500">
-                                                <i class="fas fa-user flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                Jane Smith
-                                            </p>
-                                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                <i class="fas fa-store flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                Pizza Hut
-                                            </p>
-                                        </div>
-                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                            <i class="fas fa-calendar flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                            <p>
-                                                March 20, 2023
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="orders.html" class="block hover:bg-gray-50">
-                                <div class="px-4 py-4 sm:px-6">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-medium text-accent truncate">
-                                            Order #12343
-                                        </p>
-                                        <div class="ml-2 flex-shrink-0 flex">
-                                            <p
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                Cancelled
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 sm:flex sm:justify-between">
-                                        <div class="sm:flex">
-                                            <p class="flex items-center text-sm text-gray-500">
-                                                <i class="fas fa-user flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                Robert Johnson
-                                            </p>
-                                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                <i class="fas fa-store flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                KFC
-                                            </p>
-                                        </div>
-                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                            <i class="fas fa-calendar flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                            <p>
-                                                March 19, 2023
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Top Restaurants Section -->
-                <div class="bg-white shadow overflow-hidden sm:rounded-md">
-                    <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Top Restaurants
-                        </h3>
-                        <p class="mt-1 text-sm text-gray-500">
-                            Restaurants with the highest number of orders.
-                        </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-700/30">
+                                <tr>
+                                    <th class="px-6 py-4 text-left">Order ID</th>
+                                    <th class="px-6 py-4 text-left">Customer</th>
+                                    <th class="px-6 py-4 text-left">Restaurant</th>
+                                    <th class="px-6 py-4 text-left">Status</th>
+                                    <th class="px-6 py-4 text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-700">
+                                <tr class="hover:bg-gray-700/10 transition">
+                                    <td class="px-6 py-4 text-accent font-medium">#ORD-1289</td>
+                                    <td class="px-6 py-4">John Doe</td>
+                                    <td class="px-6 py-4">Burger King</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-900/30 text-green-400">
+                                            Delivered
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">$42.50</td>
+                                </tr>
+                                <!-- Add more rows -->
+                            </tbody>
+                        </table>
                     </div>
-                    <ul class="divide-y divide-gray-200">
-                        <li>
-                            <a href="restaurants.html" class="block hover:bg-gray-50">
-                                <div class="px-4 py-4 sm:px-6">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-medium text-accent truncate">
-                                            Burger King
-                                        </p>
-                                        <div class="ml-2 flex-shrink-0 flex">
-                                            <p
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Active
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 sm:flex sm:justify-between">
-                                        <div class="sm:flex">
-                                            <p class="flex items-center text-sm text-gray-500">
-                                                <i class="fas fa-shopping-cart flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                1,245 Orders
-                                            </p>
-                                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                <i class="fas fa-star flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                4.8 Rating
-                                            </p>
-                                        </div>
-                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                            <i class="fas fa-dollar-sign flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                            <p>
-                                                $24,500 Revenue
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="restaurants.html" class="block hover:bg-gray-50">
-                                <div class="px-4 py-4 sm:px-6">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-medium text-accent truncate">
-                                            Pizza Hut
-                                        </p>
-                                        <div class="ml-2 flex-shrink-0 flex">
-                                            <p
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Active
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 sm:flex sm:justify-between">
-                                        <div class="sm:flex">
-                                            <p class="flex items-center text-sm text-gray-500">
-                                                <i class="fas fa-shopping-cart flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                1,180 Orders
-                                            </p>
-                                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                <i class="fas fa-star flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                4.6 Rating
-                                            </p>
-                                        </div>
-                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                            <i class="fas fa-dollar-sign flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                            <p>
-                                                $22,340 Revenue
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="restaurants.html" class="block hover:bg-gray-50">
-                                <div class="px-4 py-4 sm:px-6">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-sm font-medium text-accent truncate">
-                                            KFC
-                                        </p>
-                                        <div class="ml-2 flex-shrink-0 flex">
-                                            <p
-                                                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                Active
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mt-2 sm:flex sm:justify-between">
-                                        <div class="sm:flex">
-                                            <p class="flex items-center text-sm text-gray-500">
-                                                <i class="fas fa-shopping-cart flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                1,050 Orders
-                                            </p>
-                                            <p class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
-                                                <i class="fas fa-star flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                                4.5 Rating
-                                            </p>
-                                        </div>
-                                        <div class="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                                            <i class="fas fa-dollar-sign flex-shrink-0 mr-1.5 text-gray-400"></i>
-                                            <p>
-                                                $19,870 Revenue
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
                 </div>
             </main>
         </div>
     </div>
 </body>
-
 </html>

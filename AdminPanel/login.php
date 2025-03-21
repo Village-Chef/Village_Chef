@@ -20,6 +20,7 @@ if (isset($_POST['btnLogin'])) {
         try {
             $admin = $obj->loginAdmin($email, $password);
             $_SESSION['admin'] = $admin;
+            $_SESSION['id'] = $admin['user_id'];
             $login_success = true;
             // header("Location: dashboard.php");
         } catch (Exception $e) {

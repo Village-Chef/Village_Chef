@@ -131,5 +131,79 @@ class Foodies
             throw new Exception("Login failed: " . $e->getMessage());
         }
     }
+    function getAllUsers()
+    {
+        try {
+            $sql = "SELECT * FROM users";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch users: " . $e->getMessage());
+        }
+    }
+
+
+    // not working code
+    function getUserById($id) {
+        try {
+            $sql = "SELECT * FROM users WHERE user_id = :id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch user: " . $e->getMessage());
+        }
+    }
+
+    function updateProfile($id, $profile_pic, $fname, $lname, $email, $phone)
+    {
+        try {
+            $sql = "UPDATE users SET first_name = :fname, last_name = :lname, email = :email, phone = :phone";
+
+            if (!empty($profile_pic['name'])) {
+                $fileName = $profile_pic['name'];
+                $fileTmpPath = $profile_pic['tmp_name'];
+                $uploadDir = 'uploads/';
+
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $filePath = $uploadDir . basename($fileName);
+
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                $fileMimeType = mime_content_type($fileTmpPath);
+
+                if (!in_array($fileMimeType, $allowedMimeTypes)) {
+                    throw new Exception("File format not supported.");
+                }
+
+                if (move_uploaded_file($fileTmpPath, $filePath)) {
+                    $sql .= ", profile_pic = :profile_pic";
+                }
+            }
+
+            $sql .= " WHERE user_id = :id";
+
+            $stmt = $this->con->prepare($sql);
+
+            $stmt->bindParam(':fname', $fname);
+            $stmt->bindParam(':lname', $lname);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':id', $id);
+
+            if (!empty($profile_pic['name'])) {
+                $stmt->bindParam(':profile_pic', $filePath);
+            }
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Profile update failed: " . $e->getMessage());
+        }
+    }
 }
 ?>
