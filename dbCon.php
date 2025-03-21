@@ -111,5 +111,25 @@ class Foodies
             throw new Exception("Login failed: " . $e->getMessage());
         }
     }
+
+    function loginAdmin($email, $password)
+    {
+        try {
+            $sql = "SELECT * FROM users WHERE email = :email AND role = 'admin'";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($admin && password_verify($password, $admin['password_hash'])) {
+                return $admin;
+            } else {
+                throw new Exception("Invalid email or password.");
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Login failed: " . $e->getMessage());
+        }
+    }
 }
 ?>
