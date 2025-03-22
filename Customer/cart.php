@@ -1,10 +1,18 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <?php
 $tip = 0;
 if (isset($_GET['tip'])) {
     $tip = $_GET['tip'];
 }
 
+if(isset($_GET['address'])){
+    $address = $_GET['address'];
+
+} 
 ?>
+
+
 <style>
     /* From Uiverse.io by fthisilak */
     .pay-btn {
@@ -157,7 +165,7 @@ if (isset($_GET['tip'])) {
 
     <main class="flex-grow pt-12">
         <div class="max-w-4xl mx-auto px-4 py-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center">Your Cart</h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center py-4">Checkout</h1>
 
             <!-- <div class="bg-zinc-900 rounded-lg p-6 mb-8">
                 <div class="space-y-4">
@@ -180,10 +188,88 @@ if (isset($_GET['tip'])) {
                 </div> -->
 
             <div class="flex w-full flex-row gap-6 rounded-lg">
-                <div class="w-[100%] bg-zinc-900 p-4">
+                <div class="w-[100%]  p-4">
+                    <div class="max-w-2xl mx-auto">
+                        <!-- Logged In Section -->
+                        <div class="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-black text-white p-3 rounded-lg">
+                                    <svg class="w-6 h-6" fill="white" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-yellow-500 text-lg">Logged in <span
+                                            class="text-green-500">✔</span></p>
+                                    <p class="text-gray-700 font-medium">Purv Virpariya | 8849019459</p>
+                                </div>
+                            </div>
+                        </div>
 
+                        <!-- Add Delivery Address Section -->
+                        <div class="bg-white shadow-lg rounded-lg p-6 mt-4 border border-gray-200">
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-black text-white p-3 rounded-lg">
+                                    <svg class="w-6 h-6" fill="white" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C8.13 2 5 5.13 5 9c0 3.87 7 13 7 13s7-9.13 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-yellow-500 text-lg"><?php echo(isset($_GET['address'])?'Your delivery address <span class="text-green-500"> ✔</span>':'Add a delivery address') ?></p>
+                                    <p class=" text-gray-700">You seem to be in the new location</p>
+                                </div>
+                            </div>
+
+                            <!-- Address Box -->
+                            <div class="border border-gray-300 rounded-lg p-6 mt-4">
+                                <?php 
+                                if(isset($_GET['address'])){
+                                   ?>
+                                        <p class="text-gray-700 font-medium"><?php echo $address ?></p>
+                                   <?php 
+                                }
+                                ?> 
+
+                                <?php 
+                                if(isset($_GET['address'])){
+                                   ?>
+                                        
+                                   <?php 
+                                }else{
+                                    ?>
+                                <p class="font-semibold text-green-500 text-lg flex items-center">
+                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 2C8.13 2 5 5.13 5 9c0 3.87 7 13 7 13s7-9.13 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                    </svg>
+                                    Add New Address
+                                </p>
+                                <button onclick="addAddress()"
+                                    class="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600">
+                                    ADD NEW
+                                </button>
+                                    <?php
+                                }
+                                ?>  
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex w-fit flex-col gap-4 bg-zinc-900 p-4">
+
+                <div class="flex w-fit flex-col gap-4 bg-zinc-900 ">
+
+                    <div class="relative bg-yellow-300  rotate-180 ">
+                        <svg class="absolute top-0 left-0 h-fit" viewBox="0 0 1440 100" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#fde047"
+                                d="M0,100 L30,50 L60,100 L90,50 L120,100 L150,50 L180,100 L210,50 L240,100 L270,50 L300,100 L330,50 L360,100 L390,50 L420,100 L450,50 L480,100 L510,50 L540,100 L570,50 L600,100 L630,50 L660,100 L690,50 L720,100 L750,50 L780,100 L810,50 L840,100 L870,50 L900,100 L930,50 L960,100 L990,50 L1020,100 L1050,50 L1080,100 L1110,50 L1140,100 L1170,50 L1200,100 L1230,50 L1260,100 L1290,50 L1320,100 L1350,50 L1380,100 L1410,50 L1440,100 V0 H0 Z">
+                            </path>
+                        </svg>
+                    </div>
 
                     <div class=" p-2 rounded-lg shadow-md w-96">
                         <!-- Cart Items List -->
@@ -317,6 +403,14 @@ if (isset($_GET['tip'])) {
                         </div>
 
                     </div>
+                    <div class="relative bg-yellow-300  ">
+                        <svg class="absolute top-0 left-0 h-fit" viewBox="0 0 1440 100" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#fde047"
+                                d="M0,100 L30,50 L60,100 L90,50 L120,100 L150,50 L180,100 L210,50 L240,100 L270,50 L300,100 L330,50 L360,100 L390,50 L420,100 L450,50 L480,100 L510,50 L540,100 L570,50 L600,100 L630,50 L660,100 L690,50 L720,100 L750,50 L780,100 L810,50 L840,100 L870,50 L900,100 L930,50 L960,100 L990,50 L1020,100 L1050,50 L1080,100 L1110,50 L1140,100 L1170,50 L1200,100 L1230,50 L1260,100 L1290,50 L1320,100 L1350,50 L1380,100 L1410,50 L1440,100 V0 H0 Z">
+                            </path>
+                        </svg>
+                    </div>
                 </div>
             </div>
 
@@ -365,6 +459,45 @@ if (isset($_GET['tip'])) {
 
     <!-- Footer -->
     <?php require 'footer.php' ?>
+
+    <script>
+        function addAddress() {
+            Swal.fire({
+                html: `
+                        <form method="get" >   
+                        <div class="w-full max-w-xs mx-auto gap-2 flex flex-col p-5 bg-white rounded-lg font-mono">
+                                                 
+                          <label class="block text-gray-700 text-md font-bold mb-2 text-start" for="unique-input"
+                            >Enter Your Address</label
+                          >
+                          <input
+                            class="text-sm custom-input w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm transition duration-300 ease-in-out transform focus:-translate-y-1 focus:outline-blue-300 hover:shadow-lg hover:border-blue-300 bg-gray-100"
+                            placeholder="Enter street address"
+                            name="address"
+                            type="text"
+                            id="unique-input"
+                          />
+                            <button type="submit" class="cursor-pointer transition-all 
+                            bg-black text-white px-6 py-2 rounded-lg
+                            border-yellow-500
+                            border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px]
+                            active:border-b-[2px] active:brightness-90 active:translate-y-[2px] hover:shadow-md hover:shadow-yellow-500 shadow-yellow-500 active:shadow-none">
+                              Add
+                            </button>
+                        
+                        </div> 
+                        </form>
+                         `,
+                inputAttributes: {
+                    autocapitalize: "off"
+                },
+                showCancelButton: false,
+                confirmButtonText: false,
+                showConfirmButton: false,
+                showLoaderOnConfirm: false,
+            });
+        }
+    </script>
 </body>
 
 </html>

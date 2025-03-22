@@ -242,7 +242,7 @@ class Foodies
 
             $filePath = $uploadDir . basename($fileName);
 
-            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif','image/jpg'];
             $fileMimeType = mime_content_type($fileTmpPath);
 
             if (!in_array($fileMimeType, $allowedMimeTypes)) {
@@ -317,7 +317,7 @@ class Foodies
 
                 $filePath = $uploadDir . basename($fileName);
 
-                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif','image/jpg'];
                 $fileMimeType = mime_content_type($fileTmpPath);
 
                 if (!in_array($fileMimeType, $allowedMimeTypes)) {

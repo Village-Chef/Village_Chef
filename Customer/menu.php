@@ -1,5 +1,16 @@
 <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
 <?php
+require '../dbCon.php';
+$obj = new Foodies();
+
+
+$restaurants = $obj->getAllRestaurants();
+
+
+?>
+
+
+<?php
 if (isset($_GET['sort'])) {
   $sort = $_GET['sort'];
 
@@ -25,7 +36,8 @@ if (isset($_GET['sort'])) {
 
   <!-- Menu Section -->
   <main class="flex-grow py-20">
-    <div class=" flex flex-col gap-9  mx-auto max-w-7xl">
+    <div class=" flex flex-col gap-2  mx-auto max-w-7xl">
+
       <!-- List of Foods -->
       <div class="flex flex-col sm:px-4 px-2 py-6 gap-9 ">
         <h1 class=" text-xl font-bold md:text-4xl text-start">Inspiration for your first order</h1>
@@ -96,79 +108,8 @@ if (isset($_GET['sort'])) {
           </div>
         </form>
       </div>
-      <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const scrollContainer = document.querySelector(".noscorll");
 
-          scrollContainer.addEventListener("wheel", function (event) {
-            event.preventDefault();
-            scrollContainer.scrollLeft += event.deltaY;
-          });
-        });
 
-      </script>
-
-      <!-- Top restaurants -->
-      <!-- <div class="flex flex-col sm:px-4 px-2 py-6 gap-9">
-        <h1 class=" text-xl font-bold md:text-4xl text-start ">Top restaurants for you</h1>
-        <div class="flex flex-row gap-4 overflow-x-scroll overflow-y-hidden md:gap-8 noscorll scroll-smooth">
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/pizza2.png" />
-            </div>
-            <p class="z-10 my-3 font-sans  text-center text-sm sm:text-md">Pizza</p>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/burger.png" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Burger</p>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/fc641efbb73b10484257f295ef0b9b981634401116.png" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Sandwich</p>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/52eb9796bb9bcf0eba64c643349e97211634401116.png" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Gujrati Thali</p>
-          </div>
-          <div class="flex flex-col ">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/bf2d0e73add1c206aeeb9fec762438111727708719.png" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Biryani</p>
-          </div>
-
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/dish_images/c2f22c42f7ba90d81440a88449f4e5891634806087.png" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">Rolls</p>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/019409fe8f838312214d9211be010ef31678798444.jpeg" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">North Indian</p>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="https://b.zmtcdn.com/data/o2_assets/2b5a5b533473aada22015966f668e30e1633434990.png" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">North Indian</p>
-          </div>
-          <div class="flex flex-col">
-            <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
-              <img class="w-full h-full border-4 border-yellow-500 rounded-full" src="Assets/icecream.png" />
-            </div>
-            <p class="z-10 my-3 font-sans text-center text-sm sm:text-md">ice Cream</p>
-          </div>
-        </div>
-      </div> -->
 
       <!-- Filters -->
       <div class=" <?php echo isset($_REQUEST['category']) ? 'flex' : 'hidden'; ?> gap-2 flex-row sm:px-4 px-2 py-6">
@@ -254,14 +195,43 @@ if (isset($_GET['sort'])) {
         </div>
       </div>
       <!-- Responsive Grid Layout -->
-      <div class="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-6 md:px-10">
-        <?php
-        if (isset($_GET['category'])) {
-          for ($i = 0; $i < 10; $i++) {
-            require('menuCard.php');
-          }
-        }
+      <?php if (isset($_REQUEST['category'])) {
         ?>
+        <div class="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-6 md:px-10">
+          <?php
+          if (isset($_GET['category'])) {
+
+            foreach ($restaurants as $restaurant) {
+
+              require('menuCard.php');
+            }
+          }
+          ?>
+        </div>
+        <?php
+      }
+      ?>
+
+      <!-- List of Resturants -->
+      <div class="flex flex-col sm:px-4 px-2 py-6 gap-9 ">
+        <h1 class=" text-xl font-bold md:text-4xl text-start">Top brands for you</h1>
+        <!-- <form method="get"> -->
+          <div class="flex flex-row gap-4  overflow-x-scroll overflow-y-hidden md:gap-8 noscorllRest  scroll-smooth">
+            <?php
+            foreach ($restaurants as $restaurant) {
+              ?>
+                <a href="restaurant.php?id=<?php echo $restaurant['restaurant_id'] ?>"  name="id" value="<?php echo $restaurant['restaurant_id'] ?>" class="flex flex-col">
+                  <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
+                    <img class="w-full h-full border-4 border-yellow-500 rounded-full"
+                      src="../AdminPanel/<?php echo $restaurant['restaurant_pic'] ?>" />
+                  </div>
+                  <p class="z-10 my-3 font-sans  text-center text-sm sm:text-md"><?php echo $restaurant['name'] ?></p>
+                </a>
+              <?php
+            }
+            ?>
+          </div>
+        <!-- </form> -->
       </div>
 
 
@@ -272,7 +242,25 @@ if (isset($_GET['sort'])) {
   </main>
 
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const scrollContainer = document.querySelector(".noscorll");
 
+      scrollContainer.addEventListener("wheel", function (event) {
+        event.preventDefault();
+        scrollContainer.scrollLeft += event.deltaY;
+      });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+      const scrollContainer = document.querySelector(".noscorllRest");
+
+      scrollContainer.addEventListener("wheel", function (event) {
+        event.preventDefault();
+        scrollContainer.scrollLeft += event.deltaY;
+      });
+    });
+
+  </script>
 
   <!-- Footer -->
   <?php require 'footer.php' ?>

@@ -23,6 +23,9 @@ if (session_status() == PHP_SESSION_NONE) {
         .noscorll {
             scrollbar-width: none;
         }
+        .noscorllRest {
+            scrollbar-width: none;
+        }
 
         .mobile-menu {
             max-height: 0;
