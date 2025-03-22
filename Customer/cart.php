@@ -2,14 +2,16 @@
 
 <?php
 $tip = 0;
+$isAddressSet = false;
 if (isset($_GET['tip'])) {
     $tip = $_GET['tip'];
 }
 
-if(isset($_GET['address'])){
+if (isset($_GET['address'])) {
     $address = $_GET['address'];
+    $isAddressSet = true;
+}
 
-} 
 ?>
 
 
@@ -217,51 +219,92 @@ if(isset($_GET['address'])){
                                     </svg>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-yellow-500 text-lg"><?php echo(isset($_GET['address'])?'Your delivery address <span class="text-green-500"> ✔</span>':'Add a delivery address') ?></p>
+                                    <p class="font-bold text-yellow-500 text-lg">
+                                        <?php echo (isset($_GET['address']) ? 'Your delivery address <span class="text-green-500"> ✔</span>' : 'Add a delivery address') ?>
+                                    </p>
                                     <p class=" text-gray-700">You seem to be in the new location</p>
                                 </div>
                             </div>
 
                             <!-- Address Box -->
                             <div class="border border-gray-300 rounded-lg p-6 mt-4">
-                                <?php 
-                                if(isset($_GET['address'])){
-                                   ?>
-                                        <p class="text-gray-700 font-medium"><?php echo $address ?></p>
-                                   <?php 
-                                }
-                                ?> 
-
-                                <?php 
-                                if(isset($_GET['address'])){
-                                   ?>
-                                        
-                                   <?php 
-                                }else{
+                                <?php
+                                if (isset($_GET['address'])) {
                                     ?>
-                                <p class="font-semibold text-green-500 text-lg flex items-center">
-                                    <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            d="M12 2C8.13 2 5 5.13 5 9c0 3.87 7 13 7 13s7-9.13 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                                    </svg>
-                                    Add New Address
-                                </p>
-                                <button onclick="addAddress()"
-                                    class="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600">
-                                    ADD NEW
-                                </button>
+                                    <p class="text-gray-700 font-medium"><?php echo $address ?></p>
                                     <?php
                                 }
-                                ?>  
-                                
-                                
+                                ?>
+
+                                <?php
+                                if (isset($_GET['address'])) {
+                                    ?>
+
+                                    <?php
+                                } else {
+                                    ?>
+                                    <p class="font-semibold text-green-500 text-lg flex items-center">
+                                        <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                            <path
+                                                d="M12 2C8.13 2 5 5.13 5 9c0 3.87 7 13 7 13s7-9.13 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                        </svg>
+                                        Add New Address
+                                    </p>
+
+                                    <?php
+                                }
+
+                                ?>
+                                <button onclick="addAddress()"
+                                    class="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600">
+                                    <?php echo ($isAddressSet ? 'CHANGE' : 'ADD NEW') ?>
+                                </button>
+
+
                             </div>
                         </div>
+
+                        <!-- Payment -->
+                        <?php
+                        if ($isAddressSet) {
+                            ?>
+                            <div class="bg-white shadow-lg rounded-lg p-6 mt-4 border border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <div class="bg-black text-white p-3 rounded-lg">
+                                        <svg class="w-6 h-6" fill="white" viewBox="0 0 24 24">
+                                            <path
+                                                d="M2 5C2 3.9 2.9 3 4 3H20C21.1 3 22 3.9 22 5V19C22 20.1 21.1 21 20 21H4C2.9 21 2 20.1 2 19V5ZM4 7V9H20V7H4ZM4 17H20V11H4V17Z" />
+                                        </svg>
+
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-yellow-500 text-lg">Choose payment method
+                                            <!-- <span  class="text-green-500">✔</span> -->
+                                        </p>
+                                        <button
+                                            class="inline-flex mt-2 items-center hover:scale-105 px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-yellow-500 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+
+                                            Process to Pay<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-arrow-right">
+                                                <path d="M5 12h14" />
+                                                <path d="m12 5 7 7-7 7" />
+                                            </svg>
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
 
                 <div class="flex w-fit flex-col gap-4 bg-zinc-900 ">
 
+                    <!-- Zig Zag Bar -->
                     <div class="relative bg-yellow-300  rotate-180 ">
                         <svg class="absolute top-0 left-0 h-fit" viewBox="0 0 1440 100" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
@@ -273,38 +316,55 @@ if(isset($_GET['address'])){
 
                     <div class=" p-2 rounded-lg shadow-md w-96">
                         <!-- Cart Items List -->
-                        <div class="flex items-center w-full justify-between gap-5 mb-4 rounded-lg  text-white">
-                            <div
-                                class="flex h-[15px] w-[15px] items-center justify-center border-[1px] border-green-600 p-[2px]">
-                                <div class="rounded-full bg-green-600 p-[3px]"></div>
-                            </div>
-                            <div class="text-sm text-nowrap">Tandoori Paneer</div>
-                            <div class="flex items-center gap-3 rounded-full border border-white px-2 py-1 text-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-minus cursor-pointer">
-                                    <path d="M5 12h14" />
-                                </svg>
-                                <span class="text-xs">1</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-plus cursor-pointer">
-                                    <path d="M5 12h14" />
-                                    <path d="M12 5v14" />
-                                </svg>
-                            </div>
-                            <span class="text-yellow-500 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-indian-rupee">
-                                    <path d="M6 3h12" />
-                                    <path d="M6 8h12" />
-                                    <path d="m6 13 8.5 8" />
-                                    <path d="M6 13h3" />
-                                    <path d="M9 13c6.667 0 6.667-10 0-10" />
-                                </svg>
-                                <p>319</p>
-                            </span>
+                        <div class="flex items-center flex-col  w-full justify-between gap-2 mb-4 rounded-lg  text-white">
+
+
+
+
+                            <?php
+                            for ($i = 0; $i <3; $i++) {
+                                ?>
+                                <div
+                                    class="flex items-center flex-row w-full justify-between gap-5 mb-4 rounded-lg  text-white">
+                                    <div
+                                        class="flex h-[15px] w-[15px] items-center justify-center border-[1px] border-green-600 p-[2px]">
+                                        <div class="rounded-full bg-green-600 p-[3px]"></div>
+                                    </div>
+                                    <div class="text-sm text-nowrap">Tandoori Paneer</div>
+                                    <div class="flex items-center gap-3 rounded-full border border-white px-2 py-1 text-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-minus cursor-pointer">
+                                            <path d="M5 12h14" />
+                                        </svg>
+                                        <span class="text-xs">1</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-plus cursor-pointer">
+                                            <path d="M5 12h14" />
+                                            <path d="M12 5v14" />
+                                        </svg>
+
+                                    </div>
+
+
+                                    <span class="text-yellow-500 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-indian-rupee">
+                                            <path d="M6 3h12" />
+                                            <path d="M6 8h12" />
+                                            <path d="m6 13 8.5 8" />
+                                            <path d="M6 13h3" />
+                                            <path d="M9 13c6.667 0 6.667-10 0-10" />
+                                        </svg>
+                                        <p>319</p>
+                                    </span>
+                                </div>
+
+                                <?php
+                            }
+                            ?>
                         </div>
 
 
@@ -403,6 +463,8 @@ if(isset($_GET['address'])){
                         </div>
 
                     </div>
+
+                    <!-- Zig Zag Bar -->
                     <div class="relative bg-yellow-300  ">
                         <svg class="absolute top-0 left-0 h-fit" viewBox="0 0 1440 100" fill="none"
                             xmlns="http://www.w3.org/2000/svg">
