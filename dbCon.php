@@ -145,7 +145,8 @@ class Foodies
     }
 
 
-    function updateUserStatus($user_id, $status){
+    function updateUserStatus($user_id, $status)
+    {
         try {
             $sql = "UPDATE users SET status = :status WHERE user_id = :user_id";
             $stmt = $this->con->prepare($sql);
@@ -158,7 +159,8 @@ class Foodies
     }
 
 
-    function deleteUser($user_id){
+    function deleteUser($user_id)
+    {
         try {
             $sql = "DELETE FROM users WHERE user_id = :user_id";
             $stmt = $this->con->prepare($sql);
@@ -169,7 +171,8 @@ class Foodies
         }
     }
 
-    function getUserById($id) {
+    function getUserById($id)
+    {
         try {
             $sql = "SELECT * FROM users WHERE user_id = :id";
             $stmt = $this->con->prepare($sql);
@@ -361,6 +364,208 @@ class Foodies
             return $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Failed to delete restaurant: " . $e->getMessage());
+        }
+    }
+
+    function addCuisine($cuisine_name, $description): bool
+    {
+        try {
+            $sql = "INSERT INTO cuisines (cuisine_name, description) VALUES (:name, :description)";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':name', $cuisine_name);
+            $stmt->bindParam(':description', $description);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to add cuisine: " . $e->getMessage());
+        }
+    }
+
+    function getAllCuisines()
+    {
+        try {
+            $sql = "SELECT * FROM cuisines";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch cuisines: " . $e->getMessage());
+        }
+    }
+
+    function getCuisineById($id)
+    {
+        try {
+            $sql = "SELECT * FROM cuisines WHERE cuisine_id = :id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch cuisine: " . $e->getMessage());
+        }
+    }
+
+    function updateCuisine($id, $cuisine_name, $description)
+    {
+        try {
+            $sql = "UPDATE cuisines SET cuisine_name = :name, description = :description WHERE cuisine_id = :id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':name', $cuisine_name);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to update cuisine: " . $e->getMessage());
+        }
+    }
+
+    function deleteCuisine($id)
+    {
+        try {
+            $sql = "DELETE FROM cuisines WHERE cuisine_id = :id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to delete cuisine: " . $e->getMessage());
+        }
+    }
+
+    function addMenuItem($restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available)
+    {
+        try {
+            $fileName = $image_url['name'];
+            $fileTmpPath = $image_url['tmp_name'];
+            $uploadDir = 'uploads/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            $filePath = $uploadDir . basename($fileName);
+
+            $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            $fileMimeType = mime_content_type($fileTmpPath);
+
+            if (!in_array($fileMimeType, $allowedMimeTypes)) {
+                throw new Exception("File format not supported.");
+            }
+
+            if (move_uploaded_file($fileTmpPath, $filePath)) {
+                $sql = "INSERT INTO menu_items 
+                        (restaurant_id, cuisine_id, item_name, description, price, image_url, is_available) 
+                        VALUES 
+                        (:restaurant_id, :cuisine_id, :item_name, :description, :price, :image_url, :is_available)";
+
+                $stmt = $this->con->prepare($sql);
+
+                $stmt->bindParam(':restaurant_id', $restaurant_id);
+                $stmt->bindParam(':cuisine_id', $cuisine_id);
+                $stmt->bindParam(':item_name', $item_name);
+                $stmt->bindParam(':description', $description);
+                $stmt->bindParam(':price', $price);
+                $stmt->bindParam(':image_url', $filePath);
+                $stmt->bindParam(':is_available', $is_available);
+
+                return $stmt->execute();
+            } else {
+                throw new Exception("Failed to move uploaded file.");
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Failed to add menu item: " . $e->getMessage());
+        }
+    }
+
+    function getAllMenuItems()
+    {
+        try {
+            $sql = "SELECT mi.*, r.name as restaurant_name, c.cuisine_name 
+                    FROM menu_items mi
+                    JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
+                    JOIN cuisines c ON mi.cuisine_id = c.cuisine_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch menu items: " . $e->getMessage());
+        }
+    }
+
+    function getMenuItemById($id)
+    {
+        try {
+            $sql = "SELECT * FROM menu_items WHERE item_id = :id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch menu item: " . $e->getMessage());
+        }
+    }
+
+    function updateMenuItem($id, $restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available)
+    {
+        try {
+            $sql = "UPDATE menu_items 
+                    SET restaurant_id = :restaurant_id, cuisine_id = :cuisine_id, item_name = :item_name, description = :description, price = :price, is_available = :is_available";
+
+            if (!empty($image_url['name'])) {
+                $fileName = $image_url['name'];
+                $fileTmpPath = $image_url['tmp_name'];
+                $uploadDir = 'uploads/';
+
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $filePath = $uploadDir . basename($fileName);
+
+                $allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                $fileMimeType = mime_content_type($fileTmpPath);
+
+                if (!in_array($fileMimeType, $allowedMimeTypes)) {
+                    throw new Exception("File format not supported.");
+                }
+
+                if (move_uploaded_file($fileTmpPath, $filePath)) {
+                    $sql .= ", image_url = :image_url";
+                }
+            }
+
+            $sql .= " WHERE item_id = :id";
+
+            $stmt = $this->con->prepare($sql);
+
+            $stmt->bindParam(':restaurant_id', $restaurant_id);
+            $stmt->bindParam(':cuisine_id', $cuisine_id);
+            $stmt->bindParam(':item_name', $item_name);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':price', $price);
+            $stmt->bindParam(':is_available', $is_available);
+            $stmt->bindParam(':id', $id);
+
+            if (!empty($image_url['name'])) {
+                $stmt->bindParam(':image_url', $filePath);
+            }
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Menu item update failed: " . $e->getMessage());
+        }
+    }
+
+    function deleteMenuItem($id)
+    {
+        try {
+            $sql = "DELETE FROM menu_items WHERE item_id = :id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to delete menu item: " . $e->getMessage());
         }
     }
 }

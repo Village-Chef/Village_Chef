@@ -141,6 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddRestaurant'])) 
 
                         <!-- Form Actions -->
                         <div class="flex justify-end space-x-4 pt-6">
+                            <a href="restaurants.php"
+                                class="px-6 py-2 border border-gray-600 rounded-xl hover:bg-gray-700/30 transition-colors">
+                                Back
+                            </a>
                             <button type="reset"
                                 class="px-6 py-2 border border-gray-600 rounded-xl hover:bg-gray-700/30 transition-colors">
                                 Reset

@@ -53,7 +53,7 @@ $restaurants = $obj->getAllRestaurants();
                         </div>
                     </div>
                     <a href="addRestaurant.php"
-                        class="inline-flex items-center px-4 py-2 border border-accent text-sm font-medium rounded-xl shadow-sm text-accent hover:bg-accent/10 transition-colors">
+                        class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                         <i class="fas fa-plus mr-2"></i> Add Restaurant
                     </a>
                 </div>

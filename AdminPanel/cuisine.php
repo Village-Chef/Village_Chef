@@ -9,7 +9,7 @@ if (!isset($_SESSION['admin'])) {
 require '../dbCon.php';
 $obj = new Foodies();
 
-$result = $obj->getAllMenuItems();
+$result = $obj->getAllCuisines();
 // print_r($result);
 ?>
 
@@ -54,24 +54,24 @@ $result = $obj->getAllMenuItems();
                         </div>
                     </div>
                     <div>
-                        <a href="cuisine.php"
+                        <a href="menuItems.php"
                             class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
-                            <i class="fas fa-list mr-2"></i> Cuisines
+                            <i class="fas fa-backward mr-2"></i> Back
                         </a>
-                        <!-- <a href="addCuisines.php"
+                        <a href="addCuisines.php"
                             class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                             <i class="fas fa-plus mr-2"></i> Add Cuisine
-                        </a> -->
-                        <a href="addMenuItem.php"
+                        </a>
+                        <!-- <a href="addMenuItem.php"
                             class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                             <i class="fas fa-plus mr-2"></i> Add Menu Item
-                        </a>
+                        </a> -->
                     </div>
 
                 </div>
 
                 <!-- Filter Options -->
-                <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 mb-6">
+                <!-- <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-300 mb-2">Restaurant</label>
@@ -98,7 +98,7 @@ $result = $obj->getAllMenuItems();
                             </select>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Menu Items Table -->
                 <div class="bg-gray-800 rounded-2xl border border-gray-700 shadow-xl overflow-hidden">
@@ -107,10 +107,9 @@ $result = $obj->getAllMenuItems();
                             <thead class="bg-gray-800">
                                 <tr>
                                     <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Item</th>
-                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Restaurant</th>
-                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Price</th>
-                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Availability</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Description</th>
                                     <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Date Added</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Last Updated</th>
                                     <th class="px-6 py-4 text-right text-sm font-medium text-gray-300">Actions</th>
                                 </tr>
                             </thead>
@@ -124,47 +123,29 @@ $result = $obj->getAllMenuItems();
                                     <tr class="hover:bg-gray-700/20 transition-colors">
                                         <td class="px-6 py-4">
                                             <div class="flex items-center">
-                                                <img class="h-10 w-10 rounded-lg object-cover border border-accent/30"
-                                                    src="<?php echo $results['image_url'] ?>" alt="Whopper">
                                                 <div class="ml-4">
                                                     <div class="text-sm font-medium text-white">
-                                                        <?php echo $results['item_name'] ?>
+                                                        <?php echo $results['cuisine_name'] ?>
                                                     </div>
-                                                    <div class="text-xs text-gray-400"></div>
-                                                    <?php echo $results['cuisine_name'] ?>
                                                 </div>
                                             </div>
                         </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-300"><?php echo $results['restaurant_name'] ?></td>
-                        <td class="px-6 py-4 text-sm text-accent font-medium"><?php echo $results['price'] ?></td>
-                        <td class="px-6 py-4">
-                            <?php
-                            if ($results['is_available']) {
-                                ?>
-                                <span class="px-2.5 py-1 rounded-full text-xs bg-green-900/30 text-green-400">
-                                    <?php echo ($results['is_available']) ? 'Available' : 'Not-Available' ?>
-                                </span>
-                                <?php
-                            } else {
-                                ?>
-                                <span class="px-2.5 py-1 rounded-full text-xs bg-red-900/30 text-red-400">
-                                    <?php echo ($results['is_available']) ? 'Available' : 'Not-Available' ?>
-                                </span>
-                                <?php
-                            }
-                            ?>
-                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-300"><?php echo $results['description'] ?></td>
+
                         <td class="px-6 py-4 text-sm text-gray-300">
                             <?php echo date('M d, Y', strtotime($results['created_at'])); ?>
                         </td>
+                        <td class="px-6 py-4 text-sm text-gray-300">
+                            <?php echo date('M d, Y', strtotime($results['updated_at'])); ?>
+                        </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-end space-x-3">
-                                <a href="updateMenuItem.php?id=<?php echo $results['item_id'] ?>"
+                                <a href="updateCuisine.php?id=<?php echo $results['cuisine_id'] ?>"
                                     class="text-accent hover:text-accent/80">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button onclick="openDeleteModal('<?php echo $results['item_id']; ?>')"
+                                <button onclick="openDeleteModal('<?php echo $results['cuisine_id']; ?>')"
                                     class="text-red-500 hover:text-red-400 transition-colors">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -216,10 +197,10 @@ $result = $obj->getAllMenuItems();
                     </button>
                 </div>
 
-                <form method="POST" action="deleteMenuItem.php" class="space-y-6">
-                    <input type="hidden" id="delete_user_id" name="item_id">
+                <form method="POST" action="deleteCuisine.php" class="space-y-6">
+                    <input type="hidden" id="delete_user_id" name="cuisine_id">
 
-                    <p class="text-gray-300">Are you sure you want to delete this Menu Item?</p>
+                    <p class="text-gray-300">Are you sure you want to delete this Cuisine?</p>
 
                     <div class="flex justify-end space-x-3">
                         <button type="button" onclick="closeDeleteModal()"
