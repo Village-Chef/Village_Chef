@@ -64,7 +64,7 @@ $users = $obj->getAllUsers();
                         </div>
                     </div>
                     <button type="button"
-                        class="inline-flex items-center px-4 py-2 border border-accent text-sm font-medium rounded-xl shadow-sm text-accent hover:bg-accent/10 transition-colors">
+                        class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                         <i class="fas fa-plus mr-2"></i> Add User
                     </button>
                 </div>
@@ -233,7 +233,8 @@ $users = $obj->getAllUsers();
     </div>
 
     <!-- Delete User Modal -->
-    <div id="deleteModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">
+    <div id="deleteModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-md mx-4">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold text-accent">Delete User</h1>
