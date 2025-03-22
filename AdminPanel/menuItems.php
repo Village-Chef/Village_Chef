@@ -109,6 +109,7 @@ $result = $obj->getAllMenuItems();
                                     <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Item</th>
                                     <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Restaurant</th>
                                     <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Price</th>
+                                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Tags</th>
                                     <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Availability</th>
                                     <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Date Added</th>
                                     <th class="px-6 py-4 text-right text-sm font-medium text-gray-300">Actions</th>
@@ -138,6 +139,18 @@ $result = $obj->getAllMenuItems();
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-300"><?php echo $results['restaurant_name'] ?></td>
                         <td class="px-6 py-4 text-sm text-accent font-medium"><?php echo $results['price'] ?></td>
+                        <td class="px-6 py-4 text-sm text-gray-300">
+                            <?php
+                            $tags = json_decode($results['tags'], true);
+                            foreach ($tags as $tag) {
+                                ?>
+                                <span class="px-2 py-1 rounded-full text-xs bg-accent/30 text-accent">
+                                    <?php echo htmlspecialchars($tag); ?>
+                                </span>
+                                <?php
+                            }
+                            ?>
+
                         <td class="px-6 py-4">
                             <?php
                             if ($results['is_available']) {

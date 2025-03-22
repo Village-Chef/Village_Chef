@@ -9,9 +9,9 @@ if (!isset($_SESSION['admin'])) {
 require '../dbCon.php';
 $obj = new Foodies();
 
-// Fetch restaurants and cuisines
 $restaurants = $obj->getAllRestaurants();
 $cuisines = $obj->getAllCuisines();
+$tags = $obj->getAllTags();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
     $restaurant_id = $_POST['restaurant_id'];
@@ -21,9 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
     $price = $_POST['price'];
     $image_url = $_FILES['image_url'];
     $is_available = isset($_POST['is_available']) ? 1 : 0;
+    $selected_tags = [];
+    if (isset($_POST['tags'])) {
+        foreach ($_POST['tags'] as $tag_id) {
+            foreach ($tags as $tag) {
+                if ($tag['tag_id'] == $tag_id) {
+                    $selected_tags[] = $tag['tag'];
+                    break;
+                }
+            }
+        }
+    }
+    $selected_tags_json = json_encode($selected_tags);
 
     try {
-        $obj->addMenuItem($restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available);
+        $obj->addMenuItem($restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available, $selected_tags_json);
         header('location:menuItems.php');
         exit();
     } catch (Exception $e) {
@@ -34,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,18 +70,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
             right: 0;
             border-color: #eab308;
         }
-        .toggle-checkbox:checked + .toggle-label {
+
+        .toggle-checkbox:checked+.toggle-label {
             background-color: #eab308;
+        }
+
+        .tag-item input:checked+label {
+            background-color: #eab308;
+            border-color: #eab308;
+            color: #000;
+        }
+
+        .tag-item input:checked+label:hover {
+            background-color: #d4a30c;
         }
     </style>
 </head>
+
 <body class="bg-primary text-gray-100">
     <div class="flex h-screen overflow-hidden">
         <?php include 'sidebar.php'; ?>
-        
+
         <div class="flex flex-col w-0 flex-1 overflow-hidden">
             <?php include 'header.php'; ?>
-            
+
             <main class="flex-1 relative overflow-y-auto focus:outline-none p-6">
                 <div class="max-w-2xl mx-auto">
                     <h1 class="text-2xl font-bold text-accent mb-6 flex items-center">
@@ -79,7 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                             <?php echo $error_message; ?>
                         </div>
                     <?php endif; ?>
-                    <form method="post" action="addMenuItem.php" enctype="multipart/form-data" class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
+                    <form method="post" action="addMenuItem.php" enctype="multipart/form-data"
+                        class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="restaurant_id" class="block text-sm font-medium text-gray-300 mb-2">
@@ -90,7 +116,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                     required>
                                     <option value="">Select a restaurant</option>
                                     <?php foreach ($restaurants as $restaurant): ?>
-                                        <option value="<?php echo $restaurant['restaurant_id']; ?>"><?php echo $restaurant['name']; ?></option>
+                                        <option value="<?php echo $restaurant['restaurant_id']; ?>">
+                                            <?php echo $restaurant['name']; ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -103,7 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                     required>
                                     <option value="">Select a cuisine</option>
                                     <?php foreach ($cuisines as $cuisine): ?>
-                                        <option value="<?php echo $cuisine['cuisine_id']; ?>"><?php echo $cuisine['cuisine_name']; ?></option>
+                                        <option value="<?php echo $cuisine['cuisine_id']; ?>">
+                                            <?php echo $cuisine['cuisine_name']; ?>
+                                        </option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
@@ -132,12 +162,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                     placeholder="e.g., 12.99" required>
                             </div>
                             <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Tags</label>
+                                <div class="flex flex-wrap gap-3">
+                                    <?php foreach ($tags as $tag): ?>
+                                        <div class="tag-item mb-2">
+                                            <input type="checkbox" name="tags[]" value="<?php echo $tag['tag_id']; ?>"
+                                                id="tag-<?php echo $tag['tag_id']; ?>" class="hidden peer"
+                                                data-tag-text="<?php echo htmlspecialchars($tag['tag']); ?>">
+                                            <label for="tag-<?php echo $tag['tag_id']; ?>" class="px-5 py-2 text-sm font-medium rounded-full cursor-pointer transition-all whitespace-nowrap
+                   bg-gray-700 text-gray-300 border border-gray-600
+                   hover:bg-gray-600 hover:border-accent
+                   peer-checked:bg-accent peer-checked:text-black peer-checked:border-accent
+                   peer-checked:hover:bg-yellow-500">
+                                                <?php echo htmlspecialchars($tag['tag']); ?>
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <div class="col-span-2">
                                 <label for="image_url" class="block text-sm font-medium text-gray-300 mb-2">
                                     Item Image
                                 </label>
                                 <div class="flex items-center">
-                                    <input type="file" id="image_url" name="image_url"
-                                        class="hidden" accept="image/*">
+                                    <input type="file" id="image_url" name="image_url" class="hidden" accept="image/*">
                                     <button type="button"
                                         class="px-4 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700/30 transition-colors"
                                         onclick="document.getElementById('image_url').click()">
@@ -156,17 +204,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                 </label>
                                 <div class="relative inline-block w-10 mr-2 align-middle select-none">
                                     <input type="checkbox" id="is_available" name="is_available" value="1" checked
-                                        class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"/>
-                                    <label for="is_available" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
+                                        class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                    <label for="is_available"
+                                        class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-600 cursor-pointer"></label>
                                 </div>
                                 <span class="text-sm text-gray-300">Available</span>
                             </div>
                         </div>
                         <div class="flex justify-end space-x-3 mt-6">
-                            <a href="menuItems.php" class="px-6 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700/30 transition-colors">
+                            <a href="menuItems.php"
+                                class="px-6 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700/30 transition-colors">
                                 Cancel
                             </a>
-                            <button type="submit" name="btnAddMenuItem" class="px-6 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors flex items-center">
+                            <button type="submit" name="btnAddMenuItem"
+                                class="px-6 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors flex items-center">
                                 <i class="fas fa-plus mr-2"></i> Add Menu Item
                             </button>
                         </div>
@@ -176,13 +227,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
         </div>
     </div>
     <script>
-        document.getElementById('image_url').addEventListener('change', function() {
+        document.getElementById('image_url').addEventListener('change', function () {
             const fileName = this.files[0] ? this.files[0].name : 'No file chosen';
             document.getElementById('file-name').textContent = fileName;
-            
+
             if (this.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     document.getElementById('preview-img').src = e.target.result;
                     document.getElementById('image-preview').classList.remove('hidden');
                 };
@@ -193,4 +244,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
         });
     </script>
 </body>
+
 </html>

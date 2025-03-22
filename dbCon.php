@@ -245,7 +245,7 @@ class Foodies
 
             $filePath = $uploadDir . basename($fileName);
 
-            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif','image/jpg'];
+            $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
             $fileMimeType = mime_content_type($fileTmpPath);
 
             if (!in_array($fileMimeType, $allowedMimeTypes)) {
@@ -320,7 +320,7 @@ class Foodies
 
                 $filePath = $uploadDir . basename($fileName);
 
-                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif','image/jpg'];
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
                 $fileMimeType = mime_content_type($fileTmpPath);
 
                 if (!in_array($fileMimeType, $allowedMimeTypes)) {
@@ -432,7 +432,7 @@ class Foodies
         }
     }
 
-    function addMenuItem($restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available)
+    function addMenuItem($restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available, $tags)
     {
         try {
             $fileName = $image_url['name'];
@@ -454,9 +454,9 @@ class Foodies
 
             if (move_uploaded_file($fileTmpPath, $filePath)) {
                 $sql = "INSERT INTO menu_items 
-                        (restaurant_id, cuisine_id, item_name, description, price, image_url, is_available) 
+                        (restaurant_id, cuisine_id, item_name, description, price, image_url, is_available, tags) 
                         VALUES 
-                        (:restaurant_id, :cuisine_id, :item_name, :description, :price, :image_url, :is_available)";
+                        (:restaurant_id, :cuisine_id, :item_name, :description, :price, :image_url, :is_available, :tags)";
 
                 $stmt = $this->con->prepare($sql);
 
@@ -467,6 +467,7 @@ class Foodies
                 $stmt->bindParam(':price', $price);
                 $stmt->bindParam(':image_url', $filePath);
                 $stmt->bindParam(':is_available', $is_available);
+                $stmt->bindParam(':tags', $tags);
 
                 return $stmt->execute();
             } else {
@@ -476,6 +477,7 @@ class Foodies
             throw new Exception("Failed to add menu item: " . $e->getMessage());
         }
     }
+
 
     function getAllMenuItems()
     {
@@ -566,6 +568,19 @@ class Foodies
             return $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Failed to delete menu item: " . $e->getMessage());
+        }
+    }
+
+    function getAllTags()
+    {
+        try {
+            $sql = "SELECT * FROM tags";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch tags: " . $e->getMessage());
         }
     }
 }
