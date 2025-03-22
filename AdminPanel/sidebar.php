@@ -104,39 +104,55 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </a>
 
                             <!-- Menu Items Link -->
-                            <a href="menu-items.php"
-                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200">
-                                <i class="fas fa-utensils mr-3 text-gray-400 group-hover:text-accent text-lg"></i>
+                            <a href="menuItems.php"
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'menuItems.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
+                                <i class="fas fa-utensils mr-3 <?php echo($current_page === 'menuItems.php') ? 'text-accent' : 'text-gray-400'?>  group-hover:text-accent text-lg"></i>
                                 Menu Items
-                                <i
-                                    class="fas fa-chevron-right ml-auto text-gray-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                <?php if ($current_page === 'menuItems.php'): ?>
+                                    <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
+                                <?php else: ?>
+                                    <i
+                                        class="fas fa-chevron-right ml-auto text-gray-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                <?php endif; ?>
                             </a>
 
                             <!-- Orders Link -->
                             <a href="orders.php"
-                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200">
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'orders.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
                                 <i class="fas fa-shopping-cart mr-3 text-gray-400 group-hover:text-accent text-lg"></i>
                                 Orders
-                                <span class="ml-auto bg-accent/20 text-accent px-2 py-1 text-xs rounded-md">5
-                                    Pending</span>
+                                <?php if ($current_page === 'orders.php'): ?>
+                                    <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
+                                <?php else: ?>
+                                    <i
+                                        class="fas fa-chevron-right ml-auto text-gray-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                <?php endif; ?>
                             </a>
 
                             <!-- Payments Link -->
                             <a href="payments.php"
-                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200">
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'payments.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
                                 <i class="fas fa-credit-card mr-3 text-gray-400 group-hover:text-accent text-lg"></i>
                                 Payments
-                                <i
-                                    class="fas fa-chevron-right ml-auto text-gray-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                <?php if ($current_page === 'payments.php'): ?>
+                                    <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
+                                <?php else: ?>
+                                    <i
+                                        class="fas fa-chevron-right ml-auto text-gray-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                <?php endif; ?>
                             </a>
 
                             <!-- Reviews Link -->
                             <a href="reviews.php"
-                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:bg-gray-800 hover:text-white transition-all duration-200">
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'reviews.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
                                 <i class="fas fa-star mr-3 text-gray-400 group-hover:text-accent text-lg"></i>
                                 Reviews
-                                <span class="ml-auto bg-accent/20 text-accent px-2 py-1 text-xs rounded-md">12
-                                    New</span>
+                                <?php if ($current_page === 'reviews.php'): ?>
+                                    <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
+                                <?php else: ?>
+                                    <i
+                                        class="fas fa-chevron-right ml-auto text-gray-400 text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                <?php endif; ?>
                             </a>
                         </nav>
 
