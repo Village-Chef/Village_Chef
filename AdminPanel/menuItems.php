@@ -138,7 +138,7 @@ $result = $obj->getAllMenuItems();
                         </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-300"><?php echo $results['restaurant_name'] ?></td>
-                        <td class="px-6 py-4 text-sm text-accent font-medium"><?php echo $results['price'] ?></td>
+                        <td class="px-6 py-4 text-sm text-accent font-medium">₹ <?php echo $results['price'] ?></td>
                         <td class="px-6 py-4 text-sm text-gray-300">
                             <?php
                             $tags = json_decode($results['tags'], true);

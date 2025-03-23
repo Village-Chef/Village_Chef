@@ -508,11 +508,11 @@ class Foodies
         }
     }
 
-    function updateMenuItem($id, $restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available)
+    function updateMenuItem($id, $restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available, $tags)
     {
         try {
             $sql = "UPDATE menu_items 
-                    SET restaurant_id = :restaurant_id, cuisine_id = :cuisine_id, item_name = :item_name, description = :description, price = :price, is_available = :is_available";
+                    SET restaurant_id = :restaurant_id, cuisine_id = :cuisine_id, item_name = :item_name, description = :description, price = :price, is_available = :is_available, tags = :tags";
 
             if (!empty($image_url['name'])) {
                 $fileName = $image_url['name'];
@@ -547,6 +547,7 @@ class Foodies
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':price', $price);
             $stmt->bindParam(':is_available', $is_available);
+            $stmt->bindParam(':tags', json_encode($tags));
             $stmt->bindParam(':id', $id);
 
             if (!empty($image_url['name'])) {
@@ -583,122 +584,5 @@ class Foodies
             throw new Exception("Failed to fetch tags: " . $e->getMessage());
         }
     }
-
-
-
-
-    // ! Cart & Cart_Items
-
-    function addCart($user_id)
-    {
-        try {
-            $sql = "INSERT INTO carts (user_id, status) 
-                    VALUES (:user_id,'active')";
-            
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':user_id', $user_id);
-            
-            if($stmt->execute()) {
-                return $this->con->lastInsertId();
-            }
-            return false;
-
-        } catch (PDOException $e) {
-            throw new Exception("Failed to create cart: " . $e->getMessage());
-        }
-    }
-    function getAllCarts() {
-        try {
-            $sql = "SELECT * FROM carts";
-            
-            $stmt = $this->con->prepare($sql);
-            $stmt->execute();
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        } catch (PDOException $e) {
-            throw new Exception("Failed to get carts: " . $e->getMessage());
-        }
-    }
-
-    function addCartItem($cart_id, $item_id, $quantity, $price)
-    {
-        try {
-            $sql = "INSERT INTO cart_items (cart_id, item_id, quantity, price) 
-                    VALUES (:cart_id, :item_id, :quantity, :price)";
-            
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':cart_id', $cart_id);
-            $stmt->bindParam(':item_id', $item_id); 
-            $stmt->bindParam(':quantity', $quantity);
-            $stmt->bindParam(':price', $price);
-
-            return $stmt->execute();
-
-        } catch (PDOException $e) {
-            throw new Exception("Failed to add cart item: " . $e->getMessage());
-        }
-    }
-
-    function getCartItems($user_id) {
-        try {
-            $sql = "SELECT ci.*, mi.item_name, mi.image_url, mi.description, mi.tags 
-                    FROM cart_items ci
-                    JOIN carts c ON ci.cart_id = c.cart_id 
-                    JOIN menu_items mi ON ci.item_id = mi.item_id
-                    WHERE c.user_id = :user_id AND c.status = 'active'";
-            
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':user_id', $user_id);
-            $stmt->execute();
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        } catch (PDOException $e) {
-            throw new Exception("Failed to get cart items: " . $e->getMessage());
-        }
-    }
-
-    function updateCartItemQuantity($cart_id, $item_id, $quantity) {
-        try {
-            if($quantity <= 0) {
-                $sql = "DELETE FROM cart_items 
-                        WHERE cart_id = :cart_id AND item_id = :item_id";
-                
-                $stmt = $this->con->prepare($sql);
-                $stmt->bindParam(':cart_id', $cart_id);
-                $stmt->bindParam(':item_id', $item_id);
-            } else {
-                $sql = "UPDATE cart_items 
-                        SET quantity = :quantity 
-                        WHERE cart_id = :cart_id AND item_id = :item_id";
-                
-                $stmt = $this->con->prepare($sql);
-                $stmt->bindParam(':cart_id', $cart_id);
-                $stmt->bindParam(':item_id', $item_id);
-                $stmt->bindParam(':quantity', $quantity);
-            }
-
-            return $stmt->execute();
-
-        } catch (PDOException $e) {
-            throw new Exception("Failed to update cart item quantity: " . $e->getMessage());
-        }
-    }
-
-    public function deleteCartItem($cart_id, $item_id) {
-        try {
-            $sql = "DELETE FROM cart_items WHERE cart_id = :cart_id AND item_id = :item_id";
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':cart_id', $cart_id);
-            $stmt->bindParam(':item_id', $item_id);
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            throw new Exception("Failed to delete cart item: " . $e->getMessage());
-        }
-    }
-
-    
-
 }
 ?>

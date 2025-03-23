@@ -13,6 +13,7 @@ $id = $_GET['id'];
 $item = $obj->getMenuItemById($id);
 $restaurants = $obj->getAllRestaurants();
 $cuisines = $obj->getAllCuisines();
+$tags = $obj->getAllTags();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateMenuItem'])) {
     $restaurant_id = $_POST['restaurant_id'];
@@ -23,8 +24,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateMenuItem']))
     $image_url = $_FILES['image_url'];
     $is_available = isset($_POST['is_available']) ? 1 : 0;
 
+    $selected_tags = [];
+    if (isset($_POST['tags'])) {
+        foreach ($_POST['tags'] as $tag_id) {
+            foreach ($tags as $tag) {
+                if ($tag['tag_id'] == $tag_id) {
+                    $selected_tags[] = $tag['tag'];
+                    break;
+                }
+            }
+        }
+    }
+    $selected_tags_json = json_encode($selected_tags);
+
     try {
-        $obj->updateMenuItem($id, $restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available);
+        $obj->updateMenuItem($id, $restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available,$selected_tags);
         header('location:menuItems.php');
         exit();
     } catch (Exception $e) {
@@ -138,6 +152,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdateMenuItem']))
                                 <input type="number" id="price" name="price" step="0.01" value="<?php echo $item['price']; ?>"
                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
                                     placeholder="e.g., 12.99" required>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Tags</label>
+                                <div class="flex flex-wrap gap-3">
+                                    <?php foreach ($tags as $tag): ?>
+                                        <div class="tag-item mb-2">
+                                            <input type="checkbox" name="tags[]" value="<?php echo $tag['tag_id']; ?>"
+                                                id="tag-<?php echo $tag['tag_id']; ?>" class="hidden peer"
+                                                data-tag-text="<?php echo htmlspecialchars($tag['tag']); ?>"
+                                                <?php echo in_array($tag['tag'], json_decode($item['tags'], true)) ? 'checked' : ''; ?>>
+                                            <label for="tag-<?php echo $tag['tag_id']; ?>" class="px-5 py-2 text-sm font-medium rounded-full cursor-pointer transition-all whitespace-nowrap
+                   bg-gray-700 text-gray-300 border border-gray-600
+                   hover:bg-gray-600 hover:border-accent
+                   peer-checked:bg-accent peer-checked:text-black peer-checked:border-accent
+                   peer-checked:hover:bg-yellow-500">
+                                                <?php echo htmlspecialchars($tag['tag']); ?>
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                             <div class="col-span-2">
                                 <label for="image_url" class="block text-sm font-medium text-gray-300 mb-2">
