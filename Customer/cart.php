@@ -1,7 +1,15 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <?php
+require '../dbCon.php';
+$obj = new Foodies();
 $tip = 0;
+$total=0;
+$DelFee = 22;
+$PlatformFee=6;
+$Gst = ($total + $tip + $DelFee + $PlatformFee) ; // Calculate GST as 18% of the total amount
+$GrandTotal = $total + $DelFee + $PlatformFee + $tip + $Gst;
+
 $isAddressSet = false;
 if (isset($_GET['tip'])) {
     $tip = $_GET['tip'];
@@ -165,9 +173,18 @@ if (isset($_GET['address'])) {
     <!-- Navbar -->
     <?php require 'navbar.php' ?>
 
+
     <main class="flex-grow pt-12">
         <div class="max-w-4xl mx-auto px-4 py-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center py-4">Checkout</h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center py-4">Checkout
+
+                <?php
+                $uid = $_SESSION['user']['user_id'];
+                $cartItems = $obj->getCartItems($uid);
+                // print_r($cartItems);
+                ?>
+
+            </h1>
 
             <!-- <div class="bg-zinc-900 rounded-lg p-6 mb-8">
                 <div class="space-y-4">
@@ -316,51 +333,64 @@ if (isset($_GET['address'])) {
 
                     <div class=" p-2 rounded-lg shadow-md w-96">
                         <!-- Cart Items List -->
-                        <div class="flex items-center flex-col  w-full justify-between gap-2 mb-4 rounded-lg  text-white">
+                        <div
+                            class="flex items-center flex-col  w-full justify-between gap-2 mb-4 rounded-lg  text-white">
 
 
 
 
                             <?php
-                            for ($i = 0; $i <3; $i++) {
+                            foreach ($cartItems as $cartItem) {
+                                $total += number_format($cartItem['price'] * $cartItem['quantity'], 0);
                                 ?>
-                                <div
-                                    class="flex items-center flex-row w-full justify-between gap-5 mb-4 rounded-lg  text-white">
+                                <div class="flex items-center justify-between w-full mb-4 rounded-lg text-white">
+                                    <!-- Stock Indicator -->
                                     <div
-                                        class="flex h-[15px] w-[15px] items-center justify-center border-[1px] border-green-600 p-[2px]">
-                                        <div class="rounded-full bg-green-600 p-[3px]"></div>
-                                    </div>
-                                    <div class="text-sm text-nowrap">Tandoori Paneer</div>
-                                    <div class="flex items-center gap-3 rounded-full border border-white px-2 py-1 text-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-minus cursor-pointer">
-                                            <path d="M5 12h14" />
-                                        </svg>
-                                        <span class="text-xs">1</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-plus cursor-pointer">
-                                            <path d="M5 12h14" />
-                                            <path d="M12 5v14" />
-                                        </svg>
-
+                                        class="flex h-4 w-4 items-center justify-center border border-green-600 p-0.5 rounded-full">
+                                        <div class="h-2 w-2 bg-green-600 rounded-full"></div>
                                     </div>
 
+                                    <!-- Item Name -->
+                                    <div class="text-sm truncate max-w-[150px] text-start">
+                                        <?php echo htmlspecialchars($cartItem['item_name']); ?></div>
 
-                                    <span class="text-yellow-500 flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    <!-- Quantity Selector -->
+                                    <div class="flex items-center gap-3 rounded-full border border-white px-3 py-1 text-sm">
+                                        <button class="cursor-pointer hover:text-red-400 transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M5 12h14" />
+                                            </svg>
+                                        </button>
+
+                                        <span class="text-xs"><?php echo $cartItem['quantity']; ?></span>
+
+                                        <button class="cursor-pointer hover:text-green-400 transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M5 12h14" />
+                                                <path d="M12 5v14" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <!-- Price -->
+                                    <span class="text-yellow-500 flex items-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-indian-rupee">
+                                            stroke-linejoin="round">
                                             <path d="M6 3h12" />
                                             <path d="M6 8h12" />
                                             <path d="m6 13 8.5 8" />
                                             <path d="M6 13h3" />
                                             <path d="M9 13c6.667 0 6.667-10 0-10" />
                                         </svg>
-                                        <p>319</p>
+                                        <p><?php echo number_format($cartItem['price'] * $cartItem['quantity'], 0); ?></p>
                                     </span>
                                 </div>
+
 
                                 <?php
                             }
@@ -394,11 +424,11 @@ if (isset($_GET['address'])) {
                         <div class="mt-4 text-sm">
                             <div class="flex justify-between py-2">
                                 <span class="text-white">Item Total</span>
-                                <span class="font-semibold">₹319</span>
+                                <span class="font-semibold">₹<?php echo $total ?></span>
                             </div>
                             <div class="flex justify-between py-2">
                                 <span class="text-white">Delivery Fee | 1.7 kms</span>
-                                <span class="font-semibold">₹22</span>
+                                <span class="font-semibold">₹<?php echo $DelFee ?></span>
                             </div>
                             <div class="flex justify-between py-2 text-yellow-500">
                                 <span>Delivery Tip</span>
@@ -413,18 +443,17 @@ if (isset($_GET['address'])) {
                                 <span class="text-white">Platform fee</span>
                                 <div class="flex flex-row gap-2">
                                     <span class="font-semibold line-through text-gray-400">₹10.00</span>
-                                    <span class="font-semibold">₹6</span>
+                                    <span class="font-semibold">₹<?php echo $PlatformFee ?></span>
                                 </div>
-
                             </div>
                             <div class="flex justify-between py-2">
                                 <span class="text-white">GST and Restaurant Charges</span>
-                                <span class="font-semibold">₹48.53</span>
+                                <span class="font-semibold">₹<?php $Gst=number_format($total * 0.09, 2); echo number_format($total * 0.09, 2); ?> </span>
                             </div>
                             <hr class="my-2">
                             <div class="flex justify-between text-lg font-bold">
                                 <span>TO PAY</span>
-                                <span>₹396</span>
+                                <span>₹<?php echo $Gst+$PlatformFee+$DelFee+$tip+$total; ?></span>
                             </div>
                         </div>
                         <!-- From Uiverse.io by fthisilak BTN -->
