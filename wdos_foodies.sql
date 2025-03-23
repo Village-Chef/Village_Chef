@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 16, 2025 at 03:53 PM
+-- Generation Time: Mar 23, 2025 at 06:21 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -63,6 +63,14 @@ CREATE TABLE `cuisines` (
   `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `cuisines`
+--
+
+INSERT INTO `cuisines` (`cuisine_id`, `cuisine_name`, `description`, `created_at`, `updated_at`) VALUES
+(1, 'Italian', '                                its Italian       1                                                 ', '2025-03-22 22:33:04', '2025-03-23 00:19:51'),
+(3, 'Chinese', 'Chinese Item List', '2025-03-23 00:46:44', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -76,11 +84,20 @@ CREATE TABLE `menu_items` (
   `item_name` varchar(100) NOT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`)),
   `image_url` varchar(255) DEFAULT NULL,
   `is_available` int(11) NOT NULL DEFAULT 1,
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `menu_items`
+--
+
+INSERT INTO `menu_items` (`item_id`, `restaurant_id`, `cuisine_id`, `item_name`, `description`, `price`, `tags`, `image_url`, `is_available`, `created_at`, `updated_at`) VALUES
+(11, 1, 3, 'teattttt', 'dsfsdf', 243243.00, '[\"asian\",\"biryani\",\"vegetarian\"]', 'uploads/icecream.png', 1, '2025-03-23 02:14:07', NULL),
+(12, 1, 1, 'Margherita Pizza', 'Margherita Pizza ', 299.00, '[\"italian\",\"pizza\",\"vegetarian\"]', 'uploads/pizza2.png', 1, '2025-03-23 02:17:56', NULL);
 
 -- --------------------------------------------------------
 
@@ -138,7 +155,7 @@ CREATE TABLE `payments` (
 
 CREATE TABLE `restaurants` (
   `restaurant_id` int(11) NOT NULL,
-  `owner_id` int(11) DEFAULT NULL,
+  `restaurant_pic` varchar(500) DEFAULT NULL,
   `name` varchar(100) NOT NULL,
   `phone` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
@@ -149,6 +166,14 @@ CREATE TABLE `restaurants` (
   `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
   `status` enum('open','closed','inactive') NOT NULL DEFAULT 'open'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `restaurants`
+--
+
+INSERT INTO `restaurants` (`restaurant_id`, `restaurant_pic`, `name`, `phone`, `address`, `city`, `state`, `zip_code`, `created_at`, `updated_at`, `status`) VALUES
+(1, 'uploads/cropped-logo.png', 'Village Chef', '9727181143', 'A-20 , G-4 ,Pasodara', 'Surat', 'Gujarat', '395008', '2025-03-22 16:34:57', '2025-03-23 02:22:12', 'open'),
+(3, 'uploads/pizza1.png', 'Zomato', '9685741256', 'A-20 , G-4 ,Pasodara', 'Surat', 'Gujarat', '395008', '2025-03-22 17:53:45', NULL, 'inactive');
 
 -- --------------------------------------------------------
 
@@ -170,6 +195,47 @@ CREATE TABLE `reviews` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tags`
+--
+
+CREATE TABLE `tags` (
+  `tag_id` int(11) NOT NULL,
+  `tag` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tags`
+--
+
+INSERT INTO `tags` (`tag_id`, `tag`) VALUES
+(10, 'asian'),
+(21, 'biryani'),
+(12, 'breakfast'),
+(7, 'burgur'),
+(5, 'chinese'),
+(11, 'dessert'),
+(14, 'dinner'),
+(18, 'fresh'),
+(20, 'gujarati-thali'),
+(16, 'high-protein'),
+(24, 'ice-cream'),
+(3, 'italian'),
+(15, 'low-carb'),
+(13, 'lunch'),
+(9, 'mexican'),
+(22, 'north-indian'),
+(17, 'organic'),
+(2, 'pizza'),
+(23, 'rolls'),
+(8, 'sandwich'),
+(1, 'spicy'),
+(19, 'sugar-free'),
+(6, 'vegan'),
+(4, 'vegetarian');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -179,7 +245,7 @@ CREATE TABLE `users` (
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `phone` int(11) DEFAULT NULL,
+  `phone` varchar(10) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` enum('customer','admin','restaurant_owner','delivery_agent') NOT NULL DEFAULT 'customer',
   `created_at` datetime DEFAULT current_timestamp(),
@@ -192,11 +258,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `profile_pic`, `first_name`, `last_name`, `email`, `phone`, `password_hash`, `role`, `created_at`, `updated_at`, `status`) VALUES
-(1, '', 'parthiv', 'Shingala', 'parthivshingala@gmail.com', 2147483647, '$2y$10$IgE1NHc7BQxgDoWO1nPfYuD6RZFpGb9vJEfnfl4ImkHkpdTZnLwLW', 'customer', '2025-03-05 22:14:31', NULL, 'active'),
-(4, 'uploads/IMG_20240526_151909_198.jpg', 'parthiv', 'Shingala', 'parthivpatel@gmail.com', 2147483647, '$2y$10$3IwLlDKmJWSBYcAQG9dIIO1EmB5eVOS.7lepcXS0zzuyoXvwVswlm', 'customer', '2025-03-05 22:45:06', NULL, 'active'),
-(8, 'uploads/Screenshot 2024-12-15 125147.png', 'asdasd', 'sdfsddf', 'parthivshidfsngala@gmail.com', 2345345, '$2y$10$5u12raEKrI132PODeZkcweyAy5Hrr8Wflwd2C8Hf429EpoIM2NHwS', 'customer', '2025-03-08 23:19:46', NULL, 'active'),
-(10, NULL, 'Purv', 'Virpariya', 'purv@gmail.com', 2147483647, '$2y$10$i5pWOpPsOlZDDjjFeEMKpe5M8EMj6SwPo3LmCgPUuroxt557r83w2', 'customer', '2025-03-08 23:21:28', NULL, 'active'),
-(11, NULL, 'demo', 'shingala', 'parthiv@gmail.com', 2147483647, '$2y$10$M9Z2LZHC2cpA7R6qvzX5YOAK33P8QaD441h0ErpjHQ5UPSaExQS8y', 'customer', '2025-03-08 23:28:57', NULL, 'active');
+(21, NULL, 'Purv', 'Virpariya', 'purvvirpariya14@gmail.com', '2147483647', '$2y$10$5Lo1rk3onIpKUPiizthnaOuDi4/ea1bjP8vtIyI11ZpR4JrvCvbxy', 'customer', '2025-03-21 20:47:17', NULL, 'active'),
+(27, 'uploads/parthiv.jpg', 'Parthiv', 'Shingala', 'parthivshingala@gmail.com', '9727181143', '$2y$10$76nV9GknV6rpZ14H3KID5OB6J80ZWn0eQRewAQGYXLGgFuET569pu', 'admin', '2025-03-21 22:01:11', '2025-03-22 02:46:22', 'active');
 
 --
 -- Indexes for dumped tables
@@ -258,8 +321,7 @@ ALTER TABLE `payments`
 -- Indexes for table `restaurants`
 --
 ALTER TABLE `restaurants`
-  ADD PRIMARY KEY (`restaurant_id`),
-  ADD KEY `fk_restaurant_owner` (`owner_id`);
+  ADD PRIMARY KEY (`restaurant_id`);
 
 --
 -- Indexes for table `reviews`
@@ -269,6 +331,13 @@ ALTER TABLE `reviews`
   ADD KEY `fk_review_user` (`user_id`),
   ADD KEY `fk_review_restaurant` (`restaurant_id`),
   ADD KEY `fk_review_order` (`order_id`);
+
+--
+-- Indexes for table `tags`
+--
+ALTER TABLE `tags`
+  ADD PRIMARY KEY (`tag_id`),
+  ADD UNIQUE KEY `tag` (`tag`);
 
 --
 -- Indexes for table `users`
@@ -297,13 +366,13 @@ ALTER TABLE `cart_items`
 -- AUTO_INCREMENT for table `cuisines`
 --
 ALTER TABLE `cuisines`
-  MODIFY `cuisine_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cuisine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `menu_items`
 --
 ALTER TABLE `menu_items`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -327,7 +396,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `restaurants`
 --
 ALTER TABLE `restaurants`
-  MODIFY `restaurant_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `restaurant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -336,10 +405,16 @@ ALTER TABLE `reviews`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tags`
+--
+ALTER TABLE `tags`
+  MODIFY `tag_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- Constraints for dumped tables
@@ -384,12 +459,6 @@ ALTER TABLE `order_items`
 --
 ALTER TABLE `payments`
   ADD CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `restaurants`
---
-ALTER TABLE `restaurants`
-  ADD CONSTRAINT `fk_restaurant_owner` FOREIGN KEY (`owner_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `reviews`
