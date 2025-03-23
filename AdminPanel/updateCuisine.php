@@ -25,8 +25,6 @@ if (isset($_POST['btnSubmit'])) {
     }
 
 }
-// Add Cuisine
-
 ?>
 
 <!DOCTYPE html>
@@ -86,8 +84,7 @@ if (isset($_POST['btnSubmit'])) {
                             </label>
                             <textarea id="description" name="description" rows="4"
                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                placeholder="Brief description of the cuisine">
-                                <?php echo $cuisine['description']; ?>
+                                placeholder="Brief description of the cuisine"><?php echo $cuisine['description']; ?>
                             </textarea>
                         </div>
                         <!-- Buttons -->

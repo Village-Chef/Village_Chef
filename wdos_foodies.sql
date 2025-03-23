@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 23, 2025 at 06:21 AM
+-- Generation Time: Mar 23, 2025 at 10:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -69,7 +69,8 @@ CREATE TABLE `cuisines` (
 
 INSERT INTO `cuisines` (`cuisine_id`, `cuisine_name`, `description`, `created_at`, `updated_at`) VALUES
 (1, 'Italian', '                                its Italian       1                                                 ', '2025-03-22 22:33:04', '2025-03-23 00:19:51'),
-(3, 'Chinese', 'Chinese Item List', '2025-03-23 00:46:44', NULL);
+(3, 'Chinese', 'Chinese Item List', '2025-03-23 00:46:44', NULL),
+(4, 'Mexican', 'Mexican Food\r\n', '2025-03-23 12:57:12', NULL);
 
 -- --------------------------------------------------------
 
@@ -96,8 +97,9 @@ CREATE TABLE `menu_items` (
 --
 
 INSERT INTO `menu_items` (`item_id`, `restaurant_id`, `cuisine_id`, `item_name`, `description`, `price`, `tags`, `image_url`, `is_available`, `created_at`, `updated_at`) VALUES
-(11, 1, 3, 'teattttt', 'dsfsdf', 243243.00, '[\"asian\",\"biryani\",\"vegetarian\"]', 'uploads/icecream.png', 1, '2025-03-23 02:14:07', NULL),
-(12, 1, 1, 'Margherita Pizza', 'Margherita Pizza ', 299.00, '[\"italian\",\"pizza\",\"vegetarian\"]', 'uploads/pizza2.png', 1, '2025-03-23 02:17:56', NULL);
+(11, 1, 3, 'teattttt', 'dsfsdf', 243243.00, '[\"asian\",\"biryani\",\"breakfast\"]', 'uploads/icecream.png', 0, '2025-03-23 02:14:07', '2025-03-23 12:53:16'),
+(12, 1, 1, 'Margherita Pizza', 'Margherita Pizza ', 299.00, '[\"dinner\",\"pizza\"]', 'uploads/pizza2.png', 1, '2025-03-23 02:17:56', '2025-03-23 12:51:20'),
+(13, 3, 4, 'Mexican Burgur', 'Mexican Burgur', 399.00, '[\"burgur\",\"mexican\"]', 'uploads/burger.png', 1, '2025-03-23 13:00:52', NULL);
 
 -- --------------------------------------------------------
 
@@ -106,7 +108,7 @@ INSERT INTO `menu_items` (`item_id`, `restaurant_id`, `cuisine_id`, `item_name`,
 --
 
 CREATE TABLE `orders` (
-  `order_id` int(11) NOT NULL,
+  `order_id` varchar(20) NOT NULL,
   `user_id` int(11) NOT NULL,
   `restaurant_id` int(11) NOT NULL,
   `order_date` datetime DEFAULT current_timestamp(),
@@ -117,6 +119,37 @@ CREATE TABLE `orders` (
   `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `user_id`, `restaurant_id`, `order_date`, `delivery_address`, `total_amount`, `status`, `notes`, `updated_at`) VALUES
+('#ORD-001', 27, 3, '2025-03-10 14:30:00', '789 Oak St', 300.00, 'cancelled', 'Call before delivery', '2025-03-23 14:41:25');
+
+--
+-- Triggers `orders`
+--
+DELIMITER $$
+CREATE TRIGGER `before_order_insert` BEFORE INSERT ON `orders` FOR EACH ROW BEGIN
+    DECLARE max_id INT DEFAULT 0;
+    DECLARE next_id INT;
+
+    -- Extract the maximum numeric part of the order_id
+    SELECT CAST(SUBSTRING(order_id, 6) AS UNSIGNED) INTO max_id
+    FROM orders
+    WHERE order_id REGEXP '^#ORD-[0-9]+$'
+    ORDER BY CAST(SUBSTRING(order_id, 6) AS UNSIGNED) DESC
+    LIMIT 1;
+
+    -- Increment the numeric part
+    SET next_id = max_id + 1;
+
+    -- Format the order_id as '#ORD-001', '#ORD-002', etc.
+    SET NEW.order_id = CONCAT('#ORD-', LPAD(next_id, 3, '0'));
+END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -125,7 +158,7 @@ CREATE TABLE `orders` (
 
 CREATE TABLE `order_items` (
   `order_item_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `order_id` varchar(20) NOT NULL,
   `item_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1,
   `price` decimal(10,2) NOT NULL
@@ -139,7 +172,7 @@ CREATE TABLE `order_items` (
 
 CREATE TABLE `payments` (
   `payment_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
+  `order_id` varchar(20) NOT NULL,
   `amount` decimal(10,2) NOT NULL,
   `payment_method` enum('card','cash','online','wallet') NOT NULL,
   `transaction_id` varchar(100) DEFAULT NULL,
@@ -185,7 +218,7 @@ CREATE TABLE `reviews` (
   `review_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `restaurant_id` int(11) NOT NULL,
-  `order_id` int(11) DEFAULT NULL,
+  `order_id` varchar(20) DEFAULT NULL,
   `rating` tinyint(4) NOT NULL,
   `review_text` text DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
@@ -299,6 +332,7 @@ ALTER TABLE `menu_items`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
+  ADD UNIQUE KEY `order_id` (`order_id`),
   ADD KEY `fk_order_user` (`user_id`),
   ADD KEY `fk_order_restaurant` (`restaurant_id`);
 
@@ -307,8 +341,8 @@ ALTER TABLE `orders`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`order_item_id`),
-  ADD KEY `fk_orderitem_order` (`order_id`),
-  ADD KEY `fk_orderitem_item` (`item_id`);
+  ADD KEY `fk_orderitem_item` (`item_id`),
+  ADD KEY `fk_orderitem_order` (`order_id`);
 
 --
 -- Indexes for table `payments`
@@ -366,19 +400,13 @@ ALTER TABLE `cart_items`
 -- AUTO_INCREMENT for table `cuisines`
 --
 ALTER TABLE `cuisines`
-  MODIFY `cuisine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cuisine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `menu_items`
 --
 ALTER TABLE `menu_items`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT for table `orders`
---
-ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `order_items`
