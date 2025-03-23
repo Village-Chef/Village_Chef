@@ -743,6 +743,25 @@ class Foodies
     }
 
 
+    public function updateUserAddress($id, $address)
+    {
+        try {
+            // Prepare the SQL statement to update the user's address
+            $sql = "UPDATE users SET address = :address WHERE user_id = :id";
+
+            // Prepare the statement
+            $stmt = $this->con->prepare($sql);
+
+            // Bind parameters
+            $stmt->bindParam(':address', $address);
+            $stmt->bindParam(':id', $id);
+
+            // Execute the statement
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Address update failed: " . $e->getMessage());
+        }
+    }
 
 }
 ?>

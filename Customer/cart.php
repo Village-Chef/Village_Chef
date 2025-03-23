@@ -1,27 +1,64 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+    .razorpay-container .razorpay-testmode-banner {
+        display: none !important;
+    }
+</style>
+
+<?php
+$apiKey = "rzp_test_FFm35IphRdzhve"; // Replace with your Test Key
+?>
+
+<?php
+if (isset($_GET['payment_id'])) {
+    $payment_id = $_GET['payment_id'];
+}
+?>
+
 
 <?php
 require '../dbCon.php';
 $obj = new Foodies();
 $tip = 0;
-$total=0;
+$total = 0;
 $DelFee = 22;
-$PlatformFee=6;
-$Gst = ($total + $tip + $DelFee + $PlatformFee) ; // Calculate GST as 18% of the total amount
+$PlatformFee = 6;
+$Gst = ($total + $tip + $DelFee + $PlatformFee); // Calculate GST as 18% of the total amount
 $GrandTotal = $total + $DelFee + $PlatformFee + $tip + $Gst;
 
-$isAddressSet = false;
 if (isset($_GET['tip'])) {
     $tip = $_GET['tip'];
 }
 
 if (isset($_GET['address'])) {
     $address = $_GET['address'];
-    $isAddressSet = true;
 }
 
 ?>
+<?php
+// Retrieve data from $_GET
+if (isset($_GET['cart_id']) && isset($_GET['item_id']) && isset($_GET['quantity'])) {
+    $cart_id = $_GET['cart_id']; // Get the cart ID
+    $item_id = $_GET['item_id']; // Get the item ID
+    $quantity = intval($_GET['quantity']); // Convert to integer to avoid issues
 
+
+    if ($quantity <= 0) {
+        // Delete the item from cart if quantity is 0 or negative
+        $obj->deleteCartItem($cart_id, $item_id);
+    } else {
+        // Update quantity if it's 1 or more
+        $obj->updateCartItemQuantity($cart_id, $item_id, $quantity);
+    }
+    header('Location: cart.php');
+    exit();
+}
+if (isset($_GET['address'])) {
+    $obj->updateUserAddress($uid, $_GET['address']);
+    header("Location:cart.php");
+}
+?>
 
 <style>
     /* From Uiverse.io by fthisilak */
@@ -173,18 +210,16 @@ if (isset($_GET['address'])) {
     <!-- Navbar -->
     <?php require 'navbar.php' ?>
 
+    <?php
+    $uid = $_SESSION['user']['user_id'];
+    $cartItems = $obj->getCartItems($uid);
+    $currentUser = $obj->getUserById($uid);
+    ?>
+
 
     <main class="flex-grow pt-12">
         <div class="max-w-4xl mx-auto px-4 py-12">
-            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center py-4">Checkout
-
-                <?php
-                $uid = $_SESSION['user']['user_id'];
-                $cartItems = $obj->getCartItems($uid);
-                // print_r($cartItems);
-                ?>
-
-            </h1>
+            <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center py-4">Checkout</h1>
 
             <!-- <div class="bg-zinc-900 rounded-lg p-6 mb-8">
                 <div class="space-y-4">
@@ -207,6 +242,8 @@ if (isset($_GET['address'])) {
                 </div> -->
 
             <div class="flex w-full flex-row gap-6 rounded-lg">
+
+                <!-- Right Side Process -->
                 <div class="w-[100%]  p-4">
                     <div class="max-w-2xl mx-auto">
                         <!-- Logged In Section -->
@@ -247,14 +284,19 @@ if (isset($_GET['address'])) {
                             <div class="border border-gray-300 rounded-lg p-6 mt-4">
                                 <?php
                                 if (isset($_GET['address'])) {
+                                    $obj->updateUserAddress($uid, $_GET['address']);
+                                    header("Location:cart.php");
+                                }
+                                if ($currentUser['address'] != null) {
+
                                     ?>
-                                    <p class="text-gray-700 font-medium"><?php echo $address ?></p>
+                                    <p class="text-gray-700 font-medium"><?php echo $currentUser['address'] ?></p>
                                     <?php
                                 }
                                 ?>
 
                                 <?php
-                                if (isset($_GET['address'])) {
+                                if ($currentUser['address'] != null) {
                                     ?>
 
                                     <?php
@@ -274,7 +316,7 @@ if (isset($_GET['address'])) {
                                 ?>
                                 <button onclick="addAddress()"
                                     class="mt-4 px-6 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600">
-                                    <?php echo ($isAddressSet ? 'CHANGE' : 'ADD NEW') ?>
+                                    <?php echo 'ADD NEW'; ?>
                                 </button>
 
 
@@ -283,7 +325,7 @@ if (isset($_GET['address'])) {
 
                         <!-- Payment -->
                         <?php
-                        if ($isAddressSet) {
+                        if ($currentUser['address'] != null) {
                             ?>
                             <div class="bg-white shadow-lg rounded-lg p-6 mt-4 border border-gray-200">
                                 <div class="flex items-center space-x-4">
@@ -292,24 +334,44 @@ if (isset($_GET['address'])) {
                                             <path
                                                 d="M2 5C2 3.9 2.9 3 4 3H20C21.1 3 22 3.9 22 5V19C22 20.1 21.1 21 20 21H4C2.9 21 2 20.1 2 19V5ZM4 7V9H20V7H4ZM4 17H20V11H4V17Z" />
                                         </svg>
-
                                     </div>
                                     <div>
                                         <p class="font-bold text-yellow-500 text-lg">Choose payment method
                                             <!-- <span  class="text-green-500">✔</span> -->
                                         </p>
-                                        <button
-                                            class="inline-flex mt-2 items-center hover:scale-105 px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-yellow-500 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                                        <div class="flex  mt-3">
+                                            <button id="pay-btn" class="pay-btn">
+                                                <span class="btn-text">Checkout</span>
+                                                <div class="icon-container">
+                                                    <svg viewBox="0 0 24 24" class="icon card-icon">
+                                                        <path
+                                                            d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
+                                                            fill="currentColor"></path>
+                                                    </svg>
+                                                    <svg viewBox="0 0 24 24" class="icon payment-icon">
+                                                        <path
+                                                            d="M2,17H22V21H2V17M6.25,7H9V6H6V3H18V6H15V7H17.75L19,17H5L6.25,7M9,10H15V8H9V10M9,13H15V11H9V13Z"
+                                                            fill="currentColor"></path>
+                                                    </svg>
+                                                    <svg viewBox="0 0 24 24" class="icon dollar-icon">
+                                                        <path
+                                                            d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
+                                                            fill="currentColor"></path>
+                                                    </svg>
 
-                                            Process to Pay<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-arrow-right">
-                                                <path d="M5 12h14" />
-                                                <path d="m12 5 7 7-7 7" />
-                                            </svg>
-                                        </button>
+                                                    <svg viewBox="0 0 24 24" class="icon wallet-icon default-icon">
+                                                        <path
+                                                            d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
+                                                            fill="currentColor"></path>
+                                                    </svg>
 
+                                                    <svg viewBox="0 0 24 24" class="icon check-icon">
+                                                        <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
+                                                            fill="currentColor"></path>
+                                                    </svg>
+                                                </div>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -319,6 +381,7 @@ if (isset($_GET['address'])) {
                     </div>
                 </div>
 
+                <!-- Left Side Bill -->
                 <div class="flex w-fit flex-col gap-4 bg-zinc-900 ">
 
                     <!-- Zig Zag Bar -->
@@ -332,16 +395,18 @@ if (isset($_GET['address'])) {
                     </div>
 
                     <div class=" p-2 rounded-lg shadow-md w-96">
+
                         <!-- Cart Items List -->
                         <div
                             class="flex items-center flex-col  w-full justify-between gap-2 mb-4 rounded-lg  text-white">
 
 
-
-
                             <?php
                             foreach ($cartItems as $cartItem) {
-                                $total += number_format($cartItem['price'] * $cartItem['quantity'], 0);
+                                $total += (is_numeric($cartItem['price']) && is_numeric($cartItem['quantity']))
+                                    ? intval($cartItem['price']) * intval($cartItem['quantity'])
+                                    : 0;
+
                                 ?>
                                 <div class="flex items-center justify-between w-full mb-4 rounded-lg text-white">
                                     <!-- Stock Indicator -->
@@ -352,28 +417,41 @@ if (isset($_GET['address'])) {
 
                                     <!-- Item Name -->
                                     <div class="text-sm truncate max-w-[150px] text-start">
-                                        <?php echo htmlspecialchars($cartItem['item_name']); ?></div>
+                                        <?php echo htmlspecialchars($cartItem['item_name']); ?>
+                                    </div>
+
+
+
 
                                     <!-- Quantity Selector -->
-                                    <div class="flex items-center gap-3 rounded-full border border-white px-3 py-1 text-sm">
-                                        <button class="cursor-pointer hover:text-red-400 transition">
+                                    <div
+                                        class="flex mb-0 items-center gap-3 rounded-full border border-white px-3 py-1 text-sm">
+                                        <!-- <form method="get" action="cart.php"
+                                            class="flex mb-0 items-center gap-3 rounded-full border border-white px-3 py-1 text-sm">
+                                            <input type="hidden" name="cart_id" value="<?php echo $cartItem['cart_id']; ?>">
+                                            <input type="hidden" name="item_id" value="<?php echo $cartItem['item_id']; ?>"> -->
+
+                                        <a href="cart.php?cart_id=<?php echo $cartItem['cart_id']; ?>&item_id=<?php echo $cartItem['item_id']; ?>&quantity=<?php echo $cartItem['quantity'] - 1; ?>"
+                                            class="cursor-pointer hover:text-red-400 transition">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M5 12h14" />
                                             </svg>
-                                        </button>
+                                        </a>
 
                                         <span class="text-xs"><?php echo $cartItem['quantity']; ?></span>
 
-                                        <button class="cursor-pointer hover:text-green-400 transition">
+                                        <a href="cart.php?cart_id=<?php echo $cartItem['cart_id']; ?>&item_id=<?php echo $cartItem['item_id']; ?>&quantity=<?php echo $cartItem['quantity'] + 1; ?>"
+                                            class="cursor-pointer hover:text-green-400 transition">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M5 12h14" />
                                                 <path d="M12 5v14" />
                                             </svg>
-                                        </button>
+                                        </a>
+                                        <!-- </form> -->
                                     </div>
 
                                     <!-- Price -->
@@ -396,8 +474,6 @@ if (isset($_GET['address'])) {
                             }
                             ?>
                         </div>
-
-
 
                         <!-- Any suggestions -->
                         <div class="flex items-center gap-2 mb-4">
@@ -448,47 +524,15 @@ if (isset($_GET['address'])) {
                             </div>
                             <div class="flex justify-between py-2">
                                 <span class="text-white">GST and Restaurant Charges</span>
-                                <span class="font-semibold">₹<?php $Gst=number_format($total * 0.09, 2); echo number_format($total * 0.09, 2); ?> </span>
+                                <span class="font-semibold">₹<?php $Gst = number_format($total * 0.09, 2);
+                                echo number_format($total * 0.09, 2); ?>
+                                </span>
                             </div>
                             <hr class="my-2">
                             <div class="flex justify-between text-lg font-bold">
                                 <span>TO PAY</span>
-                                <span>₹<?php echo $Gst+$PlatformFee+$DelFee+$tip+$total; ?></span>
+                                <span>₹<?php echo $Gst + $PlatformFee + $DelFee + $tip + $total; ?></span>
                             </div>
-                        </div>
-                        <!-- From Uiverse.io by fthisilak BTN -->
-                        <div class="flex justify-end mt-5">
-                            <button class="pay-btn">
-                                <span class="btn-text">Checkout</span>
-                                <div class="icon-container">
-                                    <svg viewBox="0 0 24 24" class="icon card-icon">
-                                        <path
-                                            d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
-                                            fill="currentColor"></path>
-                                    </svg>
-                                    <svg viewBox="0 0 24 24" class="icon payment-icon">
-                                        <path
-                                            d="M2,17H22V21H2V17M6.25,7H9V6H6V3H18V6H15V7H17.75L19,17H5L6.25,7M9,10H15V8H9V10M9,13H15V11H9V13Z"
-                                            fill="currentColor"></path>
-                                    </svg>
-                                    <svg viewBox="0 0 24 24" class="icon dollar-icon">
-                                        <path
-                                            d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
-                                            fill="currentColor"></path>
-                                    </svg>
-
-                                    <svg viewBox="0 0 24 24" class="icon wallet-icon default-icon">
-                                        <path
-                                            d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
-                                            fill="currentColor"></path>
-                                    </svg>
-
-                                    <svg viewBox="0 0 24 24" class="icon check-icon">
-                                        <path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
-                                            fill="currentColor"></path>
-                                    </svg>
-                                </div>
-                            </button>
                         </div>
 
                     </div>
@@ -551,6 +595,8 @@ if (isset($_GET['address'])) {
     <!-- Footer -->
     <?php require 'footer.php' ?>
 
+
+    <!-- Add Address Modal -->
     <script>
         function addAddress() {
             Swal.fire({
@@ -589,6 +635,60 @@ if (isset($_GET['address'])) {
             });
         }
     </script>
+
+
+    <!-- Razpr Pay -->
+    <script>
+        var options = {
+            "key": "<?php echo $apiKey; ?>",
+            "amount": <?php $totalMain = ($Gst + $PlatformFee + $DelFee + $tip + $total);
+            echo ($totalMain * 100); ?>, // Amount in paise (₹500)
+            "currency": "INR",
+            "name": "Demo Payment",
+            "description": "Testing Razorpay",
+            "image": "https://your-logo-url.com/logo.png",
+            "handler": function (response) {
+                alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                window.location.href = "cart.php?payment_id=" + response.razorpay_payment_id;
+            },
+            "prefill": {
+                "name": "John Doe",
+                "email": "john@example.com",
+                "contact": "9876543210"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+
+        document.getElementById("pay-btn").onclick = function () {
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        };
+    </script>
+
+
+    <!-- Razor Pay -->
+    <?php
+    require '../vendor/autoload.php'; // Include Razorpay SDK
+    
+    use Razorpay\Api\Api;
+
+    $keyId = "rzp_test_FFm35IphRdzhve";
+    $keySecret = "eJVbPm8ip9aCGnHi8pWOuFnw";
+
+    $api = new Api($keyId, $keySecret);
+
+    $order = $api->order->create([
+        'amount' => $totalMain * 100,  // ₹500 (Amount in paise)
+        'currency' => 'INR',
+        'payment_capture' => 1 // Auto capture payment
+    ]);
+
+    echo json_encode(['orderId' => $order['id']]);
+
+    ?>
+
 </body>
 
 </html>
