@@ -508,11 +508,11 @@ class Foodies
         }
     }
 
-    function updateMenuItem($id, $restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available)
+    function updateMenuItem($id, $restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available, $tags)
     {
         try {
             $sql = "UPDATE menu_items 
-                    SET restaurant_id = :restaurant_id, cuisine_id = :cuisine_id, item_name = :item_name, description = :description, price = :price, is_available = :is_available";
+                    SET restaurant_id = :restaurant_id, cuisine_id = :cuisine_id, item_name = :item_name, description = :description, price = :price, is_available = :is_available, tags = :tags";
 
             if (!empty($image_url['name'])) {
                 $fileName = $image_url['name'];
@@ -547,6 +547,7 @@ class Foodies
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':price', $price);
             $stmt->bindParam(':is_available', $is_available);
+            $stmt->bindParam(':tags', json_encode($tags));
             $stmt->bindParam(':id', $id);
 
             if (!empty($image_url['name'])) {
@@ -584,7 +585,46 @@ class Foodies
         }
     }
 
+    function getAllOrders()
+    {
+        try {
+            $sql = "SELECT o.*,u.profile_pic, u.email,u.first_name, u.last_name, r.name as restaurant_name 
+                    FROM orders o
+                    JOIN users u ON o.user_id = u.user_id
+                    JOIN restaurants r ON o.restaurant_id = r.restaurant_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
 
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch orders: " . $e->getMessage());
+        }
+    }
+
+    function updateOrderStatus($order_id, $status)
+    {
+        try {
+            $sql = "UPDATE orders SET status = :status WHERE order_id = :order_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':order_id', $order_id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to update order status: " . $e->getMessage());
+        }
+    }
+
+    function deleteOrder($order_id)
+    {
+        try {
+            $sql = "DELETE FROM orders WHERE order_id = :order_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':order_id', $order_id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to delete order: " . $e->getMessage());
+        }
+    }
 
 
     // ! Cart & Cart_Items
@@ -594,11 +634,11 @@ class Foodies
         try {
             $sql = "INSERT INTO carts (user_id, status) 
                     VALUES (:user_id,'active')";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->bindParam(':user_id', $user_id);
-            
-            if($stmt->execute()) {
+
+            if ($stmt->execute()) {
                 return $this->con->lastInsertId();
             }
             return false;
@@ -607,10 +647,11 @@ class Foodies
             throw new Exception("Failed to create cart: " . $e->getMessage());
         }
     }
-    function getAllCarts() {
+    function getAllCarts()
+    {
         try {
             $sql = "SELECT * FROM carts";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->execute();
 
@@ -626,10 +667,10 @@ class Foodies
         try {
             $sql = "INSERT INTO cart_items (cart_id, item_id, quantity, price) 
                     VALUES (:cart_id, :item_id, :quantity, :price)";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->bindParam(':cart_id', $cart_id);
-            $stmt->bindParam(':item_id', $item_id); 
+            $stmt->bindParam(':item_id', $item_id);
             $stmt->bindParam(':quantity', $quantity);
             $stmt->bindParam(':price', $price);
 
@@ -640,14 +681,15 @@ class Foodies
         }
     }
 
-    function getCartItems($user_id) {
+    function getCartItems($user_id)
+    {
         try {
             $sql = "SELECT ci.*, mi.item_name, mi.image_url, mi.description, mi.tags 
                     FROM cart_items ci
                     JOIN carts c ON ci.cart_id = c.cart_id 
                     JOIN menu_items mi ON ci.item_id = mi.item_id
                     WHERE c.user_id = :user_id AND c.status = 'active'";
-            
+
             $stmt = $this->con->prepare($sql);
             $stmt->bindParam(':user_id', $user_id);
             $stmt->execute();
@@ -659,12 +701,13 @@ class Foodies
         }
     }
 
-    function updateCartItemQuantity($cart_id, $item_id, $quantity) {
+    function updateCartItemQuantity($cart_id, $item_id, $quantity)
+    {
         try {
-            if($quantity <= 0) {
+            if ($quantity <= 0) {
                 $sql = "DELETE FROM cart_items 
                         WHERE cart_id = :cart_id AND item_id = :item_id";
-                
+
                 $stmt = $this->con->prepare($sql);
                 $stmt->bindParam(':cart_id', $cart_id);
                 $stmt->bindParam(':item_id', $item_id);
@@ -672,7 +715,7 @@ class Foodies
                 $sql = "UPDATE cart_items 
                         SET quantity = :quantity 
                         WHERE cart_id = :cart_id AND item_id = :item_id";
-                
+
                 $stmt = $this->con->prepare($sql);
                 $stmt->bindParam(':cart_id', $cart_id);
                 $stmt->bindParam(':item_id', $item_id);
@@ -686,7 +729,8 @@ class Foodies
         }
     }
 
-    public function deleteCartItem($cart_id, $item_id) {
+    public function deleteCartItem($cart_id, $item_id)
+    {
         try {
             $sql = "DELETE FROM cart_items WHERE cart_id = :cart_id AND item_id = :item_id";
             $stmt = $this->con->prepare($sql);
@@ -698,7 +742,7 @@ class Foodies
         }
     }
 
-    
+
 
 }
 ?>
