@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 23, 2025 at 10:34 AM
+-- Generation Time: Mar 23, 2025 at 02:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -68,7 +68,7 @@ CREATE TABLE `cuisines` (
 --
 
 INSERT INTO `cuisines` (`cuisine_id`, `cuisine_name`, `description`, `created_at`, `updated_at`) VALUES
-(1, 'Italian', '                                its Italian       1                                                 ', '2025-03-22 22:33:04', '2025-03-23 00:19:51'),
+(1, 'Italian', 'asdad                                                                                             ', '2025-03-22 22:33:04', '2025-03-23 15:48:55'),
 (3, 'Chinese', 'Chinese Item List', '2025-03-23 00:46:44', NULL),
 (4, 'Mexican', 'Mexican Food\r\n', '2025-03-23 12:57:12', NULL);
 
@@ -97,9 +97,8 @@ CREATE TABLE `menu_items` (
 --
 
 INSERT INTO `menu_items` (`item_id`, `restaurant_id`, `cuisine_id`, `item_name`, `description`, `price`, `tags`, `image_url`, `is_available`, `created_at`, `updated_at`) VALUES
-(11, 1, 3, 'teattttt', 'dsfsdf', 243243.00, '[\"asian\",\"biryani\",\"breakfast\"]', 'uploads/icecream.png', 0, '2025-03-23 02:14:07', '2025-03-23 12:53:16'),
-(12, 1, 1, 'Margherita Pizza', 'Margherita Pizza ', 299.00, '[\"dinner\",\"pizza\"]', 'uploads/pizza2.png', 1, '2025-03-23 02:17:56', '2025-03-23 12:51:20'),
-(13, 3, 4, 'Mexican Burgur', 'Mexican Burgur', 399.00, '[\"burgur\",\"mexican\"]', 'uploads/burger.png', 1, '2025-03-23 13:00:52', NULL);
+(13, 3, 4, 'Mexican Burgur1', 'Mexican Burgur', 399.00, '[\"burgur\",\"mexican\"]', 'uploads/burger.png', 0, '2025-03-23 13:00:52', '2025-03-23 15:47:02'),
+(14, 1, 4, 'test', 'dsesdf', 234.00, '[\"dinner\",\"gujarati-thali\"]', 'uploads/OIP.jpeg', 1, '2025-03-23 15:49:41', '2025-03-23 15:49:48');
 
 -- --------------------------------------------------------
 
@@ -124,7 +123,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `restaurant_id`, `order_date`, `delivery_address`, `total_amount`, `status`, `notes`, `updated_at`) VALUES
-('#ORD-001', 27, 3, '2025-03-10 14:30:00', '789 Oak St', 300.00, 'cancelled', 'Call before delivery', '2025-03-23 14:41:25');
+('#ORD-001', 27, 3, '2025-03-10 14:30:00', '789 Oak St', 300.00, 'out_for_delivery', 'Call before delivery', '2025-03-23 15:50:02');
 
 --
 -- Triggers `orders`
@@ -279,6 +278,7 @@ CREATE TABLE `users` (
   `last_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` varchar(10) DEFAULT NULL,
+  `address` varchar(500) DEFAULT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` enum('customer','admin','restaurant_owner','delivery_agent') NOT NULL DEFAULT 'customer',
   `created_at` datetime DEFAULT current_timestamp(),
@@ -290,9 +290,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `profile_pic`, `first_name`, `last_name`, `email`, `phone`, `password_hash`, `role`, `created_at`, `updated_at`, `status`) VALUES
-(21, NULL, 'Purv', 'Virpariya', 'purvvirpariya14@gmail.com', '2147483647', '$2y$10$5Lo1rk3onIpKUPiizthnaOuDi4/ea1bjP8vtIyI11ZpR4JrvCvbxy', 'customer', '2025-03-21 20:47:17', NULL, 'active'),
-(27, 'uploads/parthiv.jpg', 'Parthiv', 'Shingala', 'parthivshingala@gmail.com', '9727181143', '$2y$10$76nV9GknV6rpZ14H3KID5OB6J80ZWn0eQRewAQGYXLGgFuET569pu', 'admin', '2025-03-21 22:01:11', '2025-03-22 02:46:22', 'active');
+INSERT INTO `users` (`user_id`, `profile_pic`, `first_name`, `last_name`, `email`, `phone`, `address`, `password_hash`, `role`, `created_at`, `updated_at`, `status`) VALUES
+(21, NULL, 'Purv', 'Virpariya', 'purvvirpariya14@gmail.com', '2147483647', NULL, '$2y$10$5Lo1rk3onIpKUPiizthnaOuDi4/ea1bjP8vtIyI11ZpR4JrvCvbxy', 'customer', '2025-03-21 20:47:17', NULL, 'active'),
+(27, 'uploads/parthiv.jpg', 'Parthiv', 'Shingala', 'parthivshingala@gmail.com', '9727181143', NULL, '$2y$10$76nV9GknV6rpZ14H3KID5OB6J80ZWn0eQRewAQGYXLGgFuET569pu', 'admin', '2025-03-21 22:01:11', '2025-03-22 02:46:22', 'active');
 
 --
 -- Indexes for dumped tables
@@ -400,13 +400,13 @@ ALTER TABLE `cart_items`
 -- AUTO_INCREMENT for table `cuisines`
 --
 ALTER TABLE `cuisines`
-  MODIFY `cuisine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `cuisine_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `menu_items`
 --
 ALTER TABLE `menu_items`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `order_items`
