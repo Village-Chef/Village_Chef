@@ -54,9 +54,6 @@ class Foodies
 
                 return $stmt->execute();
             }
-
-
-
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
                 throw new Exception("Email already exists...");
@@ -814,7 +811,6 @@ class Foodies
                 return $this->con->lastInsertId();
             }
             return false;
-
         } catch (PDOException $e) {
             throw new Exception("Failed to create cart: " . $e->getMessage());
         }
@@ -828,7 +824,6 @@ class Foodies
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
             throw new Exception("Failed to get carts: " . $e->getMessage());
         }
@@ -847,7 +842,6 @@ class Foodies
             $stmt->bindParam(':price', $price);
 
             return $stmt->execute();
-
         } catch (PDOException $e) {
             throw new Exception("Failed to add cart item: " . $e->getMessage());
         }
@@ -867,7 +861,6 @@ class Foodies
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         } catch (PDOException $e) {
             throw new Exception("Failed to get cart items: " . $e->getMessage());
         }
@@ -895,7 +888,6 @@ class Foodies
             }
 
             return $stmt->execute();
-
         } catch (PDOException $e) {
             throw new Exception("Failed to update cart item quantity: " . $e->getMessage());
         }
@@ -935,5 +927,229 @@ class Foodies
         }
     }
 
+    // Order Items
+    public function deleteCartItemByCartId($cart_id)
+    {
+        try {
+            $sql = "DELETE FROM cart_items WHERE cart_id = :cart_id ";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':cart_id', $cart_id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to delete cart item: " . $e->getMessage());
+        }
+    }
+
+    public function addOrder($user_id, $restaurant_id, $order_date, $delivery_address, $total_amount, $notes = null)
+    {
+        try {
+            // Insert into orders table
+            $sql = "INSERT INTO orders (user_id, restaurant_id, order_date, delivery_address, total_amount, notes) 
+                        VALUES (:user_id, :restaurant_id, :order_date, :delivery_address, :total_amount, :notes)";
+
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->bindParam(':restaurant_id', $restaurant_id);
+            $stmt->bindParam(':order_date', $order_date);
+            $stmt->bindParam(':delivery_address', $delivery_address);
+            $stmt->bindParam(':total_amount', $total_amount);
+            $stmt->bindParam(':notes', $notes);
+            $stmt->execute();
+
+            // Retrieve the generated order_id from the session variable [[6]]
+            $stmt = $this->con->query("SELECT @last_order_id AS order_id");
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            $order_id = $result['order_id'];
+
+
+
+            return $order_id;
+
+
+
+            // // Return the custom order id (e.g. "#ORD-123")
+            // return $result;
+
+        } catch (PDOException $e) {
+            throw new Exception("Failed to add order: " . $e->getMessage());
+        }
+    }
+
+    function getRestaurantIdByItemId($item_id)
+    {
+        try {
+            $sql = "SELECT restaurant_id FROM menu_items WHERE item_id = :item_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':item_id', $item_id);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result ? $result['restaurant_id'] : null; // Return restaurant_id or null if not found
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch restaurant ID: " . $e->getMessage());
+        }
+    }
+
+    public function addOrderItems($order_id, $item_id, $quantity, $price)
+    {
+        try {
+            $sql = "INSERT INTO order_items (order_id, item_id, quantity, price) 
+                VALUES (:order_id, :item_id, :quantity, :price)";
+
+            $stmt = $this->con->prepare($sql);
+
+            // Bind parameters
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->bindParam(':item_id', $item_id);
+            $stmt->bindParam(':quantity', $quantity);
+            $stmt->bindParam(':price', $price);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to add order items: " . $e->getMessage());
+        }
+    }
+
+    public function getOrdersByUserId($user_id)
+    {
+        try {
+            $sql = "SELECT 
+                        o.order_id, 
+                        o.order_date, 
+                        o.delivery_address, 
+                        o.total_amount, 
+                        o.notes, 
+                        o.status, 
+                        r.name AS restaurant_name,
+                        GROUP_CONCAT(oi.item_id) AS item_ids,
+                        GROUP_CONCAT(oi.quantity) AS quantities,
+                        GROUP_CONCAT(oi.price) AS prices,
+                        GROUP_CONCAT(mi.item_name) AS item_names,
+                        GROUP_CONCAT(mi.image_url) AS image_urls
+                    FROM orders o
+                    JOIN restaurants r ON o.restaurant_id = r.restaurant_id
+                    JOIN order_items oi ON o.order_id = oi.order_id
+                    JOIN menu_items mi ON oi.item_id = mi.item_id
+                    WHERE o.user_id = :user_id
+                    GROUP BY o.order_id
+                    ORDER BY o.order_date DESC";
+
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch orders for user: " . $e->getMessage());
+        }
+    }
+    // public function getOrderItemsByOrderId($order_id)
+    // {
+    //     try {
+    //         $sql = "SELECT 
+    //                 oi.item_id, 
+    //                 oi.quantity, 
+    //                 oi.price, 
+    //                 mi.item_name, 
+    //                 mi.image_url
+    //             FROM order_items oi
+    //             JOIN menu_items mi ON oi.item_id = mi.item_id
+    //             WHERE oi.order_id = :order_id";
+
+    //         $stmt = $this->con->prepare($sql);
+    //         $stmt->bindParam(':order_id', $order_id);
+    //         $stmt->execute();
+
+    //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //     } catch (PDOException $e) {
+    //         throw new Exception("Failed to fetch order items: " . $e->getMessage());
+    //     }
+    // }
+
+    public function addPayment($order_id, $amount, $payment_method, $transaction_id = null, $status = 'pending')
+    {
+        try {
+            $sql = "INSERT INTO payments (order_id, amount, payment_method, transaction_id, status) 
+                VALUES (:order_id, :amount, :payment_method, :transaction_id, :status)";
+
+            $stmt = $this->con->prepare($sql);
+
+            // Bind parameters
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->bindParam(':amount', $amount);
+            $stmt->bindParam(':payment_method', $payment_method);
+            $stmt->bindParam(':transaction_id', $transaction_id);
+            $stmt->bindParam(':status', $status);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to add payment: " . $e->getMessage());
+        }
+    }
+
+    public function updateUserProfile($user_id, $first_name, $last_name, $email, $phone, $address, $profile_pic = null)
+    {
+        try {
+            // Base SQL query to update user details
+            $sql = "UPDATE users 
+                    SET first_name = :first_name, 
+                        last_name = :last_name, 
+                        email = :email, 
+                        phone = :phone, 
+                        address = :address";
+
+            // Check if a new profile picture is provided
+            if (!empty($profile_pic['name'])) {
+                $fileName = $profile_pic['name'];
+                $fileTmpPath = $profile_pic['tmp_name'];
+                $uploadDir = '../AdminPanel/uploads/'; // Absolute path for moving the file
+                $relativePath = 'uploads/' . basename($fileName); // Relative path for storing in DB
+
+                // Ensure the upload directory exists
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                $filePath = $uploadDir . basename($fileName);
+
+                // Validate file type
+                $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                $fileMimeType = mime_content_type($fileTmpPath);
+
+                if (!in_array($fileMimeType, $allowedMimeTypes)) {
+                    throw new Exception("File format not supported.");
+                }
+
+                // Move the uploaded file to the target directory
+                if (move_uploaded_file($fileTmpPath, $filePath)) {
+                    $sql .= ", profile_pic = :profile_pic";
+                } else {
+                    throw new Exception("Failed to upload profile picture.");
+                }
+            }
+
+            $sql .= " WHERE user_id = :user_id";
+
+            // Prepare the SQL statement
+            $stmt = $this->con->prepare($sql);
+
+            // Bind parameters
+            $stmt->bindParam(':first_name', $first_name);
+            $stmt->bindParam(':last_name', $last_name);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':phone', $phone);
+            $stmt->bindParam(':address', $address);
+            $stmt->bindParam(':user_id', $user_id);
+
+            // Bind the profile picture path if provided
+            if (!empty($profile_pic['name'])) {
+                $stmt->bindParam(':profile_pic', $relativePath); // Store relative path in DB
+            }
+
+            // Execute the query
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to update user profile: " . $e->getMessage());
+        }
+    }
 }
-?>
