@@ -8,6 +8,17 @@ if (!isset($_SESSION['admin'])) {
 
 require '../dbCon.php';
 $obj = new Foodies();
+
+$filters = [
+    'status' => $_GET['status'] ?? '',
+    'payment_method' => $_GET['payment_method'] ?? '',
+    'date_from' => $_GET['date_from'] ?? '',
+    'date_to' => $_GET['date_to'] ?? '',
+    'amount_range' => $_GET['amount_range'] ?? ''
+];
+
+// Fetch payments
+$payments = $obj->getAllPayments($filters);
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +30,8 @@ $obj = new Foodies();
     <title>Payments Management | Food Ordering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script>
         tailwind.config = {
             theme: {
@@ -129,7 +142,8 @@ $obj = new Foodies();
                 <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 mb-6">
                     <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
                         <div>
-                            <label for="status-filter" class="block text-sm font-medium text-gray-300 mb-2">Status</label>
+                            <label for="status-filter"
+                                class="block text-sm font-medium text-gray-300 mb-2">Status</label>
                             <select id="status-filter"
                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:border-accent focus:ring-1 focus:ring-accent">
                                 <option value="">All Statuses</option>
@@ -140,7 +154,8 @@ $obj = new Foodies();
                             </select>
                         </div>
                         <div>
-                            <label for="payment-method-filter" class="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
+                            <label for="payment-method-filter"
+                                class="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
                             <select id="payment-method-filter"
                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:border-accent focus:ring-1 focus:ring-accent">
                                 <option value="">All Methods</option>
@@ -152,7 +167,8 @@ $obj = new Foodies();
                             </select>
                         </div>
                         <div>
-                            <label for="date-from" class="block text-sm font-medium text-gray-300 mb-2">Date From</label>
+                            <label for="date-from" class="block text-sm font-medium text-gray-300 mb-2">Date
+                                From</label>
                             <input type="date" id="date-from"
                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:border-accent focus:ring-1 focus:ring-accent">
                         </div>
@@ -162,7 +178,8 @@ $obj = new Foodies();
                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:border-accent focus:ring-1 focus:ring-accent">
                         </div>
                         <div>
-                            <label for="amount-filter" class="block text-sm font-medium text-gray-300 mb-2">Amount Range</label>
+                            <label for="amount-filter" class="block text-sm font-medium text-gray-300 mb-2">Amount
+                                Range</label>
                             <select id="amount-filter"
                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:border-accent focus:ring-1 focus:ring-accent">
                                 <option value="">All Amounts</option>
@@ -176,7 +193,8 @@ $obj = new Foodies();
                     </div>
                     <div class="mt-4 flex justify-end space-x-3">
                         <button type="button"
-                            class="px-6 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">Apply Filters</button>
+                            class="px-6 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">Apply
+                            Filters</button>
                         <button type="button"
                             class="px-6 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700/30 transition-colors">Reset</button>
                     </div>
@@ -187,152 +205,88 @@ $obj = new Foodies();
                     <table class="min-w-full divide-y divide-gray-700">
                         <thead class="bg-gray-800">
                             <tr>
-                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Payment ID</th>
-                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Order ID</th>
-                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Customer</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Payment ID
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Order ID
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Customer
+                                </th>
                                 <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Amount</th>
-                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Payment Method</th>
+                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Payment
+                                    Method</th>
                                 <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Status</th>
                                 <th class="px-6 py-4 text-left text-sm font-medium text-gray-300 uppercase">Date</th>
-                                <th class="px-6 py-4 text-right text-sm font-medium text-gray-300 uppercase">Actions</th>
+                                <th class="px-6 py-4 text-right text-sm font-medium text-gray-300 uppercase">Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
-                            <tr class="hover:bg-gray-700/20 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="text-sm font-medium text-white">#PAY-001234</div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">#ORD-001234</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full border border-gray-600"
-                                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt="">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-white">Jane Cooper</div>
-                                            <div class="text-sm text-gray-400">jane.cooper@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-accent font-medium">$25.99</td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-300"><i class="far fa-credit-card mr-1"></i> Credit Card</div>
-                                    <div class="text-xs text-gray-400">**** 4242</div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs bg-green-900/30 text-green-400">Successful</span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">Mar 20, 2023<br><span class="text-xs">2:35 PM</span></td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end space-x-3">
-                                        <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
-                                        <button class="text-yellow-400 hover:text-yellow-300"><i class="fas fa-undo"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-700/20 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="text-sm font-medium text-white">#PAY-001235</div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">#ORD-001235</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full border border-gray-600"
-                                                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt="">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-white">Michael Johnson</div>
-                                            <div class="text-sm text-gray-400">michael.johnson@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-accent font-medium">$32.50</td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-300"><i class="fab fa-paypal mr-1"></i> PayPal</div>
-                                    <div class="text-xs text-gray-400">michael@example.com</div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs bg-green-900/30 text-green-400">Successful</span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">Mar 20, 2023<br><span class="text-xs">3:20 PM</span></td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end space-x-3">
-                                        <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
-                                        <button class="text-yellow-400 hover:text-yellow-300"><i class="fas fa-undo"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-700/20 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="text-sm font-medium text-white">#PAY-001236</div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">#ORD-001236</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full border border-gray-600"
-                                                src="https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt="">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-white">Olivia Wilson</div>
-                                            <div class="text-sm text-gray-400">olivia.wilson@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-accent font-medium">$18.99</td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-300"><i class="fab fa-apple mr-1"></i> Apple Pay</div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs bg-blue-900/30 text-blue-400">Pending</span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">Mar 20, 2023<br><span class="text-xs">4:10 PM</span></td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end space-x-3">
-                                        <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
-                                        <button class="text-yellow-400 hover:text-yellow-300 opacity-50 cursor-not-allowed"><i class="fas fa-undo"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-700/20 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="text-sm font-medium text-white">#PAY-001237</div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">#ORD-001237</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full border border-gray-600"
-                                                src="https://images.unsplash.com/photo-1566492031773-4f4e44671857?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt="">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-white">Robert Brown</div>
-                                            <div class="text-sm text-gray-400">robert.brown@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-accent font-medium">$45.00</td>
-                                <td class="px-6 py-4">
-                                    <div class="text-sm text-gray-300"><i class="far fa-credit-card mr-1"></i> Credit Card</div>
-                                    <div class="text-xs text-gray-400">**** 1234</div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2.5 py-1 rounded-full text-xs bg-green-900/30 text-green-400">Successful</span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-300">Mar 20, 2023<br><span class="text-xs">5:00 PM</span></td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex justify-end space-x-3">
-                                        <button class="text-blue-400 hover:text-blue-300"><i class="fas fa-eye"></i></button>
-                                        <button class="text-yellow-400 hover:text-yellow-300"><i class="fas fa-undo"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
+                            <?php if (!empty($payments)): ?>
+                                <?php foreach ($payments as $payment): ?>
+                                    <tr class="hover:bg-gray-700/20 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-medium text-white">
+                                                #PAY-<?php echo htmlspecialchars($payment['payment_id']); ?></div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-300">
+                                            <?php echo htmlspecialchars($payment['order_id']); ?>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-medium text-white">
+                                                <?php echo htmlspecialchars($payment['first_name'] . ' ' . $payment['last_name']); ?>
+                                            </div>
+                                            <div class="text-sm text-gray-400">
+                                                <?php echo htmlspecialchars($payment['email']); ?>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-accent font-medium">
+                                            ₹ <?php echo number_format($payment['amount'], 2); ?></td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center space-x-2">
+                                                <?php if (strpos($payment['payment_method'], 'card') !== false): ?>
+                                                    <i class="fas fa-credit-card text-gray-400"></i>
+                                                <?php elseif ($payment['payment_method'] === 'paypal'): ?>
+                                                    <i class="fab fa-paypal text-blue-400"></i>
+                                                <?php elseif ($payment['payment_method'] === 'apple-pay'): ?>
+                                                    <i class="fab fa-apple text-gray-400"></i>
+                                                <?php elseif ($payment['payment_method'] === 'wallet'): ?>
+                                                    <i class="bi bi-wallet2 text-red-400"></i>
+                                                <?php else: ?>
+                                                    <i class="bi bi-cash-coin text-green-400"></i>
+                                                <?php endif; ?>
+                                                <span class="text-sm text-gray-300">
+                                                    <?php echo htmlspecialchars(ucfirst(str_replace('-', ' ', $payment['payment_method']))); ?>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="px-2.5 py-1 rounded-full text-xs 
+                                <?php echo $payment['payment_status'] === 'successful' ? 'bg-green-900/30 text-green-400' : ($payment['payment_status'] === 'failed' ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400'); ?>">
+                                                <?php echo ucfirst($payment['payment_status']); ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-300">
+                                            <?php echo date('M d, Y', strtotime($payment['payment_date'])); ?><br>
+                                            <span
+                                                class="text-xs"><?php echo date('h:i A', strtotime($payment['payment_date'])); ?></span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <div class="flex justify-end space-x-3">
+                                                <button class="text-blue-400 hover:text-blue-300"><i
+                                                        class="fas fa-eye"></i></button>
+                                                <button class="text-yellow-400 hover:text-yellow-300"><i
+                                                        class="fas fa-undo"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-400">No payments found.
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

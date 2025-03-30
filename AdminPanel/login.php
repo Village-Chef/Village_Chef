@@ -36,7 +36,7 @@ if (isset($_POST['btnLogin'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Food Ordering System</title>
+    <title>Admin Login</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -69,13 +69,30 @@ if (isset($_POST['btnLogin'])) {
                     showConfirmButton: false,
                     timer: 2000
                 }).then(function () {
-                    window.location.href = 'dashboard.php';
+                    window.location.href = 'users.php';
                 });
             </script>
         <?php else: ?>
             <!-- Logo and Title -->
             <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-primary">Food Admin</h1>
+            <div class="flex items-center justify-center pb-6">
+                        <div class="mr-2">
+                            <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="text-black w-6 h-6" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
+                                    <path d="M6 17h12" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
+                            <span class="font-bold text-xl leading-none">CHEF</span>
+                        </div>
+                    </div>
+                <h1 class="text-3xl font-bold text-primary">Village Chef Admin</h1>
                 <p class="text-gray-600 mt-2">Sign in to your account</p>
             </div>
 

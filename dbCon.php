@@ -585,19 +585,68 @@ class Foodies
         }
     }
 
-    function getAllOrders()
+    function getAllOrders($filters = [])
     {
         try {
-            $sql = "SELECT o.*,u.profile_pic, u.email,u.first_name, u.last_name, r.name as restaurant_name 
-                    FROM orders o
-                    JOIN users u ON o.user_id = u.user_id
-                    JOIN restaurants r ON o.restaurant_id = r.restaurant_id";
-            $stmt = $this->con->prepare($sql);
-            $stmt->execute();
+            $sql = "SELECT o.*, u.profile_pic, u.email, u.first_name, u.last_name, r.name as restaurant_name 
+                FROM orders o
+                JOIN users u ON o.user_id = u.user_id
+                JOIN restaurants r ON o.restaurant_id = r.restaurant_id
+                WHERE 1=1";
 
+            // Add filters dynamically
+            if (!empty($filters['status'])) {
+                $sql .= " AND o.status = :status";
+            }
+            if (!empty($filters['restaurant'])) {
+                $sql .= " AND r.name = :restaurant";
+            }
+            if (!empty($filters['date_from'])) {
+                $sql .= " AND o.order_date >= :date_from";
+            }
+            if (!empty($filters['date_to'])) {
+                $sql .= " AND o.order_date <= :date_to";
+            }
+            if (!empty($filters['search'])) {
+                $sql .= " AND (o.order_id LIKE :search OR u.first_name LIKE :search OR u.last_name LIKE :search OR r.name LIKE :search)";
+            }
+
+            $stmt = $this->con->prepare($sql);
+
+            // Bind parameters
+            if (!empty($filters['status'])) {
+                $stmt->bindParam(':status', $filters['status']);
+            }
+            if (!empty($filters['restaurant'])) {
+                $stmt->bindParam(':restaurant', $filters['restaurant']);
+            }
+            if (!empty($filters['date_from'])) {
+                $stmt->bindParam(':date_from', $filters['date_from']);
+            }
+            if (!empty($filters['date_to'])) {
+                $stmt->bindParam(':date_to', $filters['date_to']);
+            }
+            if (!empty($filters['search'])) {
+                $searchTerm = '%' . $filters['search'] . '%';
+                $stmt->bindParam(':search', $searchTerm);
+            }
+
+            $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Failed to fetch orders: " . $e->getMessage());
+        }
+    }
+
+    function getAllOrderStatuses()
+    {
+        try {
+            $sql = "SELECT DISTINCT status FROM orders";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the status column
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch order statuses: " . $e->getMessage());
         }
     }
 
@@ -625,6 +674,129 @@ class Foodies
             throw new Exception("Failed to delete order: " . $e->getMessage());
         }
     }
+
+    function getOrderById($order_id)
+    {
+        try {
+            // SQL Query with :order_id placeholder
+            $sql = "SELECT 
+                    o.order_id, 
+                    o.user_id, 
+                    o.restaurant_id, 
+                    o.order_date, 
+                    o.delivery_address, 
+                    o.total_amount, 
+                    o.status AS order_status, 
+                    o.notes, 
+                    u.first_name AS customer_first_name, 
+                    u.last_name AS customer_last_name, 
+                    r.name AS restaurant_name, 
+                    p.payment_method, 
+                    p.amount AS payment_amount, 
+                    p.status AS payment_status, 
+                    GROUP_CONCAT(mi.item_name SEPARATOR ', ') AS items, 
+                    GROUP_CONCAT(oi.quantity SEPARATOR ', ') AS quantities,  
+                    GROUP_CONCAT(oi.price SEPARATOR ', ') AS prices 
+                FROM 
+                    orders o 
+                JOIN 
+                    users u ON o.user_id = u.user_id 
+                JOIN 
+                    restaurants r ON o.restaurant_id = r.restaurant_id 
+                LEFT JOIN 
+                    payments p ON o.order_id = p.order_id 
+                LEFT JOIN 
+                    order_items oi ON o.order_id = oi.order_id 
+                LEFT JOIN 
+                    menu_items mi ON oi.item_id = mi.item_id 
+                WHERE 
+                    o.order_id = :order_id 
+                GROUP BY 
+                    o.order_id";
+
+            // Prepare and execute the query
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':order_id', $order_id, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // Fetch the result as an associative array
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch order: " . $e->getMessage());
+        }
+    }
+
+    function getAllPayments($filters = [])
+{
+    try {
+        $sql = "SELECT 
+                    p.payment_id, 
+                    p.order_id, 
+                    p.amount, 
+                    p.payment_method, 
+                    p.status AS payment_status, 
+                    p.payment_date, 
+                    u.first_name, 
+                    u.last_name, 
+                    u.email 
+                FROM payments p
+                JOIN orders o ON p.order_id = o.order_id
+                JOIN users u ON o.user_id = u.user_id
+                WHERE 1=1";
+
+        // Add filters dynamically
+        if (!empty($filters['status'])) {
+            $sql .= " AND p.status = :status";
+        }
+        if (!empty($filters['payment_method'])) {
+            $sql .= " AND p.payment_method = :payment_method";
+        }
+        if (!empty($filters['date_from'])) {
+            $sql .= " AND p.payment_date >= :date_from";
+        }
+        if (!empty($filters['date_to'])) {
+            $sql .= " AND p.payment_date <= :date_to";
+        }
+        if (!empty($filters['amount_range'])) {
+            $range = explode('-', $filters['amount_range']);
+            if (count($range) == 2) {
+                $sql .= " AND p.amount BETWEEN :amount_min AND :amount_max";
+            } elseif (strpos($filters['amount_range'], '+') !== false) {
+                $sql .= " AND p.amount >= :amount_min";
+            }
+        }
+
+        $stmt = $this->con->prepare($sql);
+
+        // Bind parameters
+        if (!empty($filters['status'])) {
+            $stmt->bindParam(':status', $filters['status']);
+        }
+        if (!empty($filters['payment_method'])) {
+            $stmt->bindParam(':payment_method', $filters['payment_method']);
+        }
+        if (!empty($filters['date_from'])) {
+            $stmt->bindParam(':date_from', $filters['date_from']);
+        }
+        if (!empty($filters['date_to'])) {
+            $stmt->bindParam(':date_to', $filters['date_to']);
+        }
+        if (!empty($filters['amount_range'])) {
+            $range = explode('-', $filters['amount_range']);
+            if (count($range) == 2) {
+                $stmt->bindParam(':amount_min', $range[0]);
+                $stmt->bindParam(':amount_max', $range[1]);
+            } elseif (strpos($filters['amount_range'], '+') !== false) {
+                $stmt->bindParam(':amount_min', str_replace('+', '', $filters['amount_range']));
+            }
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        throw new Exception("Failed to fetch payments: " . $e->getMessage());
+    }
+}
 
 
     // ! Cart & Cart_Items

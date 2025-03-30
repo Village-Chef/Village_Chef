@@ -62,7 +62,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <!-- Dashboard Link -->
                         <nav class="flex-1 px-4 space-y-2">
                             <!-- Dashboard Link -->
-                            <a href="dashboard.php"
+                            <a href="#"
                                 class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'dashboard.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
                                 <i
                                     class="fas fa-home mr-3 text-lg <?php echo ($current_page === 'dashboard.php') ? 'text-accent' : 'text-gray-400'; ?>"></i>
@@ -106,7 +106,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <!-- Menu Items Link -->
                             <a href="menuItems.php"
                                 class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'menuItems.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
-                                <i class="fas fa-utensils mr-3 <?php echo($current_page === 'menuItems.php') ? 'text-accent' : 'text-gray-400'?>  group-hover:text-accent text-lg"></i>
+                                <i
+                                    class="fas fa-utensils mr-3 <?php echo ($current_page === 'menuItems.php') ? 'text-accent' : 'text-gray-400' ?>  group-hover:text-accent text-lg"></i>
                                 Menu Items
                                 <?php if ($current_page === 'menuItems.php'): ?>
                                     <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
