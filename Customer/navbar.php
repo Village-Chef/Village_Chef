@@ -13,6 +13,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://unpkg.com/lucide-icons/dist/umd/lucide.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -23,6 +24,7 @@ if (session_status() == PHP_SESSION_NONE) {
         .noscorll {
             scrollbar-width: none;
         }
+
         .noscorllRest {
             scrollbar-width: none;
         }
@@ -85,6 +87,15 @@ if (session_status() == PHP_SESSION_NONE) {
                         <path d="m21 21-4.3-4.3" />
                     </svg>
                 </button>
+                <a href="orders_user.php">
+                    <button class="p-2 hover:text-yellow-500 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag-icon lucide-shopping-bag">
+                            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                            <path d="M3 6h18" />
+                            <path d="M16 10a4 4 0 0 1-8 0" />
+                        </svg>
+                    </button>
+                </a>
                 <a href="cart.php">
                     <button class="p-2 hover:text-yellow-500 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" width="24" height="24"
@@ -97,8 +108,9 @@ if (session_status() == PHP_SESSION_NONE) {
                         </svg>
                     </button>
                 </a>
+
                 <?php if (isset($_SESSION['user'])): ?>
-                    <a href="logout.php">
+                    <!-- <a href="logout.php">
                         <button
                             class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
@@ -110,7 +122,13 @@ if (session_status() == PHP_SESSION_NONE) {
                             </svg>
                             Logout
                         </button>
+                    </a> -->
+                    <a href="account_user.php">
+                        <button class="flex items-center justify-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full w-full">
+                            <i class="fa-solid fa-user mr-2"></i> <?php echo $_SESSION['user']['first_name'] . " " . $_SESSION['user']['last_name']; ?>
+                        </button>
                     </a>
+                    </button>
                 <?php else: ?>
                     <a href="login.php">
                         <button
@@ -181,7 +199,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <!-- Javascript for toggle -->
     <script>
         // Mobile menu toggle functionality
-        document.getElementById('mobile-menu-toggle').addEventListener('click', function () {
+        document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
             document.getElementById('mobile-menu').classList.toggle('open');
 
             // Change icon between bars and times (x)
