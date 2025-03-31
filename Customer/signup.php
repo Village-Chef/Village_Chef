@@ -1,58 +1,81 @@
-<?php
+<!DOCTYPE html>
+<html lang="en" class="bg-black">
 
-require '../vendor/autoload.php'; // Include Composer's autoloader
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Village Chef - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://unpkg.com/lucide-icons/dist/umd/lucide.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-black text-white flex flex-col">
+
+
+    <?php
+    require "navbar.php";
+
+    require '../vendor/autoload.php'; // Include Composer's autoloader
 // require '../Customer/Assets/logo.png';
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-
-
-$signup_success = false;
-$error_message = '';
-
-if (isset($_POST['btnSubmit'])) {
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $password = $_POST['password'];
+    
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
 
 
 
-    if (empty($fname) || empty($lname) || empty($email) || empty($phone) || empty($password)) {
-        $error_message = 'All fields are required';
-    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error_message = 'Invalid email address';
-    } else if (strlen($password) < 8) {
-        $error_message = 'Password must be at least 8 characters long';
-    } elseif (strlen($phone) != 10) {
-        $error_message = 'Phone number must be 10 digits long';
-    } else {
-        try {
-            $obj->addUser($fname, $lname, $email, $password, $phone);
-            // echo "Registration successful!";
-            $signup_success = true;
-            $mail = new PHPMailer(true);
+    $signup_success = false;
+    $error_message = '';
+
+    if (isset($_POST['btnSubmit'])) {
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $password = $_POST['password'];
+
+
+
+        if (empty($fname) || empty($lname) || empty($email) || empty($phone) || empty($password)) {
+            $error_message = 'All fields are required';
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error_message = 'Invalid email address';
+        } else if (strlen($password) < 8) {
+            $error_message = 'Password must be at least 8 characters long';
+        } elseif (strlen($phone) != 10) {
+            $error_message = 'Phone number must be 10 digits long';
+        } else {
             try {
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'villagechefparthiv@gmail.com';
-                $mail->Password = 'lkwp fbwk ehpw vbyd';
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
+                $obj->addUser($fname, $lname, $email, $password, $phone);
+                // echo "Registration successful!";
+                $signup_success = true;
+                $mail = new PHPMailer(true);
+                try {
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'villagechefparthiv@gmail.com';
+                    $mail->Password = 'lkwp fbwk ehpw vbyd';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
 
 
-                $mail->setFrom('villagechefparthiv@gmail.com', 'Village Chef');
-                $mail->addAddress($email, $fname . ' ' . $lname);
+                    $mail->setFrom('villagechefparthiv@gmail.com', 'Village Chef');
+                    $mail->addAddress($email, $fname . ' ' . $lname);
 
 
-                $mail->isHTML(true);
-                $mail->Subject = 'Welcome to Village Chef!';
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Welcome to Village Chef!';
 
 
-                $mail->Body = '
+                    $mail->Body = '
                     <!DOCTYPE html>
                     <html>
                     <head>
@@ -130,117 +153,36 @@ if (isset($_POST['btnSubmit'])) {
                     </body>
                     </html>';
 
-                // Add plain text version for non-HTML email clients
-                $mail->AltBody = "Welcome to Village Chef, $fname $lname!\n\n" .
-                    "We're excited to have you join our community of food enthusiasts who appreciate authentic, home-cooked meals.\n\n" .
-                    "Our Promise:\n" .
-                    "- Fresh ingredients from local farmers\n" .
-                    "- Expert chefs specializing in regional cuisines\n" .
-                    "- Nutritious meals prepared with care\n" .
-                    "- Sustainable practices\n\n" .
-                    "Start your culinary journey: https://www.yourdomain.com/menu\n\n" .
-                    "Your account details:\n" .
-                    "Email: $email\n" .
-                    "Phone: $phone\n\n" .
-                    "Follow us on social media!\n" .
-                    "Village Chef © " . date('Y');
+                    // Add plain text version for non-HTML email clients
+                    $mail->AltBody = "Welcome to Village Chef, $fname $lname!\n\n" .
+                        "We're excited to have you join our community of food enthusiasts who appreciate authentic, home-cooked meals.\n\n" .
+                        "Our Promise:\n" .
+                        "- Fresh ingredients from local farmers\n" .
+                        "- Expert chefs specializing in regional cuisines\n" .
+                        "- Nutritious meals prepared with care\n" .
+                        "- Sustainable practices\n\n" .
+                        "Start your culinary journey: https://www.yourdomain.com/menu\n\n" .
+                        "Your account details:\n" .
+                        "Email: $email\n" .
+                        "Phone: $phone\n\n" .
+                        "Follow us on social media!\n" .
+                        "Village Chef © " . date('Y');
 
-                $mail->send();
-                // echo 'Welcome email has been sent';
-                // header("Location: login.php");
-                // exit();
+                    $mail->send();
+                    // echo 'Welcome email has been sent';
+                    // header("Location: login.php");
+                    // exit();
+                } catch (Exception $e) {
+                    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                }
             } catch (Exception $e) {
-                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                echo "Registration failed: " . $e->getMessage();
             }
-        } catch (Exception $e) {
-            echo "Registration failed: " . $e->getMessage();
         }
+
+
     }
-
-
-}
-?>
-
-<!DOCTYPE html>
-<html lang="en" class="bg-black">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Village Chef - Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://unpkg.com/lucide-icons/dist/umd/lucide.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-    </style>
-</head>
-
-<body class="min-h-screen bg-black text-white flex flex-col">
-    <!-- Header -->
-    <header class="py-4 lg:container mx-auto px-4 flex items-center justify-between">
-        <div class="flex items-center">
-            <div class="mr-2">
-                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="text-black w-6 h-6" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-chef-hat">
-                        <path
-                            d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
-                        <path d="M6 17h12" />
-                    </svg>
-                </div>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
-                <span class="font-bold text-xl leading-none">CHEF</span>
-            </div>
-        </div>
-
-        <nav class="hidden md:flex items-center space-x-8">
-            <a href="home.php" class="hover:text-yellow-500 transition-colors">Home</a>
-            <a href="about.php" class="hover:text-yellow-500 transition-colors">About Us</a>
-            <a href="menu.php" class="hover:text-yellow-500 transition-colors">Menu</a>
-            <a href="contact.php" class="hover:text-yellow-500 transition-colors">Contact</a>
-        </nav>
-
-        <div class="flex items-center space-x-4">
-            <button class="p-2 hover:text-yellow-500 transition-colors">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-search">
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                </svg>
-            </button>
-            <button class="p-2 hover:text-yellow-500 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" width="24" height="24" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-shopping-cart">
-                    <circle cx="8" cy="21" r="1" />
-                    <circle cx="19" cy="21" r="1" />
-                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                </svg>
-            </button>
-            <a href="login.php">
-                <button
-                    class="hidden md:flex items-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-log-in">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                        <polyline points="10 17 15 12 10 7" />
-                        <line x1="15" x2="3" y1="12" y2="12" />
-                    </svg>
-                    Login
-                </button>
-            </a>
-        </div>
-    </header>
+    ?>
     <div class="">
 
     </div>

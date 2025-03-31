@@ -67,19 +67,16 @@
 <body class="min-h-screen bg-black text-white">
 
     <?php require "navbar.php"; 
-
+    $usersAllOrders ="";
     if(isset(($_SESSION['user']['user_id']))){
         $uid = $_SESSION['user']['user_id'];
-    }else{
-        header("Location: login.php");
-        exit();
+        $cartItems = $obj->getCartItems($uid);
+        $currentUser = $obj->getUserById($uid);
+        $userdata = $obj->getUserById($uid);
+        // $getitems=$obj->getOrderItemsByOrderId();
+        $usersAllOrders = $obj->getOrdersByUserId($uid);
     }
-    $cartItems = $obj->getCartItems($uid);
-    $currentUser = $obj->getUserById($uid);
-    $userdata = $obj->getUserById($uid);
-    // $getitems=$obj->getOrderItemsByOrderId();
-
-    $usersAllOrders = $obj->getOrdersByUserId($uid);
+   
 
     $filter = "all";
     if (isset($_GET['filter'])) {

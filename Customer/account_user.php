@@ -58,15 +58,16 @@
         $currentUser = $obj->getUserById($uid);
         $userdata = $obj->getUserById($uid);
         $usersAllOrders = $obj->getOrdersByUserId($uid);
+        $totalOrders = 0;
+        foreach ($usersAllOrders as $usersorders) {
+            $totalOrders += 1;
+        }
     }
 
     // $getitems=$obj->getOrderItemsByOrderId();
     
 
-    $totalOrders = 0;
-    foreach ($usersAllOrders as $usersorders) {
-        $totalOrders += 1;
-    }
+
 
     ?>
 

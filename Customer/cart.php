@@ -216,18 +216,21 @@ if (isset($_GET['address'])) {
     <?php require 'navbar.php' ?>
 
     <?php
+
+    $cartItems="";
     if (isset(($_SESSION['user']['user_id']))) {
         $uid = $_SESSION['user']['user_id'];
         $cartItems = $obj->getCartItems($uid);
         $currentUser = $obj->getUserById($uid);
         $userdata = $obj->getUserById($uid);
+        foreach ($cartItems as $cartItem) {
+            $total += (is_numeric($cartItem['price']) && is_numeric($cartItem['quantity']))
+                ? intval($cartItem['price']) * intval($cartItem['quantity'])
+                : 0;
+        }
     }
 
-    foreach ($cartItems as $cartItem) {
-        $total += (is_numeric($cartItem['price']) && is_numeric($cartItem['quantity']))
-            ? intval($cartItem['price']) * intval($cartItem['quantity'])
-            : 0;
-    }
+    
     $Gst = number_format($total * 0.09, 2);
     $GrandTotal = $total + $DelFee + $PlatformFee + $tip + $Gst;
 

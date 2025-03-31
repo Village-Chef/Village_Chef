@@ -1,6 +1,5 @@
 <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
 
-
 <?php
 if (isset($_GET['sort'])) {
   $sort = $_GET['sort'];
@@ -21,10 +20,10 @@ if (isset($_GET['sort'])) {
 
   <!-- Navbar -->
   <?php
-  $ActivePage = "Menu";
   require 'navbar.php';
   $restaurants = $obj->getAllRestaurants();
   $getAllMenuItems = $obj->getAllMenuItems();
+  
 
   ?>
 
