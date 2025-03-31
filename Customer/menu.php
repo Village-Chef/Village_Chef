@@ -1,13 +1,4 @@
 <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
-<?php
-require '../dbCon.php';
-$obj = new Foodies();
-
-
-$restaurants = $obj->getAllRestaurants();
-$getAllMenuItems = $obj->getAllMenuItems();
-
-?>
 
 
 <?php
@@ -31,7 +22,11 @@ if (isset($_GET['sort'])) {
   <!-- Navbar -->
   <?php
   $ActivePage = "Menu";
-  require 'navbar.php' ?>
+  require 'navbar.php';
+  $restaurants = $obj->getAllRestaurants();
+  $getAllMenuItems = $obj->getAllMenuItems();
+
+  ?>
 
   <!-- Menu Section -->
   <main class="flex-grow py-20">
@@ -129,22 +124,22 @@ if (isset($_GET['sort'])) {
           <ul class="py-1" aria-labelledby="dropdown">
             <li>
               <a href="?category=<?php $sortM = $_REQUEST['category'];
-                                  echo $sortM; ?>&sort=pop"
+              echo $sortM; ?>&sort=pop"
                 class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Popularity</a>
             </li>
             <li>
               <a href="?category=<?php $sortM = $_REQUEST['category'];
-                                  echo $sortM; ?>&sort=ra"
+              echo $sortM; ?>&sort=ra"
                 class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Rating: High to Low</a>
             </li>
             <li>
               <a href="?category=<?php $sortM = $_REQUEST['category'];
-                                  echo $sortM; ?>&sort=casc"
+              echo $sortM; ?>&sort=casc"
                 class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Cost: Low to High</a>
             </li>
             <li>
               <a href="?category=<?php $sortM = $_REQUEST['category'];
-                                  echo $sortM; ?>&sort=cdesc"
+              echo $sortM; ?>&sort=cdesc"
                 class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white  block px-4 py-2">Cost: High to Low</a>
             </li>
           </ul>
@@ -195,7 +190,7 @@ if (isset($_GET['sort'])) {
       </div>
       <!-- Responsive Grid Layout -->
       <?php if (isset($_REQUEST['category'])) {
-      ?>
+        ?>
         <div class="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 sm:px-6 md:px-10">
           <?php
           if (isset($_GET['category'])) {
@@ -207,7 +202,7 @@ if (isset($_GET['sort'])) {
           }
           ?>
         </div>
-      <?php
+        <?php
       }
       ?>
 
@@ -218,15 +213,16 @@ if (isset($_GET['sort'])) {
         <div class="flex flex-row gap-4  overflow-x-scroll overflow-y-hidden md:gap-8 noscorllRest  scroll-smooth">
           <?php
           foreach ($restaurants as $restaurant) {
-          ?>
-            <a href="restaurant.php?id=<?php echo $restaurant['restaurant_id'] ?>" name="id" value="<?php echo $restaurant['restaurant_id'] ?>" class="flex flex-col">
+            ?>
+            <a href="restaurant.php?id=<?php echo $restaurant['restaurant_id'] ?>" name="id"
+              value="<?php echo $restaurant['restaurant_id'] ?>" class="flex flex-col">
               <div class="flex flex-col flex-shrink-0 w-20 h-20 md:w-32 md:h-32">
                 <img class="w-full h-full border-4 border-yellow-500 rounded-full"
                   src="../AdminPanel/<?php echo $restaurant['restaurant_pic'] ?>" />
               </div>
               <p class="z-10 my-3 font-sans  text-center text-sm sm:text-md"><?php echo $restaurant['name'] ?></p>
             </a>
-          <?php
+            <?php
           }
           ?>
         </div>
@@ -252,18 +248,18 @@ if (isset($_GET['sort'])) {
 
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const scrollContainer = document.querySelector(".noscorll");
 
-      scrollContainer.addEventListener("wheel", function(event) {
+      scrollContainer.addEventListener("wheel", function (event) {
         event.preventDefault();
         scrollContainer.scrollLeft += event.deltaY;
       });
     });
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const scrollContainer = document.querySelector(".noscorllRest");
 
-      scrollContainer.addEventListener("wheel", function(event) {
+      scrollContainer.addEventListener("wheel", function (event) {
         event.preventDefault();
         scrollContainer.scrollLeft += event.deltaY;
       });

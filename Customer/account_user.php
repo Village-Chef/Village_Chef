@@ -54,15 +54,15 @@
 
     <?php
 
-    require '../dbCon.php';
-    $obj = new Foodies();
-    $uid = $_SESSION['user']['user_id'];
+
+
+    $uid = isset($_SESSION['user']['user_id']);
     $cartItems = $obj->getCartItems($uid);
     $currentUser = $obj->getUserById($uid);
     $userdata = $obj->getUserById($uid);
-    
-    // $getitems=$obj->getOrderItemsByOrderId();
 
+    // $getitems=$obj->getOrderItemsByOrderId();
+    
     $usersAllOrders = $obj->getOrdersByUserId($uid);
 
     $totalOrders = 0;
@@ -78,10 +78,12 @@
         <div class="bg-zinc-900 py-4 border-b border-zinc-800">
             <div class="max-w-7xl mx-auto px-4">
                 <div class="flex overflow-x-auto no-scrollbar space-x-6 py-2">
-                    <a href="account_user.php" class="text-yellow-500 whitespace-nowrap border-b-2 border-yellow-500 pb-2">
+                    <a href="account_user.php"
+                        class="text-yellow-500 whitespace-nowrap border-b-2 border-yellow-500 pb-2">
                         <i class="fa-solid fa-clock-rotate-left mr-2"></i>Profile
                     </a>
-                    <a href="orders_user.php" class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
+                    <a href="orders_user.php"
+                        class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
                         <i class="fa-solid fa-heart mr-2"></i>Past Orders
                     </a>
                     <a href="#" class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
@@ -101,214 +103,258 @@
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-8">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold">Profile</h1>
-                <p class="text-gray-400 mt-1">View and manage your profile</p>
-            </div>
-            <div class="mt-4 md:mt-0">
-                <a href="profileEdit.php" class="flex items-center bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg transition-colors">
-                    <i class="fa-solid fa-pen-to-square mr-2"></i> Edit Profile
-                </a>
-            </div>
-        </div>
-
-        <!-- Profile Content -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- Left Column - Profile Picture and Status -->
-            <div class="md:col-span-1">
-                <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 flex flex-col items-center">
-                    <div class="relative mb-4">
-                        <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-yellow-500">
-                            <?php
-                            $userProfile=$userdata['profile_pic']?$userdata['profile_pic']:'';
-                            ?>
-                            <img src="../AdminPanel/<?php echo $userProfile?$userProfile:'uploads/dp.png' ; ?>" alt="Profile Picture" class="w-full h-full object-cover" />
-                        </div>
-                        <div class="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-zinc-900"></div>
-                    </div>
-                    <h2 class="text-xl font-bold mb-1"><?php echo $userdata['first_name']; ?> <?php echo $userdata['last_name']; ?></h2>
-                    <p class="text-yellow-500 text-sm mb-4">Premium Member</p>
-                    <div class="bg-zinc-800 text-green-500 px-3 py-1 rounded-full text-sm font-medium mb-4">
-                        Active
-                    </div>
-                    <div class="w-full border-t border-zinc-800 pt-4 mt-2">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-gray-400 text-sm">Member Since</span>
-                            <span class="text-white">
-                                <?php
-                                $date = new DateTime($userdata['created_at']);
-                                echo $date->format('M d, Y'); // Outputs: Mar 22, 2023
-                                ?>
-                            </span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-400 text-sm">Last Updated</span>
-                            <span class="text-white">
-                                <?php
-                                $date = new DateTime($userdata['updated_at'] == null ? 'Not Updated' : $userdata['updated_at']);
-                                echo $date->format('M d, Y'); // Outputs: Mar 22, 2023
-                                ?>
-                            </span>
-                        </div>
-                    </div>
+    <?php
+    if (isset($_SESSION['user'])) {
+        ?>
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold">Profile</h1>
+                    <p class="text-gray-400 mt-1">View and manage your profile</p>
                 </div>
+                <div class="mt-4 md:mt-0">
+                    <a href="profileEdit.php"
+                        class="flex items-center bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg transition-colors">
+                        <i class="fa-solid fa-pen-to-square mr-2"></i> Edit Profile
+                    </a>
+                </div>
+            </div>
 
-                <!-- Account Actions -->
-                <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
-                    <h3 class="text-lg font-semibold mb-4">Account Actions</h3>
-                    <div class="space-y-3">
-                        <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-solid fa-lock mr-3 w-5 text-center"></i>
-                            <span>Change Password</span>
-                        </a>
-                        <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-solid fa-bell mr-3 w-5 text-center"></i>
-                            <span>Notification Settings</span>
-                        </a>
-                        <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-solid fa-shield-alt mr-3 w-5 text-center"></i>
-                            <span>Privacy Settings</span>
-                        </a>
-                        <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-solid fa-trash mr-3 w-5 text-center"></i>
-                            <span>Delete Account</span>
-                        </a>
-                        <div class="pt-3 border-t border-zinc-800 mt-3">
-                            <a href="logout.php" class="flex items-center text-red-500 hover:text-red-400 transition-colors">
-                                <i class="fa-solid fa-sign-out-alt mr-3 w-5 text-center"></i>
-                                <span>Logout</span>
+            <!-- Profile Content -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Left Column - Profile Picture and Status -->
+                <div class="md:col-span-1">
+                    <div
+                        class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 flex flex-col items-center">
+                        <div class="relative mb-4">
+                            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-yellow-500">
+                                <?php
+                                $userProfile = $userdata['profile_pic'] ? $userdata['profile_pic'] : '';
+                                ?>
+                                <img src="../AdminPanel/<?php echo $userProfile ? $userProfile : 'uploads/dp.png'; ?>"
+                                    alt="Profile Picture" class="w-full h-full object-cover" />
+                            </div>
+                            <div
+                                class="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-zinc-900">
+                            </div>
+                        </div>
+                        <h2 class="text-xl font-bold mb-1"><?php echo $userdata['first_name']; ?>
+                            <?php echo $userdata['last_name']; ?>
+                        </h2>
+                        <p class="text-yellow-500 text-sm mb-4">Premium Member</p>
+                        <div class="bg-zinc-800 text-green-500 px-3 py-1 rounded-full text-sm font-medium mb-4">
+                            Active
+                        </div>
+                        <div class="w-full border-t border-zinc-800 pt-4 mt-2">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-gray-400 text-sm">Member Since</span>
+                                <span class="text-white">
+                                    <?php
+                                    $date = new DateTime($userdata['created_at']);
+                                    echo $date->format('M d, Y'); // Outputs: Mar 22, 2023
+                                    ?>
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 text-sm">Last Updated</span>
+                                <span class="text-white">
+                                    <?php
+                                    $date = new DateTime($userdata['updated_at'] == null ? 'Not Updated' : $userdata['updated_at']);
+                                    echo $date->format('M d, Y'); // Outputs: Mar 22, 2023
+                                    ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Actions -->
+                    <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
+                        <h3 class="text-lg font-semibold mb-4">Account Actions</h3>
+                        <div class="space-y-3">
+                            <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+                                <i class="fa-solid fa-lock mr-3 w-5 text-center"></i>
+                                <span>Change Password</span>
                             </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column - Profile Details -->
-            <div class="md:col-span-2">
-                <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6">
-                    <h3 class="text-lg font-semibold mb-4">Personal Information</h3>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- First Name -->
-                        <div>
-                            <label class="block text-gray-400 text-sm mb-1">First Name</label>
-                            <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white"><?php echo $userdata['first_name']; ?></div>
-                        </div>
-
-                        <!-- Last Name -->
-                        <div>
-                            <label class="block text-gray-400 text-sm mb-1">Last Name</label>
-                            <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white"><?php echo $userdata['last_name']; ?></div>
-                        </div>
-
-                        <!-- Email -->
-                        <div>
-                            <label class="block text-gray-400 text-sm mb-1">Email</label>
-                            <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white"><?php echo $userdata['email']; ?></div>
-                        </div>
-
-                        <!-- Phone -->
-                        <div>
-                            <label class="block text-gray-400 text-sm mb-1">Phone</label>
-                            <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white"><?php echo $userdata['phone']; ?></div>
+                            <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+                                <i class="fa-solid fa-bell mr-3 w-5 text-center"></i>
+                                <span>Notification Settings</span>
+                            </a>
+                            <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+                                <i class="fa-solid fa-shield-alt mr-3 w-5 text-center"></i>
+                                <span>Privacy Settings</span>
+                            </a>
+                            <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+                                <i class="fa-solid fa-trash mr-3 w-5 text-center"></i>
+                                <span>Delete Account</span>
+                            </a>
+                            <div class="pt-3 border-t border-zinc-800 mt-3">
+                                <a href="logout.php"
+                                    class="flex items-center text-red-500 hover:text-red-400 transition-colors">
+                                    <i class="fa-solid fa-sign-out-alt mr-3 w-5 text-center"></i>
+                                    <span>Logout</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Address Information -->
-                <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
-                    <h3 class="text-lg font-semibold mb-4">Address</h3>
+                <!-- Right Column - Profile Details -->
+                <div class="md:col-span-2">
+                    <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6">
+                        <h3 class="text-lg font-semibold mb-4">Personal Information</h3>
 
-                    <div class="bg-zinc-800 p-4 rounded-lg text-white">
-                        <p><?php echo $userdata['address']; ?></p>
-                    </div>
-                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- First Name -->
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-1">First Name</label>
+                                <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white">
+                                    <?php echo $userdata['first_name']; ?>
+                                </div>
+                            </div>
 
-                <!-- Account Information -->
-                <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
-                    <h3 class="text-lg font-semibold mb-4">Account Information</h3>
+                            <!-- Last Name -->
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-1">Last Name</label>
+                                <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white">
+                                    <?php echo $userdata['last_name']; ?>
+                                </div>
+                            </div>
 
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
-                            <span class="text-gray-400">Account Type</span>
-                            <span class="bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full text-sm font-medium">Premium</span>
+                            <!-- Email -->
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-1">Email</label>
+                                <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white"><?php echo $userdata['email']; ?>
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div>
+                                <label class="block text-gray-400 text-sm mb-1">Phone</label>
+                                <div class="bg-zinc-800 px-4 py-3 rounded-lg text-white"><?php echo $userdata['phone']; ?>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
-                            <span class="text-gray-400">Role</span>
-                            <span class="text-white">Customer</span>
-                        </div>
-
-                        <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
-                            <span class="text-gray-400">Orders Placed</span>
-                            <span class="text-white"><?php echo $totalOrders; ?></span>
-                        </div>
-
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-400">Loyalty Points</span>
-                            <span class="text-yellow-500 font-semibold">1,250 pts</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Activity -->
-                <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold">Recent Activity</h3>
-                        <a href="orders_user.php" class="text-yellow-500 text-sm hover:underline">View All</a>
                     </div>
 
-                    <div class="space-y-4">
-                        <?php
+                    <!-- Address Information -->
+                    <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
+                        <h3 class="text-lg font-semibold mb-4">Address</h3>
 
-                        foreach ($usersAllOrders as $orders) {
-                        ?>
+                        <div class="bg-zinc-800 p-4 rounded-lg text-white">
+                            <p><?php echo $userdata['address']; ?></p>
+                        </div>
+                    </div>
+
+                    <!-- Account Information -->
+                    <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
+                        <h3 class="text-lg font-semibold mb-4">Account Information</h3>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                                <span class="text-gray-400">Account Type</span>
+                                <span
+                                    class="bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full text-sm font-medium">Premium</span>
+                            </div>
+
+                            <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                                <span class="text-gray-400">Role</span>
+                                <span class="text-white">Customer</span>
+                            </div>
+
+                            <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                                <span class="text-gray-400">Orders Placed</span>
+                                <span class="text-white"><?php echo $totalOrders; ?></span>
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400">Loyalty Points</span>
+                                <span class="text-yellow-500 font-semibold">1,250 pts</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Recent Activity</h3>
+                            <a href="orders_user.php" class="text-yellow-500 text-sm hover:underline">View All</a>
+                        </div>
+
+                        <div class="space-y-4">
+                            <?php
+
+                            foreach ($usersAllOrders as $orders) {
+                                ?>
+                                <div class="flex items-start">
+                                    <div class="bg-zinc-800 p-2 rounded-full mr-3">
+                                        <i class="fa-solid fa-shopping-bag text-yellow-500"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-white">You placed an order <span
+                                                class="text-yellow-500"><?php echo $orders['order_id'] ?></span></p>
+                                        <p class="text-gray-400 text-sm">
+                                            <?php
+                                            $date = new DateTime($orders['order_date']);
+                                            echo $date->format('M d, Y \a\t g:i A');
+                                            ?>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+
+                            ?>
+
+
                             <div class="flex items-start">
                                 <div class="bg-zinc-800 p-2 rounded-full mr-3">
-                                    <i class="fa-solid fa-shopping-bag text-yellow-500"></i>
+                                    <i class="fa-solid fa-star text-yellow-500"></i>
                                 </div>
                                 <div class="flex-1">
-                                    <p class="text-white">You placed an order <span class="text-yellow-500"><?php echo $orders['order_id'] ?></span></p>
-                                    <p class="text-gray-400 text-sm">
-                                        <?php
-                                        $date = new DateTime($orders['order_date']);
-                                        echo $date->format('M d, Y \a\t g:i A'); 
-                                        ?>
+                                    <p class="text-white">You reviewed <span class="text-yellow-500">Domino's Special
+                                            Pizza</span></p>
+                                    <p class="text-gray-400 text-sm">May 13, 2023 at 2:15 PM</p>
                                 </div>
                             </div>
-                        <?php
-                        }
 
-                        ?>
-
-
-                        <div class="flex items-start">
-                            <div class="bg-zinc-800 p-2 rounded-full mr-3">
-                                <i class="fa-solid fa-star text-yellow-500"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-white">You reviewed <span class="text-yellow-500">Domino's Special Pizza</span></p>
-                                <p class="text-gray-400 text-sm">May 13, 2023 at 2:15 PM</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start">
-                            <div class="bg-zinc-800 p-2 rounded-full mr-3">
-                                <i class="fa-solid fa-heart text-yellow-500"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-white">You added <span class="text-yellow-500">Classic Burger Combo</span> to favorites</p>
-                                <p class="text-gray-400 text-sm">May 10, 2023 at 1:45 PM</p>
+                            <div class="flex items-start">
+                                <div class="bg-zinc-800 p-2 rounded-full mr-3">
+                                    <i class="fa-solid fa-heart text-yellow-500"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-white">You added <span class="text-yellow-500">Classic Burger
+                                            Combo</span> to favorites</p>
+                                    <p class="text-gray-400 text-sm">May 10, 2023 at 1:45 PM</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </main>
+        <?php
+    } else {
+        ?>
+        <!-- Profile Header -->
+        <div class="flex flex-col items-center gap-6 my-10">
+            <!-- Profile Image -->
+            <img src="../AdminPanel/uploads/dp.png" alt="Profile Picture"
+                class="w-32 h-32 rounded-full border-2 border-white object-cover shadow-md">
+
+            <!-- Profile Details -->
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl font-bold text-center text-yellow-500">Guest</h1>
+                <p class="text-sm text-gray-500">Member since Today</p>
+            </div>
+            <a href="login.php" class="bg-yellow-500 rounded-full cursor-pointer text-black px-3 py-2">
+                Login
+            </a>
         </div>
-    </main>
+        <?php
+    }
+    ?>
+
+
 
     <!-- Footer -->
     <footer class="bg-zinc-900 pt-16 pb-8 mt-16">
@@ -370,9 +416,7 @@
                     <h4 class="font-bold text-lg mb-4">Newsletter</h4>
                     <p class="text-gray-400 mb-4">Subscribe to get special offers and updates.</p>
                     <div class="flex">
-                        <input
-                            type="email"
-                            placeholder="Your Email"
+                        <input type="email" placeholder="Your Email"
                             class="px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-yellow-500 rounded-l-md text-white">
                         <button class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-r-md">
                             Send
@@ -382,9 +426,11 @@
             </div>
 
             <div class="border-t border-zinc-800 pt-8 text-center text-gray-500 text-sm">
-                <p>&copy; <script>
+                <p>&copy;
+                    <script>
                         document.write(new Date().getFullYear())
-                    </script> Village Chef. All rights reserved.</p>
+                    </script> Village Chef. All rights reserved.
+                </p>
             </div>
         </div>
     </footer>

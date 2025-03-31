@@ -15,8 +15,8 @@ if (isset($_GET['payment_id'])) {
 }
 
 
-require '../dbCon.php';
-$obj = new Foodies();
+
+
 $tip = 0;
 $total = 0;
 $DelFee = 22;
@@ -216,7 +216,7 @@ if (isset($_GET['address'])) {
     <?php require 'navbar.php' ?>
 
     <?php
-    $uid = $_SESSION['user']['user_id'];
+    $uid = isset($_SESSION['user']['user_id']);
     $cartItems = $obj->getCartItems($uid);
     $currentUser = $obj->getUserById($uid);
     $userdata = $obj->getUserById($uid);
@@ -239,31 +239,35 @@ if (isset($_GET['address'])) {
             <?php
 
             if ($cartItems == null) {
-            ?>
+                ?>
                 <div class="flex justify-center items-center flex-col ">
                     <div class="w-32 h-32 md:w-40 md:h-40 mb-6 empty-cart-animation">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-700">
                             <circle cx="9" cy="21" r="1"></circle>
                             <circle cx="20" cy="21" r="1"></circle>
                             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                         </svg>
                     </div>
                     <h2 class="text-xl md:text-2xl font-bold mb-3">Your cart is empty</h2>
-                    <p class="text-gray-400 max-w-md mb-8">Looks like you haven't added any items to your cart yet. Browse our delicious menu to find something you'll love!</p>
+                    <p class="text-gray-400 max-w-md mb-8">Looks like you haven't added any items to your cart yet. Browse
+                        our delicious menu to find something you'll love!</p>
 
                     <div class="space-y-4 md:space-y-0 md:space-x-4 flex flex-col md:flex-row">
-                        <a href="menu.php" class="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
+                        <a href="menu.php"
+                            class="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
                             <i class="fa-solid fa-utensils mr-2"></i> Browse Menu
                         </a>
-                        <a href="cart.php" class="bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
+                        <a href="cart.php"
+                            class="bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
                             <i class="fa-solid fa-clock-rotate-left mr-2"></i> View Past Orders
                         </a>
                     </div>
                 </div>
-            <?php
+                <?php
 
             } else {
-            ?>
+                ?>
                 <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center py-4">Checkout
                     <?php
 
@@ -275,10 +279,10 @@ if (isset($_GET['address'])) {
                         $order_date = date('Y-m-d H:i:s');
 
                         // Add the order
-
+                
                         $orderID = $obj->addOrder($uid, $res_id, $order_date, $userdata['address'], $GrandTotal, null);
                         // print_r($orderID);
-
+                
                         if ($orderID) {
                             foreach ($cartItems as $item) {
                                 $orderStatus = $obj->addOrderItems($orderID, $item['item_id'], $item['quantity'], $item['price']);
@@ -288,25 +292,25 @@ if (isset($_GET['address'])) {
                             echo "<script> window.location.href='cart.php'; </script>";
                         }
                     }
-                    if(isset($_GET['payment_id'])){
+                    if (isset($_GET['payment_id'])) {
 
                         $cart_id = $cartItems[0]['cart_id'];
                         $item_id = $cartItems[0]['item_id'];
-                        $paymentId=$_GET['payment_id'];
+                        $paymentId = $_GET['payment_id'];
 
                         $res_id = $obj->getRestaurantIdByItemId($item_id);
                         $order_date = date('Y-m-d H:i:s');
 
                         // Add the order
-
+                
                         $orderID = $obj->addOrder($uid, $res_id, $order_date, $userdata['address'], $GrandTotal, null);
                         // print_r($orderID);
-
+                
                         if ($orderID) {
                             foreach ($cartItems as $item) {
                                 $orderStatus = $obj->addOrderItems($orderID, $item['item_id'], $item['quantity'], $item['price']);
                             }
-                            $obj->addPayment($orderID, $GrandTotal, "card", $paymentId,"successful");
+                            $obj->addPayment($orderID, $GrandTotal, "card", $paymentId, "successful");
                             $obj->deleteCartItemByCartId($cart_id);
                             echo "<script> window.location.href='cart.php'; </script>";
                         }
@@ -356,7 +360,7 @@ if (isset($_GET['address'])) {
                                     <div>
                                         <p class="font-bold text-yellow-500 text-lg">Logged in <span
                                                 class="text-green-500">✔</span></p>
-                                        <p class="text-gray-700 font-medium">Purv Virpariya | 8849019459</p>
+                                        <p class="text-gray-700 font-medium"><?php echo $userdata['first_name']." ".$userdata['last_name']; ?> | <?php echo $userdata['phone']; ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -387,19 +391,19 @@ if (isset($_GET['address'])) {
                                     }
                                     if ($currentUser['address'] != null) {
 
-                                    ?>
+                                        ?>
                                         <p class="text-gray-700 font-medium"><?php echo $currentUser['address'] ?></p>
-                                    <?php
+                                        <?php
                                     }
                                     ?>
 
                                     <?php
                                     if ($currentUser['address'] != null) {
-                                    ?>
+                                        ?>
 
-                                    <?php
+                                        <?php
                                     } else {
-                                    ?>
+                                        ?>
                                         <p class="font-semibold text-green-500 text-lg flex items-center">
                                             <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 24 24">
                                                 <path
@@ -408,7 +412,7 @@ if (isset($_GET['address'])) {
                                             Add New Address
                                         </p>
 
-                                    <?php
+                                        <?php
                                     }
 
                                     ?>
@@ -424,7 +428,7 @@ if (isset($_GET['address'])) {
                             <!-- Payment -->
                             <?php
                             if ($currentUser['address'] != null) {
-                            ?>
+                                ?>
                                 <div class="bg-white shadow-lg rounded-lg p-6 mt-4 border border-gray-200">
                                     <div class="flex items-center space-x-4">
                                         <div class="bg-black text-white p-3 rounded-lg">
@@ -504,7 +508,7 @@ if (isset($_GET['address'])) {
                                         </div>
                                     </div>
                                 </div>
-                            <?php
+                                <?php
                             }
                             ?>
                         </div>
@@ -526,15 +530,11 @@ if (isset($_GET['address'])) {
                         <div class=" p-2 rounded-lg shadow-md w-96">
 
                             <!-- Cart Items List -->
-                            <div
-                                class="flex items-center flex-col  w-full justify-between gap-2 mb-4 rounded-lg  text-white">
+                            <div class="grid  w-full gap-2 mb-4 rounded-lg text-white">
 
-
-                                <?php
-
-                                foreach ($cartItems as $cartItem) {
-                                ?>
-                                    <div class="flex items-center justify-between w-full mb-4 rounded-lg text-white">
+                                <?php foreach ($cartItems as $cartItem) { ?>
+                                    <div
+                                        class="flex flex-wrap items-center justify-between  w-full p-3  rounded-lg text-white">
                                         <!-- Stock Indicator -->
                                         <div
                                             class="flex h-4 w-4 items-center justify-center border border-green-600 p-0.5 rounded-full">
@@ -542,21 +542,12 @@ if (isset($_GET['address'])) {
                                         </div>
 
                                         <!-- Item Name -->
-                                        <div class="text-sm truncate max-w-[150px] text-start">
+                                        <div class="text-sm truncate ms-4 text-wrap line-clamp-2  w-[50px] md:w-[150px] text-start">
                                             <?php echo htmlspecialchars($cartItem['item_name']); ?>
                                         </div>
 
-
-
-
                                         <!-- Quantity Selector -->
-                                        <div
-                                            class="flex mb-0 items-center gap-3 rounded-full border border-white px-3 py-1 text-sm">
-                                            <!-- <form method="get" action="cart.php"
-                                            class="flex mb-0 items-center gap-3 rounded-full border border-white px-3 py-1 text-sm">
-                                            <input type="hidden" name="cart_id" value="<?php echo $cartItem['cart_id']; ?>">
-                                            <input type="hidden" name="item_id" value="<?php echo $cartItem['item_id']; ?>"> -->
-
+                                        <div class="flex items-center gap-3 rounded-full border border-white px-3 py-1 text-sm">
                                             <a href="cart.php?cart_id=<?php echo $cartItem['cart_id']; ?>&item_id=<?php echo $cartItem['item_id']; ?>&quantity=<?php echo $cartItem['quantity'] - 1; ?>"
                                                 class="cursor-pointer hover:text-red-400 transition">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
@@ -577,7 +568,6 @@ if (isset($_GET['address'])) {
                                                     <path d="M12 5v14" />
                                                 </svg>
                                             </a>
-                                            <!-- </form> -->
                                         </div>
 
                                         <!-- Price -->
@@ -591,15 +581,10 @@ if (isset($_GET['address'])) {
                                                 <path d="M6 13h3" />
                                                 <path d="M9 13c6.667 0 6.667-10 0-10" />
                                             </svg>
-                                            <p><?php echo $total; ?>
-                                            </p>
+                                            <p><?php echo $cartItem['quantity'] * $cartItem['price']; ?></p>
                                         </span>
                                     </div>
-
-
-                                <?php
-                                }
-                                ?>
+                                <?php } ?>
                             </div>
 
                             <!-- Any suggestions -->
@@ -836,12 +821,12 @@ if (isset($_GET['address'])) {
         var options = {
             "key": "<?php echo $apiKey; ?>",
             "amount": <?php $totalMain = ($Gst + $PlatformFee + $DelFee + $tip + $total);
-                        echo ($totalMain * 100); ?>, // Amount in paise (₹500)
+            echo ($totalMain * 100); ?>, // Amount in paise (₹500)
             "currency": "INR",
             "name": "Demo Payment",
             "description": "Testing Razorpay",
             "image": "https://your-logo-url.com/logo.png",
-            "handler": function(response) {
+            "handler": function (response) {
                 alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
                 window.location.href = "cart.php?payment_id=" + response.razorpay_payment_id;
             },
@@ -855,7 +840,7 @@ if (isset($_GET['address'])) {
             }
         };
 
-        document.getElementById("pay-btn").onclick = function() {
+        document.getElementById("pay-btn").onclick = function () {
             var rzp1 = new Razorpay(options);
             rzp1.open();
         };
@@ -870,7 +855,7 @@ if (isset($_GET['address'])) {
     <!-- Razor Pay -->
     <?php
     require '../vendor/autoload.php'; // Include Razorpay SDK
-
+    
     use Razorpay\Api\Api;
 
     $keyId = "rzp_test_FFm35IphRdzhve";

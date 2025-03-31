@@ -1,7 +1,7 @@
 <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
 <?php
-require '../dbCon.php';
-$obj = new Foodies();
+
+
 
 
 if (isset($_GET['id'])) {

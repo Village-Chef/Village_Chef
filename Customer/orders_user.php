@@ -70,9 +70,9 @@
 
     <?php
 
-    require '../dbCon.php';
-    $obj = new Foodies();
-    $uid = $_SESSION['user']['user_id'];
+    
+    
+    $uid = isset($_SESSION['user']['user_id']);
     $cartItems = $obj->getCartItems($uid);
     $currentUser = $obj->getUserById($uid);
     $userdata = $obj->getUserById($uid);
