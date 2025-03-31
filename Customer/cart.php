@@ -216,11 +216,12 @@ if (isset($_GET['address'])) {
     <?php require 'navbar.php' ?>
 
     <?php
-    $uid = isset($_SESSION['user']['user_id']);
-    $cartItems = $obj->getCartItems($uid);
-    $currentUser = $obj->getUserById($uid);
-    $userdata = $obj->getUserById($uid);
-
+    if (isset(($_SESSION['user']['user_id']))) {
+        $uid = $_SESSION['user']['user_id'];
+        $cartItems = $obj->getCartItems($uid);
+        $currentUser = $obj->getUserById($uid);
+        $userdata = $obj->getUserById($uid);
+    }
 
     foreach ($cartItems as $cartItem) {
         $total += (is_numeric($cartItem['price']) && is_numeric($cartItem['quantity']))
@@ -360,7 +361,9 @@ if (isset($_GET['address'])) {
                                     <div>
                                         <p class="font-bold text-yellow-500 text-lg">Logged in <span
                                                 class="text-green-500">✔</span></p>
-                                        <p class="text-gray-700 font-medium"><?php echo $userdata['first_name']." ".$userdata['last_name']; ?> | <?php echo $userdata['phone']; ?></p>
+                                        <p class="text-gray-700 font-medium">
+                                            <?php echo $userdata['first_name'] . " " . $userdata['last_name']; ?> |
+                                            <?php echo $userdata['phone']; ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -533,8 +536,7 @@ if (isset($_GET['address'])) {
                             <div class="grid  w-full gap-2 mb-4 rounded-lg text-white">
 
                                 <?php foreach ($cartItems as $cartItem) { ?>
-                                    <div
-                                        class="flex flex-wrap items-center justify-between  w-full p-3  rounded-lg text-white">
+                                    <div class="flex flex-wrap items-center justify-between  w-full p-3  rounded-lg text-white">
                                         <!-- Stock Indicator -->
                                         <div
                                             class="flex h-4 w-4 items-center justify-center border border-green-600 p-0.5 rounded-full">
@@ -542,7 +544,8 @@ if (isset($_GET['address'])) {
                                         </div>
 
                                         <!-- Item Name -->
-                                        <div class="text-sm truncate ms-4 text-wrap line-clamp-2  w-[50px] md:w-[150px] text-start">
+                                        <div
+                                            class="text-sm truncate ms-4 text-wrap line-clamp-2  w-[50px] md:w-[150px] text-start">
                                             <?php echo htmlspecialchars($cartItem['item_name']); ?>
                                         </div>
 

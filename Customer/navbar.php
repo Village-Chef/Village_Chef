@@ -12,7 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://unpkg.com/lucide-icons/dist/umd/lucide.css" rel="stylesheet">
+    <!-- <link href="https://unpkg.com/lucide-icons/dist/umd/lucide.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -45,7 +45,10 @@ if (session_status() == PHP_SESSION_NONE) {
     <?php
     require '../dbCon.php';
     $obj = new Foodies();
-    $userdataNavbar = $obj->getUserById($_SESSION['user']['user_id']);
+    if(isset($_SESSION['user']['user_id'])){
+        $user = $_SESSION['user']['user_id'];
+        $userdataNavbar = $obj->getUserById($user);
+    } 
     ?>
     <!-- Navbar -->
     <header class="w-[100%] mx-auto  bgNavbar backdrop-blur-lg bg-opacity-30 fixed z-50  py-4 px-4">

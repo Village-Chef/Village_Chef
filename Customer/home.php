@@ -240,7 +240,7 @@ session_start();
                 <div
                     class="bg-zinc-900 border border-zinc-800 p-6 rounded-xl hover:border-yellow-500/50 transition-all">
                     <div class="flex items-center mb-4">
-                        <img src="https://i.pinimg.com/736x/e2/83/64/e28364f6f8334db32b1b90dcb807054e.jpg"
+                        <img src="Assets/purv.jpg"
                             alt="Emily Rodriguez" class="w-12 h-12 rounded-full object-cover">
                         <div class="ml-4">
                             <h4 class="font-bold">Emily Rodriguez</h4>

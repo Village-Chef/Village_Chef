@@ -50,20 +50,18 @@
 
 <body class="min-h-screen bg-black text-white">
 
-    <?php require "navbar.php"; ?>
+    <?php require "navbar.php"; 
 
-    <?php
-
-
-
-    $uid = isset($_SESSION['user']['user_id']);
-    $cartItems = $obj->getCartItems($uid);
-    $currentUser = $obj->getUserById($uid);
-    $userdata = $obj->getUserById($uid);
+    if(isset(($_SESSION['user']['user_id']))){
+        $uid= $_SESSION['user']['user_id'];
+        $cartItems = $obj->getCartItems($uid);
+        $currentUser = $obj->getUserById($uid);
+        $userdata = $obj->getUserById($uid);
+        $usersAllOrders = $obj->getOrdersByUserId($uid);
+    }
 
     // $getitems=$obj->getOrderItemsByOrderId();
     
-    $usersAllOrders = $obj->getOrdersByUserId($uid);
 
     $totalOrders = 0;
     foreach ($usersAllOrders as $usersorders) {

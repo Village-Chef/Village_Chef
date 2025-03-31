@@ -8,10 +8,6 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
 
-$restaurant = $obj->getRestaurantById($id);
-
-$getAllMenuItems = $obj->getAllMenuItems();
-
 ?>
 
 
@@ -25,8 +21,14 @@ $getAllMenuItems = $obj->getAllMenuItems();
     <?php
     $uid = $_SESSION['user']['user_id'];
 
+
+    $restaurant = $obj->getRestaurantById($id);
+
+    $getAllMenuItems = $obj->getAllMenuItems();
+
+
     if (isset($_GET['addtoCart'])) {
-        $allcart= $obj->getAllCarts();
+        $allcart = $obj->getAllCarts();
         $userHasCart = false;
         foreach ($allcart as $cart) {
             if ($cart['user_id'] == $uid && $cart['status'] == 'active') {
@@ -38,7 +40,7 @@ $getAllMenuItems = $obj->getAllMenuItems();
         if (!$userHasCart) {
             $cart_id = $obj->addCart($uid);
         }
-        
+
         $obj->addCartItem($cart_id, $_GET['addtoCart'], 1, $_GET['price']);
     }
 
