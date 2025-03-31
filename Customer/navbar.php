@@ -42,6 +42,11 @@ if (session_status() == PHP_SESSION_NONE) {
 </head>
 
 <body>
+    <?php
+    require '../dbCon.php';
+    $obj = new Foodies();
+    $userdataNavbar = $obj->getUserById($_SESSION['user']['user_id']);
+    ?>
     <!-- Navbar -->
     <header class="w-[100%] mx-auto  bgNavbar backdrop-blur-lg bg-opacity-30 fixed z-50  py-4 px-4">
         <div class="flex items-center justify-between">
@@ -66,15 +71,27 @@ if (session_status() == PHP_SESSION_NONE) {
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-8">
-                <a href="home.php"
-                    class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Home') ? 'text-yellow-500' : 'text-white'; ?>  transition-colors">Home</a>
-                <a href="about.php"
-                    class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'About') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">About
-                    Us</a>
-                <a href="menu.php"
-                    class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Menu</a>
-                <a href="contact.php"
-                    class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Contact') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Contact</a>
+                <?php
+                if (isset($_SESSION['user'])) {
+                    ?>
+                    <a href="menu.php"
+                        class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Menu</a>
+                    <?php
+                } else {
+                    ?>
+                    <a href="home.php"
+                        class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Home') ? 'text-yellow-500' : 'text-white'; ?>  transition-colors">Home</a>
+                    <a href="about.php"
+                        class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'About') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">About
+                        Us</a>
+                    <!-- <a href="menu.php"
+                        class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Menu</a> -->
+                    <a href="contact.php"
+                        class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Contact') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Contact</a>
+
+                    <?php
+                }
+                ?>
             </nav>
 
             <!-- Search + Cart  -->
@@ -89,7 +106,9 @@ if (session_status() == PHP_SESSION_NONE) {
                 </button>
                 <a href="orders_user.php">
                     <button class="p-2 hover:text-yellow-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag-icon lucide-shopping-bag">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-shopping-bag-icon lucide-shopping-bag">
                             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
                             <path d="M3 6h18" />
                             <path d="M16 10a4 4 0 0 1-8 0" />
@@ -124,8 +143,10 @@ if (session_status() == PHP_SESSION_NONE) {
                         </button>
                     </a> -->
                     <a href="account_user.php">
-                        <button class="flex items-center justify-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full w-full">
-                            <i class="fa-solid fa-user mr-2"></i> <?php echo $_SESSION['user']['first_name'] . " " . $_SESSION['user']['last_name']; ?>
+                        <button
+                            class="flex items-center justify-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full w-full">
+                            <i class="fa-solid fa-user mr-2"></i>
+                            <?php echo $userdataNavbar['first_name'] . " " . $userdataNavbar['last_name']; ?>
                         </button>
                     </a>
                     </button>
@@ -199,7 +220,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <!-- Javascript for toggle -->
     <script>
         // Mobile menu toggle functionality
-        document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+        document.getElementById('mobile-menu-toggle').addEventListener('click', function () {
             document.getElementById('mobile-menu').classList.toggle('open');
 
             // Change icon between bars and times (x)

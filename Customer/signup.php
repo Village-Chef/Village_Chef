@@ -1,12 +1,12 @@
 <?php
-require '../dbCon.php';
+
 require '../vendor/autoload.php'; // Include Composer's autoloader
 // require '../Customer/Assets/logo.png';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-$obj = new Foodies();
+
 
 $signup_success = false;
 $error_message = '';

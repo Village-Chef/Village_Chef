@@ -81,8 +81,8 @@
 
     <?php
     require "navbar.php";
-    require '../dbCon.php';
-    $obj = new Foodies();
+    
+    
 
     $uid = $_SESSION['user']['user_id'];
     $cartItems = $obj->getCartItems($uid);
