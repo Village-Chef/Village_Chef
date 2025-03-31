@@ -724,9 +724,9 @@ class Foodies
     }
 
     function getAllPayments($filters = [])
-{
-    try {
-        $sql = "SELECT 
+    {
+        try {
+            $sql = "SELECT 
                     p.payment_id, 
                     p.order_id, 
                     p.amount, 
@@ -741,59 +741,178 @@ class Foodies
                 JOIN users u ON o.user_id = u.user_id
                 WHERE 1=1";
 
-        // Add filters dynamically
-        if (!empty($filters['status'])) {
-            $sql .= " AND p.status = :status";
-        }
-        if (!empty($filters['payment_method'])) {
-            $sql .= " AND p.payment_method = :payment_method";
-        }
-        if (!empty($filters['date_from'])) {
-            $sql .= " AND p.payment_date >= :date_from";
-        }
-        if (!empty($filters['date_to'])) {
-            $sql .= " AND p.payment_date <= :date_to";
-        }
-        if (!empty($filters['amount_range'])) {
-            $range = explode('-', $filters['amount_range']);
-            if (count($range) == 2) {
-                $sql .= " AND p.amount BETWEEN :amount_min AND :amount_max";
-            } elseif (strpos($filters['amount_range'], '+') !== false) {
-                $sql .= " AND p.amount >= :amount_min";
+            // Add filters dynamically
+            if (!empty($filters['status'])) {
+                $sql .= " AND p.status = :status";
             }
-        }
-
-        $stmt = $this->con->prepare($sql);
-
-        // Bind parameters
-        if (!empty($filters['status'])) {
-            $stmt->bindParam(':status', $filters['status']);
-        }
-        if (!empty($filters['payment_method'])) {
-            $stmt->bindParam(':payment_method', $filters['payment_method']);
-        }
-        if (!empty($filters['date_from'])) {
-            $stmt->bindParam(':date_from', $filters['date_from']);
-        }
-        if (!empty($filters['date_to'])) {
-            $stmt->bindParam(':date_to', $filters['date_to']);
-        }
-        if (!empty($filters['amount_range'])) {
-            $range = explode('-', $filters['amount_range']);
-            if (count($range) == 2) {
-                $stmt->bindParam(':amount_min', $range[0]);
-                $stmt->bindParam(':amount_max', $range[1]);
-            } elseif (strpos($filters['amount_range'], '+') !== false) {
-                $stmt->bindParam(':amount_min', str_replace('+', '', $filters['amount_range']));
+            if (!empty($filters['payment_method'])) {
+                $sql .= " AND p.payment_method = :payment_method";
             }
-        }
+            if (!empty($filters['date_from'])) {
+                $sql .= " AND p.payment_date >= :date_from";
+            }
+            if (!empty($filters['date_to'])) {
+                $sql .= " AND p.payment_date <= :date_to";
+            }
+            if (!empty($filters['amount_range'])) {
+                $range = explode('-', $filters['amount_range']);
+                if (count($range) == 2) {
+                    $sql .= " AND p.amount BETWEEN :amount_min AND :amount_max";
+                } elseif (strpos($filters['amount_range'], '+') !== false) {
+                    $sql .= " AND p.amount >= :amount_min";
+                }
+            }
+            if (!empty($filters['search'])) {
+                $sql .= " AND (p.payment_id LIKE :search OR 
+                           p.order_id LIKE :search OR 
+                           u.first_name LIKE :search OR 
+                           u.last_name LIKE :search OR 
+                           u.email LIKE :search)";
+            }
 
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        throw new Exception("Failed to fetch payments: " . $e->getMessage());
+            $stmt = $this->con->prepare($sql);
+
+            // Bind parameters
+            if (!empty($filters['status'])) {
+                $stmt->bindParam(':status', $filters['status']);
+            }
+            if (!empty($filters['payment_method'])) {
+                $stmt->bindParam(':payment_method', $filters['payment_method']);
+            }
+            if (!empty($filters['date_from'])) {
+                $stmt->bindParam(':date_from', $filters['date_from']);
+            }
+            if (!empty($filters['date_to'])) {
+                $stmt->bindParam(':date_to', $filters['date_to']);
+            }
+            if (!empty($filters['amount_range'])) {
+                $range = explode('-', $filters['amount_range']);
+                if (count($range) == 2) {
+                    $stmt->bindParam(':amount_min', $range[0]);
+                    $stmt->bindParam(':amount_max', $range[1]);
+                } elseif (strpos($filters['amount_range'], '+') !== false) {
+                    $stmt->bindParam(':amount_min', str_replace('+', '', $filters['amount_range']));
+                }
+            }
+            if (!empty($filters['search'])) {
+                $searchTerm = '%' . $filters['search'] . '%';
+                $stmt->bindParam(':search', $searchTerm);
+            }
+
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch payments: " . $e->getMessage());
+        }
     }
-}
+
+    function getPaymentMethods()
+    {
+        try {
+            $sql = "SELECT DISTINCT payment_method FROM payments";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the payment_method column
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch payment methods: " . $e->getMessage());
+        }
+    }
+
+
+    function getPaymentStatuses()
+    {
+        try {
+            $sql = "SELECT DISTINCT status FROM payments";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the status column
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch payment statuses: " . $e->getMessage());
+        }
+    }
+
+    function getPaymentSummary()
+    {
+        try {
+            $sql = "
+                SELECT 
+                    COUNT(*) AS total_payments,
+                    SUM(CASE WHEN status = 'successful' THEN 1 ELSE 0 END) AS successful_payments,
+                    SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed_payments,
+                    SUM(CASE WHEN status = 'refunded' THEN 1 ELSE 0 END) AS refunded_payments,
+                    SUM(amount) AS total_amount
+                FROM payments
+            ";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch payment summary: " . $e->getMessage());
+        }
+    }
+
+    public function getPaymentDetails($paymentId)
+    {
+        try {
+            $sql = "SELECT 
+                p.payment_id, 
+                p.order_id, 
+                p.amount, 
+                p.payment_method, 
+                p.status AS payment_status, 
+                p.payment_date, 
+                u.first_name, 
+                u.last_name, 
+                u.email, 
+                u.phone, 
+                o.delivery_address, 
+                o.total_amount AS subtotal
+                FROM payments p
+                JOIN orders o ON p.order_id = o.order_id
+                JOIN users u ON o.user_id = u.user_id
+                WHERE p.payment_id = :payment_id";
+
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':payment_id', $paymentId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch payment details: " . $e->getMessage());
+        }
+    }
+
+    function getOrderItems($order_id)
+    {
+        try {
+            $sql = "SELECT 
+                        oi.item_id, 
+                        oi.quantity, 
+                        oi.price, 
+                        mi.item_name, 
+                        mi.image_url, 
+                        mi.description 
+                    FROM order_items oi
+                    JOIN menu_items mi ON oi.item_id = mi.item_id
+                    WHERE oi.order_id = :order_id";
+
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch order items: " . $e->getMessage());
+        }
+    }
+
+
+
+
+
+
+
+
 
 
     // ! Cart & Cart_Items
@@ -1043,6 +1162,8 @@ class Foodies
             throw new Exception("Failed to fetch orders for user: " . $e->getMessage());
         }
     }
+
+
     // public function getOrderItemsByOrderId($order_id)
     // {
     //     try {
