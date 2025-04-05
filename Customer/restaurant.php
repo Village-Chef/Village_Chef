@@ -248,6 +248,7 @@ if (isset($_GET['id'])) {
                         <div class="space-y-6">
                             <?php if (count($reviews) > 0) : ?>
                                 <?php foreach ($reviews as $review) : ?>
+                                    <?php if($review['status'] == 'published') {?>
                                     <div class="bg-zinc-900 rounded-xl p-6">
                                         <div class="flex justify-between items-start">
                                             <div class="flex items-start">
@@ -350,6 +351,7 @@ if (isset($_GET['id'])) {
                                             </div>
                                         <?php endif; ?>
                                     </div>
+                                    <?php } ?>
                                 <?php endforeach; ?>
 
                                 <!-- Load More Button -->
