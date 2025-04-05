@@ -1,4 +1,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <body class="min-h-screen bg-black text-white">
 
     <?php
@@ -318,8 +319,12 @@
                                 <span class="text-gray-400 text-sm">Last Updated</span>
                                 <span class="text-white">
                                     <?php
-                                    $date = new DateTime($userdata['updated_at'] == null ? 'Not Updated' : $userdata['updated_at']);
-                                    echo $date->format('M d, Y'); // Outputs: Mar 22, 2023
+                                    if (!empty($userdata['updated_at'])) {
+                                        $date = new DateTime($userdata['updated_at']);
+                                        echo $date->format('M d, Y'); // Outputs: Mar 22, 2023
+                                    } else {
+                                        echo "Not Updated"; // Fallback message
+                                    }
                                     ?>
                                 </span>
                             </div>
@@ -539,7 +544,7 @@
                 confirmButtonText: "Yes, logout!"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href="logout.php";
+                    window.location.href = "logout.php";
                     Swal.fire("Logged out!", "You have been logged out.", "success");
                 }
             });

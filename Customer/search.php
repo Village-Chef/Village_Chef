@@ -48,13 +48,21 @@
             echo "<p class='text-red-500'>Error: " . $e->getMessage() . "</p>";
         }
     } else {
-        echo "<p class='text-gray-400'>Please enter a search query.</p>";
+        // echo "<p class='text-gray-400'>Please enter a search query.</p>";
     }
     if (isset($_SESSION['user']['user_id'])) {
         $uid = $_SESSION['user']['user_id'];
     }
-    if (isset($_GET['query'])){
-        $query = htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); // Sanitize the input
+    if (isset($_GET['query']) && !empty($_GET['query'])) {
+        $searchQuery = htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); // Sanitize the input
+        try {
+            // Call the search method with the query
+            $results = $obj->search($searchQuery);
+        } catch (Exception $e) {
+            echo "<p class='text-red-500'>Error: " . $e->getMessage() . "</p>";
+        }
+    } else {
+            $results = $obj->getAllResults();
     }
 
     if (isset($_GET['addtoCart'])) {
@@ -256,7 +264,7 @@
             </div> -->
 
             <!-- Sort -->
-            <div class="flex items-center">
+            <!-- <div class="flex items-center">
                 <label for="sort" class="mr-2 text-sm font-medium text-gray-300">Sort by:</label>
                 <select id="sort" name="sort" class="bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 p-2.5">
                     <option value="relevance">Relevance</option>
@@ -265,7 +273,7 @@
                     <option value="price-low">Price (Low to High)</option>
                     <option value="price-high">Price (High to Low)</option>
                 </select>
-            </div>
+            </div> -->
         </div>
 
         <!-- Search Results -->
@@ -274,19 +282,28 @@
 
             <!-- Results Count and View Toggle -->
 
-            <?php if (isset($_GET['query'])) { ?>
+            <?php if (isset($_GET['query']) || $results ) { 
+                $query="All";
+                if(isset($_GET['query'])) {
+                    $query=$_GET['query'];
+                }
+                ?>
                 <div class="mb-4">
-                    <?php if (isset($results) && count($results) > 0) { ?>
-                        <p class="text-gray-400">Showing <?php echo count($results); ?> result<?php echo count($results) > 1 ? 's' : ''; ?> for "<?php echo htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); ?>"</p>
-                    <?php } else { ?>
-                        <p class="text-gray-400">No results found for "<?php echo htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); ?>"</p>
+                    <?php if (isset($results) && count($results) > 0) {
+                        
+                        ?>
+                        <p class="text-gray-400">Showing <?php echo count($results); ?> result<?php echo count($results) > 1 ? 's' : ''; ?> for "<?php echo htmlspecialchars($query, ENT_QUOTES, 'UTF-8'); ?>"</p>
+                    <?php } else { 
+                        
+                        ?>
+                        <p class="text-gray-400">No results found for "<?php echo htmlspecialchars($query?$query:'All', ENT_QUOTES, 'UTF-8'); ?>"</p>
                     <?php } ?>
                 </div>
                 <!-- Results Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php
                     if (count($results) > 0) {
-                        print_r($results); // Debugging line to check the structure of $results
+                        // print_r($results); // Debugging line to check the structure of $results
                         foreach ($results as $result) {
 
 
