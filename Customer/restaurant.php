@@ -378,6 +378,7 @@ if (isset($_GET['id'])) {
                             <?php endif; ?>
                         </div>
                     </div>
+                    
                 </div>
             </main>
         </div>
