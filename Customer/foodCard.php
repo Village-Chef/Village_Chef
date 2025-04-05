@@ -151,7 +151,7 @@
                         </div>
                     <?php } else { ?>
                         <form
-                            action="<?php echo $_SERVER['PHP_SELF']; ?>?id=<?php echo $id; ?>&addtoCart=<?php echo $allMenu['item_id'] ?>&price=<?php echo $allMenu['price'] ?>"
+                            action="?id=<?php echo $id; ?>&addtoCart=<?php echo $allMenu['item_id'] ?>&price=<?php echo $allMenu['price'] ?>"
                             method="POST">
                             <button type="submit"
                                 class="bg-yellow-500 text-black text-xs font-semibold px-4 p-1 rounded-md z-10">

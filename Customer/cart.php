@@ -5,219 +5,398 @@
         display: none !important;
     }
 </style>
-
-<!-- Api Key -->
-<?php
-$apiKey = "rzp_test_FFm35IphRdzhve";
-
-if (isset($_GET['payment_id'])) {
-    $payment_id = $_GET['payment_id'];
-}
-
-
-
-
-$tip = 0;
-$total = 0;
-$DelFee = 22;
-$PlatformFee = 6;
-$Gst = ($total + $tip + $DelFee + $PlatformFee); // Calculate GST as 18% of the total amount
-
-
-if (isset($_GET['tip'])) {
-    $tip = $_GET['tip'];
-}
-
-if (isset($_GET['address'])) {
-    $address = $_GET['address'];
-}
-
-if (isset($_GET['payment']) && $_GET['payment'] == 'online') {
-    echo "<script>document.addEventListener('DOMContentLoaded', function() { RazorPay(); });</script>";
-}
-if (isset($_GET['payment']) && $_GET['payment'] == 'cod') {
-    echo "<script>document.addEventListener('DOMContentLoaded', function() { cod(); });</script>";
-}
-
-// Retrieve data from $_GET
-if (isset($_GET['cart_id']) && isset($_GET['item_id']) && isset($_GET['quantity'])) {
-    $cart_id = $_GET['cart_id']; // Get the cart ID
-    $item_id = $_GET['item_id']; // Get the item ID
-    $quantity = intval($_GET['quantity']); // Convert to integer to avoid issues
-
-
-    if ($quantity <= 0) {
-        // Delete the item from cart if quantity is 0 or negative
-        $obj->deleteCartItem($cart_id, $item_id);
-    } else {
-        // Update quantity if it's 1 or more
-        $obj->updateCartItemQuantity($cart_id, $item_id, $quantity);
-    }
-    header('Location: cart.php');
-    exit();
-}
-if (isset($_GET['address'])) {
-    $obj->updateUserAddress($uid, $_GET['address']);
-    header("Location:cart.php");
-}
-
-
-
-?>
-
-<style>
-    /* From Uiverse.io by fthisilak */
-    .pay-btn {
-        position: relative;
-        padding: 8px 16px;
-        font-size: 16px;
-        background: transparent;
-        color: #eab308;
-        border: 1px solid #eab308;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-    }
-
-    .pay-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-    }
-
-    .icon-container {
-        position: relative;
-        width: 24px;
-        height: 24px;
-    }
-
-    .icon {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 24px;
-        height: 24px;
-        color: #eab308;
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .default-icon {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    /* Hover animations */
-    .pay-btn:hover .icon {
-        animation: none;
-    }
-
-    .pay-btn:hover .wallet-icon {
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .pay-btn:hover .card-icon {
-        animation: iconRotate 2.5s infinite;
-        animation-delay: 0s;
-    }
-
-    .pay-btn:hover .payment-icon {
-        animation: iconRotate 2.5s infinite;
-        animation-delay: 0.5s;
-    }
-
-    .pay-btn:hover .dollar-icon {
-        animation: iconRotate 2.5s infinite;
-        animation-delay: 1s;
-    }
-
-    .pay-btn:hover .check-icon {
-        animation: iconRotate 2.5s infinite;
-        animation-delay: 1.5s;
-    }
-
-    /* Active state - show only checkmark */
-    .pay-btn:active .icon {
-        animation: none;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .pay-btn:active .check-icon {
-        animation: checkmarkAppear 0.6s ease forwards;
-        visibility: visible;
-    }
-
-    .btn-text {
-        font-weight: 600;
-        font-family:
-            system-ui,
-            -apple-system,
-            sans-serif;
-    }
-
-    @keyframes iconRotate {
-        0% {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px) scale(0.5);
-        }
-
-        5% {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-        }
-
-        15% {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0) scale(1);
-        }
-
-        20% {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px) scale(0.5);
-        }
-
-        100% {
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px) scale(0.5);
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                screens: {
+                    'xs': '475px', // Custom breakpoint at 440px
+                },
+            }
         }
     }
-
-    @keyframes checkmarkAppear {
-        0% {
-            opacity: 0;
-            transform: scale(0.5) rotate(-45deg);
-        }
-
-        50% {
-            opacity: 0.5;
-            transform: scale(1.2) rotate(0deg);
-        }
-
-        100% {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-    }
-</style>
+</script>
 
 <body class="min-h-screen bg-black text-white ">
+    <?php
+    $ActivePage = "cart";
+    require 'navbar.php';
+    $apiKey = "rzp_test_FFm35IphRdzhve";
+
+    if (isset($_GET['payment_id'])) {
+        $payment_id = $_GET['payment_id'];
+    }
+
+
+
+
+    $tip = 0;
+    $total = 0;
+    $DelFee = 22;
+    $PlatformFee = 6;
+    $Gst = ($total + $tip + $DelFee + $PlatformFee); // Calculate GST as 18% of the total amount
+    
+
+    if (isset($_GET['tip'])) {
+        $tip = $_GET['tip'];
+    }
+
+    if (isset($_GET['address'])) {
+        $address = $_GET['address'];
+    }
+
+    if (isset($_GET['payment']) && $_GET['payment'] == 'online') {
+        echo "<script>document.addEventListener('DOMContentLoaded', function() { RazorPay(); });</script>";
+    }
+    if (isset($_GET['payment']) && $_GET['payment'] == 'cod') {
+        echo "<script>document.addEventListener('DOMContentLoaded', function() { cod(); });</script>";
+    }
+
+    // Retrieve data from $_GET
+    if (isset($_GET['cart_id']) && isset($_GET['item_id']) && isset($_GET['quantity'])) {
+        $cart_id = $_GET['cart_id']; // Get the cart ID
+        $item_id = $_GET['item_id']; // Get the item ID
+        $quantity = intval($_GET['quantity']); // Convert to integer to avoid issues
+    
+        if ($quantity <= 0) {
+            // Delete the item from cart if quantity is 0 or negative
+            $obj->deleteCartItem($cart_id, $item_id);
+        } else {
+            // Update quantity if it's 1 or more
+            $obj->updateCartItemQuantity($cart_id, $item_id, $quantity);
+        }
+        echo "<script> window.location.href='cart.php'; </script>"; // Redirect
+        exit();
+    }
+    if (isset($_GET['address'])) {
+        $obj->updateUserAddress($uid, $_GET['address']);
+        echo "<script> window.location.href='cart.php'; </script>";
+    }
+
+
+    ?>
+
+    <style>
+        /* From Uiverse.io by pathikcomp */
+        .main>.inp {
+            
+            display: none;
+        }
+
+        .main {
+            position: fixed !important;
+            font-weight: 800;
+            color: white;
+            background-color: #eab308;
+            padding: 3px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            height: 2.5rem;
+            width: 8rem;
+            position: relative;
+            cursor: pointer;
+            justify-content: space-between;
+        }
+
+        .arrow {
+            height: 34%;
+            aspect-ratio: 1;
+            margin-block: auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .arrow::after,
+        .arrow::before {
+            content: "";
+            position: absolute;
+            background-color: white;
+            height: 100%;
+            width: 2.5px;
+            border-radius: 500px;
+            transform-origin: bottom;
+        }
+
+        .arrow::after {
+            transform: rotate(35deg) translateX(-0.5px);
+        }
+
+        .arrow::before {
+            transform: rotate(-35deg) translateX(0.5px);
+        }
+
+        .main>.inp:checked+.arrow {
+            transform: rotateX(180deg);
+        }
+
+        .menu-container {
+            background-color: white;
+            color: #eab308;
+            border-radius: 10px;
+            position: absolute;
+            width: 100%;
+            left: 0;
+            bottom: 120%;
+            overflow: hidden;
+            clip-path: inset(0% 0% 0% 0% round 10px);
+            transition: all 0.4s;
+        }
+
+        .menu-list {
+            --delay: 0.4s;
+            --trdelay: 0.15s;
+            padding: 8px 10px;
+            border-radius: inherit;
+            transition: background-color 0.2s 0s;
+            position: relative;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .menu-list::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.3);
+            width: 95%;
+        }
+
+        .menu-list:hover {
+            background-color: rgb(223, 223, 223);
+        }
+
+        .inp:checked~.menu-container {
+            clip-path: inset(10% 50% 90% 50% round 10px);
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(1) {
+            transition:
+                transform 0.4s var(--delay),
+                opacity 0.4s var(--delay);
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(2) {
+            transition:
+                transform 0.4s calc(var(--delay) + (var(--trdelay) * 1)),
+                opacity 0.4s calc(var(--delay) + (var(--trdelay) * 1));
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(3) {
+            transition:
+                transform 0.4s calc(var(--delay) + (var(--trdelay) * 2)),
+                opacity 0.4s calc(var(--delay) + (var(--trdelay) * 2));
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(4) {
+            transition:
+                transform 0.4s calc(var(--delay) + (var(--trdelay) * 3)),
+                opacity 0.4s calc(var(--delay) + (var(--trdelay) * 3));
+        }
+
+        .bar-inp {
+            -webkit-appearance: none;
+            display: none;
+            visibility: hidden;
+        }
+
+        .bar {
+            display: flex;
+            height: 50%;
+            width: 20px;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .bar-list {
+            --transform: -25%;
+            display: block;
+            width: 100%;
+            height: 3px;
+            border-radius: 50px;
+            background-color: white;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .inp:not(:checked)~.bar>.top {
+            transform-origin: top right;
+            transform: translateY(var(--transform)) rotate(-45deg);
+        }
+
+        .inp:not(:checked)~.bar>.middle {
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+
+        .inp:not(:checked)~.bar>.bottom {
+            transform-origin: bottom right;
+            transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
+        }
+
+        /* From Uiverse.io by fthisilak */
+        .pay-btn {
+            position: relative;
+            padding: 8px 16px;
+            font-size: 16px;
+            background: transparent;
+            color: #eab308;
+            border: 1px solid #eab308;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .pay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .icon-container {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+
+        .icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            color: #eab308;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .default-icon {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Hover animations */
+        .pay-btn:hover .icon {
+            animation: none;
+        }
+
+        .pay-btn:hover .wallet-icon {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .pay-btn:hover .card-icon {
+            animation: iconRotate 2.5s infinite;
+            animation-delay: 0s;
+        }
+
+        .pay-btn:hover .payment-icon {
+            animation: iconRotate 2.5s infinite;
+            animation-delay: 0.5s;
+        }
+
+        .pay-btn:hover .dollar-icon {
+            animation: iconRotate 2.5s infinite;
+            animation-delay: 1s;
+        }
+
+        .pay-btn:hover .check-icon {
+            animation: iconRotate 2.5s infinite;
+            animation-delay: 1.5s;
+        }
+
+        /* Active state - show only checkmark */
+        .pay-btn:active .icon {
+            animation: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .pay-btn:active .check-icon {
+            animation: checkmarkAppear 0.6s ease forwards;
+            visibility: visible;
+        }
+
+        .btn-text {
+            font-weight: 600;
+            font-family:
+                system-ui,
+                -apple-system,
+                sans-serif;
+        }
+
+        @keyframes iconRotate {
+            0% {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(10px) scale(0.5);
+            }
+
+            5% {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+
+            15% {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+
+            20% {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-10px) scale(0.5);
+            }
+
+            100% {
+                opacity: 0;
+                visibility: hidden;
+                transform: translateY(-10px) scale(0.5);
+            }
+        }
+
+        @keyframes checkmarkAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) rotate(-45deg);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2) rotate(0deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+    </style>
+
 
     <!-- Navbar -->
-    <?php require 'navbar.php' ?>
+
 
     <?php
 
-    $cartItems="";
+
+
+    $cartItems = "";
     if (isset(($_SESSION['user']['user_id']))) {
         $uid = $_SESSION['user']['user_id'];
         $cartItems = $obj->getCartItems($uid);
@@ -230,7 +409,7 @@ if (isset($_GET['address'])) {
         }
     }
 
-    
+
     $Gst = number_format($total * 0.09, 2);
     $GrandTotal = $total + $DelFee + $PlatformFee + $tip + $Gst;
 
@@ -318,7 +497,6 @@ if (isset($_GET['address'])) {
                             $obj->deleteCartItemByCartId($cart_id);
                             echo "<script> window.location.href='cart.php'; </script>";
                         }
-
                     }
                     ?>
 
@@ -348,12 +526,12 @@ if (isset($_GET['address'])) {
 
                 </div> -->
 
-                <div class="flex w-full flex-row gap-6 rounded-lg">
+                <div class="flex w-full flex-col md:flex-row justify-center items-center gap-6 rounded-lg">
                     <!-- Right Side Process -->
-                    <div class="w-[100%]  p-4">
+                    <div class="w-full p-4">
                         <div class="max-w-2xl mx-auto">
                             <!-- Logged In Section -->
-                            <div class="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+                            <div class="bg-white shadow-lg rounded-lg sm:p-3 p-6 lg:p-6 border border-gray-200">
                                 <div class="flex items-center space-x-4">
                                     <div class="bg-black text-white p-3 rounded-lg">
                                         <svg class="w-6 h-6" fill="white" viewBox="0 0 24 24">
@@ -366,13 +544,14 @@ if (isset($_GET['address'])) {
                                                 class="text-green-500">✔</span></p>
                                         <p class="text-gray-700 font-medium">
                                             <?php echo $userdata['first_name'] . " " . $userdata['last_name']; ?> |
-                                            <?php echo $userdata['phone']; ?></p>
+                                            <?php echo $userdata['phone']; ?>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Add Delivery Address Section -->
-                            <div class="bg-white shadow-lg rounded-lg p-6 mt-4 border border-gray-200">
+                            <div class="bg-white shadow-lg rounded-lg sm:p-3 p-6 lg:p-6 mt-4 border border-gray-200">
                                 <div class="flex items-center space-x-4">
                                     <div class="bg-black text-white p-3 rounded-lg">
                                         <svg class="w-6 h-6" fill="white" viewBox="0 0 24 24">
@@ -389,7 +568,7 @@ if (isset($_GET['address'])) {
                                 </div>
 
                                 <!-- Address Box -->
-                                <div class="border border-gray-300 rounded-lg p-6 mt-4">
+                                <div class="border border-gray-300 rounded-lg sm:p-3 p-6 lg:p-6 mt-4">
                                     <?php
                                     if (isset($_GET['address'])) {
                                         $obj->updateUserAddress($uid, $_GET['address']);
@@ -435,7 +614,7 @@ if (isset($_GET['address'])) {
                             <?php
                             if ($currentUser['address'] != null) {
                                 ?>
-                                <div class="bg-white shadow-lg rounded-lg p-6 mt-4 border border-gray-200">
+                                <div class="bg-white shadow-lg rounded-lg sm:p-3 p-6 lg:p-6 mt-4 border border-gray-200">
                                     <div class="flex items-center space-x-4">
                                         <div class="bg-black text-white p-3 rounded-lg">
                                             <svg class="w-6 h-6" fill="white" viewBox="0 0 24 24">
@@ -521,7 +700,7 @@ if (isset($_GET['address'])) {
                     </div>
 
                     <!-- Left Side Bill -->
-                    <div class="flex w-fit flex-col gap-4 bg-zinc-900 ">
+                    <div class="flex max-w-[22rem] sm:max-w-96 h-fit mx-auto flex-col justify-between gap-4 bg-zinc-900 ">
 
                         <!-- Zig Zag Bar -->
                         <div class="relative bg-yellow-300  rotate-180 ">
@@ -533,7 +712,7 @@ if (isset($_GET['address'])) {
                             </svg>
                         </div>
 
-                        <div class=" p-2 rounded-lg shadow-md w-96">
+                        <div class=" p-4 rounded-lg shadow-md  w-fit">
 
                             <!-- Cart Items List -->
                             <div class="grid  w-full gap-2 mb-4 rounded-lg text-white">
@@ -675,6 +854,8 @@ if (isset($_GET['address'])) {
             <?php } ?>
         </div>
 
+        
+
         <!-- <div class="bg-zinc-900 rounded-lg p-6">
                 <h2 class="text-2xl font-bold mb-4">Checkout</h2>
                 <form>
@@ -709,8 +890,11 @@ if (isset($_GET['address'])) {
                     </button>
                 </form>
             </div> -->
-        </div>
+
+       
+        
     </main>
+
 
 
     <!-- Footer -->
@@ -875,9 +1059,24 @@ if (isset($_GET['address'])) {
         'payment_capture' => 1 // Auto capture payment
     ]);
 
-    echo json_encode(['orderId' => $order['id']]);
+    // echo json_encode(['orderId' => $order['id']]);
 
     ?>
+     <label class="main fixed bottom-0 right-0 m-4">
+      Menu
+      <input class="inp" checked="" type="checkbox" />
+      <div class="bar">
+        <span class="top bar-list"></span>
+        <span class="middle bar-list"></span>
+        <span class="bottom bar-list"></span>
+      </div>
+      <section class="menu-container">
+        <div class="menu-list"><a href="menu.php">Menu</a></div>
+        <div class="menu-list"><a href="cart.php">Cart</a></div>
+        <div class="menu-list"><a href="orders_user.php">Past Orders</a></div>
+        <div class="menu-list"><a href="account_user.php">Account</a></div>
+      </section>
+    </label>
 
 </body>
 

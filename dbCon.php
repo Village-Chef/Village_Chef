@@ -1012,6 +1012,8 @@ class Foodies
         }
     }
 
+
+    
     public function deleteCartItem($cart_id, $item_id)
     {
         try {
@@ -1024,7 +1026,6 @@ class Foodies
             throw new Exception("Failed to delete cart item: " . $e->getMessage());
         }
     }
-
 
     public function updateUserAddress($id, $address)
     {
@@ -1045,6 +1046,7 @@ class Foodies
             throw new Exception("Address update failed: " . $e->getMessage());
         }
     }
+
 
     // Order Items
     public function deleteCartItemByCartId($cart_id)
@@ -1130,38 +1132,192 @@ class Foodies
     }
 
     public function getOrdersByUserId($user_id)
-    {
-        try {
-            $sql = "SELECT 
-                        o.order_id, 
-                        o.order_date, 
-                        o.delivery_address, 
-                        o.total_amount, 
-                        o.notes, 
-                        o.status, 
-                        r.name AS restaurant_name,
-                        GROUP_CONCAT(oi.item_id) AS item_ids,
-                        GROUP_CONCAT(oi.quantity) AS quantities,
-                        GROUP_CONCAT(oi.price) AS prices,
-                        GROUP_CONCAT(mi.item_name) AS item_names,
-                        GROUP_CONCAT(mi.image_url) AS image_urls
-                    FROM orders o
-                    JOIN restaurants r ON o.restaurant_id = r.restaurant_id
-                    JOIN order_items oi ON o.order_id = oi.order_id
-                    JOIN menu_items mi ON oi.item_id = mi.item_id
-                    WHERE o.user_id = :user_id
-                    GROUP BY o.order_id
-                    ORDER BY o.order_date DESC";
+{
+    try {
+        $sql = "SELECT 
+                    o.order_id, 
+                    o.order_date, 
+                    o.delivery_address, 
+                    o.total_amount, 
+                    o.notes, 
+                    o.status, 
+                    r.name AS restaurant_name,
+                    GROUP_CONCAT(oi.item_id) AS item_ids,
+                    GROUP_CONCAT(oi.quantity) AS quantities,
+                    GROUP_CONCAT(oi.price) AS prices,
+                    GROUP_CONCAT(mi.item_name) AS item_names,
+                    GROUP_CONCAT(mi.image_url) AS image_urls,
+                    p.payment_id,
+                    p.payment_method,
+                    p.amount AS payment_amount,
+                    p.status AS payment_status
+                FROM orders o
+                JOIN restaurants r ON o.restaurant_id = r.restaurant_id
+                JOIN order_items oi ON o.order_id = oi.order_id
+                JOIN menu_items mi ON oi.item_id = mi.item_id
+                LEFT JOIN payments p ON o.order_id = p.order_id
+                WHERE o.user_id = :user_id
+                GROUP BY o.order_id
+                ORDER BY o.order_date DESC";
 
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':user_id', $user_id);
-            $stmt->execute();
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
 
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            throw new Exception("Failed to fetch orders for user: " . $e->getMessage());
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        throw new Exception("Failed to fetch orders for user: " . $e->getMessage());
     }
+}
+
+
+
+function getOrderDetailsById($order_id)
+{
+    try {
+        // SQL Query to fetch order details along with user, restaurant, payment, and review information
+        $sql = "
+            SELECT 
+                o.order_id, 
+                o.user_id, 
+                o.restaurant_id, 
+                o.order_date, 
+                o.delivery_address, 
+                o.total_amount, 
+                o.status AS order_status, 
+                o.notes, 
+                u.first_name AS customer_first_name, 
+                u.last_name AS customer_last_name, 
+                u.email AS customer_email, 
+                r.name AS restaurant_name, 
+                r.address AS restaurant_address, 
+                p.payment_id,  
+                p.payment_method, 
+                p.amount AS payment_amount, 
+                p.status AS payment_status, 
+                GROUP_CONCAT(DISTINCT mi.item_name ORDER BY mi.item_id SEPARATOR ', ') AS items, 
+                GROUP_CONCAT(DISTINCT oi.quantity ORDER BY oi.item_id SEPARATOR ', ') AS quantities,  
+                GROUP_CONCAT(DISTINCT oi.price ORDER BY oi.item_id SEPARATOR ', ') AS prices,
+                GROUP_CONCAT(DISTINCT mi.image_url ORDER BY mi.item_id SEPARATOR ', ') AS image_urls,
+                rv.review_id, 
+                rv.rating, 
+                rv.review_text, 
+                rv.status AS review_status, 
+                rv.created_at AS review_created_at
+            FROM 
+                orders o 
+            JOIN 
+                users u ON o.user_id = u.user_id 
+            JOIN 
+                restaurants r ON o.restaurant_id = r.restaurant_id 
+            LEFT JOIN 
+                payments p ON o.order_id = p.order_id 
+            LEFT JOIN 
+                order_items oi ON o.order_id = oi.order_id 
+            LEFT JOIN 
+                menu_items mi ON oi.item_id = mi.item_id 
+            LEFT JOIN 
+                reviews rv ON o.order_id = rv.order_id 
+            WHERE 
+                o.order_id = :order_id 
+            GROUP BY 
+                o.order_id
+        ";
+
+        // Prepare and execute the statement
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(':order_id', $order_id, PDO::PARAM_STR); // Ensure it's bound as a string
+        $stmt->execute();
+
+        // Fetch the result as an associative array
+        $orderDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Check if any order details were found
+        if (!$orderDetails) {
+            throw new Exception("No order found with the provided order ID.");
+        }
+
+        return $orderDetails;
+    } catch (PDOException $e) {
+        throw new Exception("Database error while fetching order details: " . $e->getMessage());
+    } catch (Exception $e) {
+        throw new Exception("Error: " . $e->getMessage());
+    }
+}
+
+public function addReview($user_id, $restaurant_id, $order_id, $rating, $review_text, $status = 'archived')
+{
+    try {
+        $sql = "INSERT INTO reviews (user_id, restaurant_id, order_id, rating, review_text, status, created_at, updated_at) 
+                VALUES (:user_id, :restaurant_id, :order_id, :rating, :review_text, :status, NOW(), NOW())";
+
+        $stmt = $this->con->prepare($sql);
+
+        // Bind parameters
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':restaurant_id', $restaurant_id);
+        $stmt->bindParam(':order_id', $order_id);
+        $stmt->bindParam(':rating', $rating);
+        $stmt->bindParam(':review_text', $review_text);
+        $stmt->bindParam(':status', $status);
+
+        return $stmt->execute();
+    } catch (PDOException $e) {
+        throw new Exception("Failed to add review: " . $e->getMessage());
+    }
+}
+
+
+public function getRestaurantReviews($restaurant_id)
+{
+    try {
+        $sql = "SELECT 
+                    rv.review_id, 
+                    rv.user_id, 
+                    rv.order_id, 
+                    rv.rating, 
+                    rv.review_text, 
+                    rv.status, 
+                    rv.created_at, 
+                    u.first_name AS user_first_name, 
+                    u.last_name AS user_last_name, 
+                    u.profile_pic AS user_profile_pic
+                FROM reviews rv
+                JOIN users u ON rv.user_id = u.user_id
+                WHERE rv.restaurant_id = :restaurant_id
+                ORDER BY rv.created_at DESC";
+
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(':restaurant_id', $restaurant_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        throw new Exception("Failed to fetch reviews for the restaurant: " . $e->getMessage());
+    }
+}
+
+
+public function calculateAverageRating($restaurant_id)
+{
+    try {
+        $reviews = $this->getRestaurantReviews($restaurant_id);
+
+        if (count($reviews) === 0) {
+            return null; // No reviews available
+        }
+
+        $totalRating = 0;
+        foreach ($reviews as $review) {
+            $totalRating += $review['rating'];
+        }
+
+        $averageRating = $totalRating / count($reviews);
+        return round($averageRating, 1); // Round to 1 decimal place
+    } catch (Exception $e) {
+        throw new Exception("Failed to calculate average rating: " . $e->getMessage());
+    }
+}
 
 
     // public function getOrderItemsByOrderId($order_id)
