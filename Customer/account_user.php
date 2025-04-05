@@ -1,13 +1,29 @@
-<!DOCTYPE html>
-<html lang="en" class="bg-black">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<body class="min-h-screen bg-black text-white">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Village Chef - Past Orders</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
+    <?php
+
+    require "navbar.php";
+    $ActivePage = "Account";
+
+    if (isset(($_SESSION['user']['user_id']))) {
+        $uid = $_SESSION['user']['user_id'];
+        $cartItems = $obj->getCartItems($uid);
+        $currentUser = $obj->getUserById($uid);
+        $userdata = $obj->getUserById($uid);
+        $usersAllOrders = $obj->getOrdersByUserId($uid);
+        $totalOrders = 0;
+        foreach ($usersAllOrders as $usersorders) {
+            $totalOrders += 1;
+        }
+    }
+
+    // $getitems=$obj->getOrderItemsByOrderId();
+
+
+
+
+    ?>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -45,32 +61,175 @@
             display: none;
             /* Chrome, Safari, Opera */
         }
-    </style>
-</head>
 
-<body class="min-h-screen bg-black text-white">
 
-    <?php require "navbar.php"; 
-
-    if(isset(($_SESSION['user']['user_id']))){
-        $uid= $_SESSION['user']['user_id'];
-        $cartItems = $obj->getCartItems($uid);
-        $currentUser = $obj->getUserById($uid);
-        $userdata = $obj->getUserById($uid);
-        $usersAllOrders = $obj->getOrdersByUserId($uid);
-        $totalOrders = 0;
-        foreach ($usersAllOrders as $usersorders) {
-            $totalOrders += 1;
+        /* From Uiverse.io by pathikcomp */
+        .main>.inp {
+            display: none;
         }
-    }
 
-    // $getitems=$obj->getOrderItemsByOrderId();
-    
+        .main {
+            position: fixed !important;
+            font-weight: 800;
+            color: white;
+            background-color: #eab308;
+            padding: 3px 15px;
+            border-radius: 10px;
 
+            display: flex;
+            align-items: center;
+            height: 2.5rem;
+            width: 8rem;
+            position: relative;
+            cursor: pointer;
+            justify-content: space-between;
+        }
 
+        .arrow {
+            height: 34%;
+            aspect-ratio: 1;
+            margin-block: auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            transition: all 0.3s;
+        }
 
-    ?>
+        .arrow::after,
+        .arrow::before {
+            content: "";
+            position: absolute;
+            background-color: white;
+            height: 100%;
+            width: 2.5px;
+            border-radius: 500px;
+            transform-origin: bottom;
+        }
 
+        .arrow::after {
+            transform: rotate(35deg) translateX(-0.5px);
+        }
+
+        .arrow::before {
+            transform: rotate(-35deg) translateX(0.5px);
+        }
+
+        .main>.inp:checked+.arrow {
+            transform: rotateX(180deg);
+        }
+
+        .menu-container {
+            background-color: white;
+            color: #eab308;
+            border-radius: 10px;
+            position: absolute;
+            width: 100%;
+            left: 0;
+            bottom: 120%;
+            overflow: hidden;
+            clip-path: inset(0% 0% 0% 0% round 10px);
+            transition: all 0.4s;
+        }
+
+        .menu-list {
+            --delay: 0.4s;
+            --trdelay: 0.15s;
+            padding: 8px 10px;
+            border-radius: inherit;
+            transition: background-color 0.2s 0s;
+            position: relative;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .menu-list::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.3);
+            width: 95%;
+        }
+
+        .menu-list:hover {
+            background-color: rgb(223, 223, 223);
+        }
+
+        .inp:checked~.menu-container {
+            clip-path: inset(10% 50% 90% 50% round 10px);
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(1) {
+            transition:
+                transform 0.4s var(--delay),
+                opacity 0.4s var(--delay);
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(2) {
+            transition:
+                transform 0.4s calc(var(--delay) + (var(--trdelay) * 1)),
+                opacity 0.4s calc(var(--delay) + (var(--trdelay) * 1));
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(3) {
+            transition:
+                transform 0.4s calc(var(--delay) + (var(--trdelay) * 2)),
+                opacity 0.4s calc(var(--delay) + (var(--trdelay) * 2));
+        }
+
+        .inp:not(:checked)~.menu-container .menu-list:nth-child(4) {
+            transition:
+                transform 0.4s calc(var(--delay) + (var(--trdelay) * 3)),
+                opacity 0.4s calc(var(--delay) + (var(--trdelay) * 3));
+        }
+
+        .bar-inp {
+            -webkit-appearance: none;
+            display: none;
+            visibility: hidden;
+        }
+
+        .bar {
+            display: flex;
+            height: 50%;
+            width: 20px;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .bar-list {
+            --transform: -25%;
+            display: block;
+            width: 100%;
+            height: 3px;
+            border-radius: 50px;
+            background-color: white;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .inp:not(:checked)~.bar>.top {
+            transform-origin: top right;
+            transform: translateY(var(--transform)) rotate(-45deg);
+        }
+
+        .inp:not(:checked)~.bar>.middle {
+            transform: translateX(-50%);
+            opacity: 0;
+        }
+
+        .inp:not(:checked)~.bar>.bottom {
+            transform-origin: bottom right;
+            transform: translateY(calc(var(--transform) * -1)) rotate(45deg);
+        }
+    </style>
 
     <!-- Account Navigation -->
     <div class="pt-20">
@@ -85,7 +244,7 @@
                         class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
                         <i class="fa-solid fa-heart mr-2"></i>Past Orders
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
+                    <!-- <a href="#" class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
                         <i class="fa-solid fa-heart mr-2"></i>Favorites
                     </a>
                     <a href="#" class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
@@ -96,7 +255,7 @@
                     </a>
                     <a href="#" class="text-gray-400 hover:text-yellow-500 whitespace-nowrap transition-colors">
                         <i class="fa-solid fa-bell mr-2"></i>Notifications
-                    </a>
+                    </a> -->
                 </div>
             </div>
         </div>
@@ -104,7 +263,7 @@
 
     <?php
     if (isset($_SESSION['user'])) {
-        ?>
+    ?>
         <!-- Main Content -->
         <main class="max-w-7xl mx-auto px-4 py-8">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -188,8 +347,8 @@
                                 <span>Delete Account</span>
                             </a>
                             <div class="pt-3 border-t border-zinc-800 mt-3">
-                                <a href="logout.php"
-                                    class="flex items-center text-red-500 hover:text-red-400 transition-colors">
+                                <a onclick="logout()"
+                                    class="flex items-center cursor-pointer text-red-500 hover:text-red-400 transition-colors">
                                     <i class="fa-solid fa-sign-out-alt mr-3 w-5 text-center"></i>
                                     <span>Logout</span>
                                 </a>
@@ -284,7 +443,7 @@
                             <?php
 
                             foreach ($usersAllOrders as $orders) {
-                                ?>
+                            ?>
                                 <div class="flex items-start">
                                     <div class="bg-zinc-800 p-2 rounded-full mr-3">
                                         <i class="fa-solid fa-shopping-bag text-yellow-500"></i>
@@ -299,7 +458,7 @@
                                             ?>
                                     </div>
                                 </div>
-                                <?php
+                            <?php
                             }
 
                             ?>
@@ -331,9 +490,9 @@
                 </div>
             </div>
         </main>
-        <?php
+    <?php
     } else {
-        ?>
+    ?>
         <!-- Profile Header -->
         <div class="flex flex-col items-center gap-6 my-10">
             <!-- Profile Image -->
@@ -349,90 +508,48 @@
                 Login
             </a>
         </div>
-        <?php
+    <?php
     }
     ?>
+
+    <label class="main fixed bottom-0 right-0 m-4">
+        Menu
+        <input class="inp" checked="" type="checkbox" />
+        <div class="bar">
+            <span class="top bar-list"></span>
+            <span class="middle bar-list"></span>
+            <span class="bottom bar-list"></span>
+        </div>
+        <section class="menu-container">
+            <div class="menu-list"><a href="menu.php">Menu</a></div>
+            <div class="menu-list"><a href="cart.php">Cart</a></div>
+            <div class="menu-list"><a href="orders_user.php">Past Orders</a></div>
+            <div class="menu-list"><a href="account_user.php">Account</a></div>
+        </section>
+    </label>
+
+    <script>
+        function logout() {
+            Swal.fire({
+                title: "Are you sure?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, logout!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href="logout.php";
+                    Swal.fire("Logged out!", "You have been logged out.", "success");
+                }
+            });
+        }
+    </script>
 
 
 
     <!-- Footer -->
-    <footer class="bg-zinc-900 pt-16 pb-8 mt-16">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <div class="mr-2">
-                            <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                                <i class="fa-solid fa-utensils text-black"></i>
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
-                            <span class="font-bold text-xl leading-none">CHEF</span>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 mb-4">
-                        Bringing restaurant-quality meals to your doorstep since 2020.
-                    </p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-brands fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-brands fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-brands fa-instagram"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">
-                            <i class="fa-brands fa-linkedin-in"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">Home</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">About Us</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">Menu</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">Contact</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-yellow-500 transition-colors">FAQ</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Contact Us</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>123 Culinary Street, Foodville</li>
-                        <li>+1 (555) 123-4567</li>
-                        <li>info@villagechef.com</li>
-                        <li>Mon-Sun: 10:00 AM - 10:00 PM</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-lg mb-4">Newsletter</h4>
-                    <p class="text-gray-400 mb-4">Subscribe to get special offers and updates.</p>
-                    <div class="flex">
-                        <input type="email" placeholder="Your Email"
-                            class="px-4 py-2 bg-zinc-800 border border-zinc-700 focus:border-yellow-500 rounded-l-md text-white">
-                        <button class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-r-md">
-                            Send
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="border-t border-zinc-800 pt-8 text-center text-gray-500 text-sm">
-                <p>&copy;
-                    <script>
-                        document.write(new Date().getFullYear())
-                    </script> Village Chef. All rights reserved.
-                </p>
-            </div>
-        </div>
-    </footer>
+    <?php require("footer.php") ?>
 </body>
 
 </html>

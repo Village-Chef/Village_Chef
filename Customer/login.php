@@ -63,7 +63,7 @@ if (isset($_POST['btnLogin'])) {
                         showConfirmButton: false,
                         timer: 2000
                     }).then(function() {
-                        window.location.href = 'home.php';
+                        window.location.href = 'account_user.php';
                     });
                 </script>
             <?php else: ?>

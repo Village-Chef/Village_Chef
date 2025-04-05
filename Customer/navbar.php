@@ -1,6 +1,13 @@
 <?php
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
+}
+require '../dbCon.php';
+$obj = new Foodies();
+if (isset($_SESSION['user']['user_id'])) {
+    $user = $_SESSION['user']['user_id'];
+    $userdataNavbar = $obj->getUserById($user);
 }
 ?>
 
@@ -42,14 +49,7 @@ if (session_status() == PHP_SESSION_NONE) {
 </head>
 
 <body>
-    <?php
-    require '../dbCon.php';
-    $obj = new Foodies();
-    if(isset($_SESSION['user']['user_id'])){
-        $user = $_SESSION['user']['user_id'];
-        $userdataNavbar = $obj->getUserById($user);
-    } 
-    ?>
+
     <!-- Navbar -->
     <header class="w-[100%] mx-auto  bgNavbar backdrop-blur-lg bg-opacity-30 fixed z-50  py-4 px-4">
         <div class="flex items-center justify-between">
@@ -77,8 +77,8 @@ if (session_status() == PHP_SESSION_NONE) {
                 <?php
                 if (isset($_SESSION['user'])) {
                     ?>
-                    <a href="menu.php"
-                        class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Menu</a>
+                    <!-- <a href="menu.php"
+                        class="hover:text-yellow-500 <?php echo (isset($ActivePage) && $ActivePage == 'Menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">Menu</a> -->
                     <?php
                 } else {
                     ?>
@@ -98,7 +98,8 @@ if (session_status() == PHP_SESSION_NONE) {
             </nav>
 
             <!-- Search + Cart  -->
-            <div class="flex items-center gap-3">
+            <div class="flex items-center sm:gap-3">
+                <a href="search.php">
                 <button class="p-2 hover:text-yellow-500 transition-colors">
                     <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -107,7 +108,21 @@ if (session_status() == PHP_SESSION_NONE) {
                         <path d="m21 21-4.3-4.3" />
                     </svg>
                 </button>
-                <a href="orders_user.php">
+                </a>
+                <a href="menu.php">
+                    <button
+                        class="p-2 <?php echo (isset($ActivePage) && $ActivePage == 'menu') ? 'text-yellow-500' : 'text-white'; ?> transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-utensils-crossed-icon lucide-utensils-crossed">
+                            <path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8" />
+                            <path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7" />
+                            <path d="m2.1 21.8 6.4-6.3" />
+                            <path d="m19 5-7 7" />
+                        </svg>
+                    </button>
+                </a>
+                <!-- <a href="orders_user.php">
                     <button class="p-2 hover:text-yellow-500 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -117,10 +132,11 @@ if (session_status() == PHP_SESSION_NONE) {
                             <path d="M16 10a4 4 0 0 1-8 0" />
                         </svg>
                     </button>
-                </a>
-                <a href="cart.php">
-                    <button class="p-2 hover:text-yellow-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" width="24" height="24"
+                </a> -->
+                <a href="cart.php" class="me-1">
+                    <button
+                        class="p-2 <?php echo (isset($ActivePage) && $ActivePage == 'cart') ? 'text-yellow-500' : 'hover:text-yellow-500'; ?> transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 " width="24" height="24"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart">
                             <circle cx="8" cy="21" r="1" />
@@ -147,9 +163,11 @@ if (session_status() == PHP_SESSION_NONE) {
                     </a> -->
                     <a href="account_user.php">
                         <button
-                            class="flex items-center justify-center border border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full w-full">
-                            <i class="fa-solid fa-user mr-2"></i>
-                            <?php echo $userdataNavbar['first_name'] . " " . $userdataNavbar['last_name']; ?>
+                            class="flex items-center justify-center border border-yellow-500 text-yellow-500  hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full w-full">
+                            <i class="fa-solid fa-user sm:mr-2"></i>
+                            <div class="sm:inline hidden">
+                                <?php echo $userdataNavbar['first_name'] . " " . $userdataNavbar['last_name']; ?>
+                            </div>
                         </button>
                     </a>
                     </button>
