@@ -31,6 +31,16 @@ $roles = $obj->getAllUserRoles();
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
+         tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#000000',
+                        accent: '#eab308',
+                    }
+                }
+            }
+        }
         function openModal(userId, status) {
             document.getElementById('user_id').value = userId;
             document.getElementById('status').value = status;

@@ -15,11 +15,21 @@ $admin = isset($_SESSION['admin']) ? $_SESSION['admin'] : null;
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
-        function openModal() {
+        function openLoginHeaderModal() {
             document.getElementById('logOut').classList.remove('hidden');
         }
-        function closeModal() {
+        function closeLoginHeaderModal() {
             document.getElementById('logOut').classList.add('hidden');
+        }
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#000000',
+                        accent: '#eab308',
+                    }
+                }
+            }
         }
     </script>
 </head>
@@ -84,7 +94,7 @@ $admin = isset($_SESSION['admin']) ? $_SESSION['admin'] : null;
                             <i class="fas fa-cog mr-3 text-accent"></i>
                             Settings
                         </a>
-                        <a onclick="openModal()"
+                        <a onclick="openLoginHeaderModal()"
                             class="px-4 py-2 flex items-center text-gray-300 hover:bg-red-600 cursor-pointer hover:text-white transition-colors">
                             <i class="fas fa-sign-out-alt mr-3"></i>
                             Logout
@@ -98,7 +108,7 @@ $admin = isset($_SESSION['admin']) ? $_SESSION['admin'] : null;
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-md mx-4">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold text-accent">Logout</h1>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-accent transition-colors">
+                <button onclick="closeLoginHeaderModal()" class="text-gray-400 hover:text-accent transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -106,7 +116,7 @@ $admin = isset($_SESSION['admin']) ? $_SESSION['admin'] : null;
             <form method="POST" action="logout.php" class="space-y-6">
                 <p class="text-gray-300">Are you sure you want to Logout?</p>
                 <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeModal()"
+                    <button type="button" onclick="closeLoginHeaderModal()"
                         class="px-6 py-2.5 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/30 hover:text-white transition-colors">
                         Cancel
                     </button>

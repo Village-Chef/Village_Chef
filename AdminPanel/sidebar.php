@@ -27,10 +27,10 @@ $current_page = basename($_SERVER['PHP_SELF']);
             }
         }
 
-        function openModal() {
+        function openLoginSideModal()() {
             document.getElementById('logOut').classList.remove('hidden');
         }
-        function closeModal() {
+        function closeLoginSideModal() {
             document.getElementById('logOut').classList.add('hidden');
         }
     </script>
@@ -182,7 +182,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </div>
 
                             <!-- Logout Button -->
-                            <a onclick="openModal()"
+                            <a onclick="openLoginSideModal()()"
                                 class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:bg-red-600/20 hover:text-red-400 transition-all cursor-pointer duration-200">
                                 <i class="fas fa-sign-out-alt mr-3 text-gray-400 group-hover:text-red-400"></i>
                                 Logout
@@ -198,7 +198,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-md mx-4">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold text-accent">Logout</h1>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-accent transition-colors">
+                <button onclick="closeLoginSideModal()" class="text-gray-400 hover:text-accent transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -206,7 +206,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <form method="POST" action="logout.php" class="space-y-6">
                 <p class="text-gray-300">Are you sure you want to Logout?</p>
                 <div class="flex justify-end space-x-3">
-                    <button type="button" onclick="closeModal()"
+                    <button type="button" onclick="closeLoginSideModal()"
                         class="px-6 py-2.5 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/30 hover:text-white transition-colors">
                         Cancel
                     </button>

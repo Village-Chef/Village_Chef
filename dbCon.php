@@ -13,6 +13,40 @@ class Foodies
         $this->con = new PDO($dsn, username: $user, password: $pass);
     }
 
+    public function changePassword($user_id, $current_password, $new_password, $confirm_password)
+    {
+        try {
+            // Check if new passwords match
+            if ($new_password !== $confirm_password) {
+                throw new Exception("New passwords do not match.");
+            }
+
+            // Fetch the current user data
+            $user = $this->getUserById($user_id);
+
+            // Verify the current password
+            if (!password_verify($current_password, $user['password_hash'])) {
+                throw new Exception("Current password is incorrect.");
+            }
+
+            // Hash the new password
+            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+
+            // Update the password in the database
+            $sql = "UPDATE users SET password_hash = :password_hash WHERE user_id = :user_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':password_hash', $hashed_password);
+            $stmt->bindParam(':user_id', $user_id);
+
+            if ($stmt->execute()) {
+                return "Password changed successfully!";
+            } else {
+                throw new Exception("Failed to update the password.");
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     function registerUser($profile_pic, $fname, $lname, $email, $password, $phone = null)
     {
         try {
@@ -622,7 +656,8 @@ class Foodies
             if (!empty($filters['cuisine'])) {
                 $sql .= " AND mi.cuisine_id = :cuisine";
             }
-            if ($filters['availability'] !== '') { // Check explicitly as it could be '0'
+            // Check if 'availability' key exists and is not an empty string
+            if (isset($filters['availability']) && $filters['availability'] !== '') {
                 $sql .= " AND mi.is_available = :availability";
             }
             if (!empty($filters['price_range'])) {
@@ -647,7 +682,8 @@ class Foodies
             if (!empty($filters['cuisine'])) {
                 $stmt->bindParam(':cuisine', $filters['cuisine'], PDO::PARAM_INT);
             }
-            if ($filters['availability'] !== '') {
+            // Bind availability only if it exists and is not empty
+            if (isset($filters['availability']) && $filters['availability'] !== '') {
                 $stmt->bindParam(':availability', $filters['availability'], PDO::PARAM_INT);
             }
             if (!empty($filters['price_range'])) {
