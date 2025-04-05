@@ -141,10 +141,11 @@ class Foodies
         }
     }
 
-    function getFilteredUsers($filters = []) {
+    function getFilteredUsers($filters = [])
+    {
         try {
             $sql = "SELECT * FROM users WHERE 1=1";
-    
+
             // Add filters dynamically
             if (!empty($filters['search'])) {
                 $sql .= " AND (first_name LIKE :search OR last_name LIKE :search OR email LIKE :search)";
@@ -155,9 +156,9 @@ class Foodies
             if (!empty($filters['role'])) {
                 $sql .= " AND role = :role";
             }
-    
+
             $stmt = $this->con->prepare($sql);
-    
+
             // Bind parameters
             if (!empty($filters['search'])) {
                 $searchTerm = '%' . $filters['search'] . '%';
@@ -169,15 +170,16 @@ class Foodies
             if (!empty($filters['role'])) {
                 $stmt->bindParam(':role', $filters['role']);
             }
-    
+
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Failed to fetch filtered users: " . $e->getMessage());
         }
     }
-    
-    function getAllUserStatuses() {
+
+    function getAllUserStatuses()
+    {
         try {
             $sql = "SELECT DISTINCT status FROM users";
             $stmt = $this->con->prepare($sql);
@@ -187,8 +189,9 @@ class Foodies
             throw new Exception("Failed to fetch user statuses: " . $e->getMessage());
         }
     }
-    
-    function getAllUserRoles() {
+
+    function getAllUserRoles()
+    {
         try {
             $sql = "SELECT DISTINCT role FROM users";
             $stmt = $this->con->prepare($sql);
@@ -358,10 +361,11 @@ class Foodies
         }
     }
 
-    function getFilteredRestaurants($filters = []) {
+    function getFilteredRestaurants($filters = [])
+    {
         try {
             $sql = "SELECT * FROM restaurants WHERE 1=1";
-    
+
             // Add filters dynamically
             if (!empty($filters['search'])) {
                 $sql .= " AND (name LIKE :search OR address LIKE :search)";
@@ -369,9 +373,9 @@ class Foodies
             if (!empty($filters['status'])) {
                 $sql .= " AND status = :status";
             }
-    
+
             $stmt = $this->con->prepare($sql);
-    
+
             // Bind parameters
             if (!empty($filters['search'])) {
                 $searchTerm = '%' . $filters['search'] . '%';
@@ -380,15 +384,16 @@ class Foodies
             if (!empty($filters['status'])) {
                 $stmt->bindParam(':status', $filters['status']);
             }
-    
+
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Failed to fetch filtered restaurants: " . $e->getMessage());
         }
     }
-    
-    function getAllRestaurantStatuses() {
+
+    function getAllRestaurantStatuses()
+    {
         try {
             $sql = "SELECT DISTINCT status FROM restaurants";
             $stmt = $this->con->prepare($sql);
@@ -501,23 +506,24 @@ class Foodies
         }
     }
 
-    function getFilteredCuisines($filters = []) {
+    function getFilteredCuisines($filters = [])
+    {
         try {
             $sql = "SELECT * FROM cuisines WHERE 1=1";
-    
+
             // Add search filter dynamically
             if (!empty($filters['search'])) {
                 $sql .= " AND (cuisine_name LIKE :search OR description LIKE :search)";
             }
-    
+
             $stmt = $this->con->prepare($sql);
-    
+
             // Bind search parameter
             if (!empty($filters['search'])) {
                 $searchTerm = '%' . $filters['search'] . '%';
                 $stmt->bindParam(':search', $searchTerm);
             }
-    
+
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -597,14 +603,15 @@ class Foodies
         }
     }
 
-    function getFilteredMenuItems($filters = []) {
+    function getFilteredMenuItems($filters = [])
+    {
         try {
             $sql = "SELECT mi.*, r.name AS restaurant_name, c.cuisine_name 
                     FROM menu_items mi
                     JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
                     JOIN cuisines c ON mi.cuisine_id = c.cuisine_id
                     WHERE 1=1";
-    
+
             // Add filters dynamically
             if (!empty($filters['search'])) {
                 $sql .= " AND (mi.item_name LIKE :search OR mi.description LIKE :search)";
@@ -626,9 +633,9 @@ class Foodies
                     $sql .= " AND mi.price >= :price_min";
                 }
             }
-    
+
             $stmt = $this->con->prepare($sql);
-    
+
             // Bind parameters
             if (!empty($filters['search'])) {
                 $searchTerm = '%' . $filters['search'] . '%';
@@ -653,7 +660,7 @@ class Foodies
                     $stmt->bindParam(':price_min', $min);
                 }
             }
-    
+
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -1185,17 +1192,6 @@ class Foodies
     }
 
 
-    public function addReview($user_id, $restaurant_id, $rating, $review_text)
-    {
-        $sql = "INSERT INTO reviews (user_id, restaurant_id, rating, review_text) 
-                VALUES (:user_id, :restaurant_id, :rating, :review_text)";
-        $stmt = $this->con->prepare($sql);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->bindParam(':restaurant_id', $restaurant_id);
-        $stmt->bindParam(':rating', $rating);
-        $stmt->bindParam(':review_text', $review_text);
-        return $stmt->execute();
-    }
 
 
 
@@ -1298,7 +1294,7 @@ class Foodies
     }
 
 
-    
+
     public function deleteCartItem($cart_id, $item_id)
     {
         try {
@@ -1417,9 +1413,9 @@ class Foodies
     }
 
     public function getOrdersByUserId($user_id)
-{
-    try {
-        $sql = "SELECT 
+    {
+        try {
+            $sql = "SELECT 
                     o.order_id, 
                     o.order_date, 
                     o.delivery_address, 
@@ -1445,23 +1441,23 @@ class Foodies
                 GROUP BY o.order_id
                 ORDER BY o.order_date DESC";
 
-        $stmt = $this->con->prepare($sql);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->execute();
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        throw new Exception("Failed to fetch orders for user: " . $e->getMessage());
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch orders for user: " . $e->getMessage());
+        }
     }
-}
 
 
 
-function getOrderDetailsById($order_id)
-{
-    try {
-        // SQL Query to fetch order details along with user, restaurant, payment, and review information
-        $sql = "
+    function getOrderDetailsById($order_id)
+    {
+        try {
+            // SQL Query to fetch order details along with user, restaurant, payment, and review information
+            $sql = "
             SELECT 
                 o.order_id, 
                 o.user_id, 
@@ -1509,54 +1505,54 @@ function getOrderDetailsById($order_id)
                 o.order_id
         ";
 
-        // Prepare and execute the statement
-        $stmt = $this->con->prepare($sql);
-        $stmt->bindParam(':order_id', $order_id, PDO::PARAM_STR); // Ensure it's bound as a string
-        $stmt->execute();
+            // Prepare and execute the statement
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':order_id', $order_id, PDO::PARAM_STR); // Ensure it's bound as a string
+            $stmt->execute();
 
-        // Fetch the result as an associative array
-        $orderDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Fetch the result as an associative array
+            $orderDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Check if any order details were found
-        if (!$orderDetails) {
-            throw new Exception("No order found with the provided order ID.");
+            // Check if any order details were found
+            if (!$orderDetails) {
+                throw new Exception("No order found with the provided order ID.");
+            }
+
+            return $orderDetails;
+        } catch (PDOException $e) {
+            throw new Exception("Database error while fetching order details: " . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception("Error: " . $e->getMessage());
         }
-
-        return $orderDetails;
-    } catch (PDOException $e) {
-        throw new Exception("Database error while fetching order details: " . $e->getMessage());
-    } catch (Exception $e) {
-        throw new Exception("Error: " . $e->getMessage());
     }
-}
 
-public function addReview($user_id, $restaurant_id, $order_id, $rating, $review_text, $status = 'archived')
-{
-    try {
-        $sql = "INSERT INTO reviews (user_id, restaurant_id, order_id, rating, review_text, status, created_at, updated_at) 
+    public function addReview($user_id, $restaurant_id, $order_id, $rating, $review_text, $status = 'archived')
+    {
+        try {
+            $sql = "INSERT INTO reviews (user_id, restaurant_id, order_id, rating, review_text, status, created_at, updated_at) 
                 VALUES (:user_id, :restaurant_id, :order_id, :rating, :review_text, :status, NOW(), NOW())";
 
-        $stmt = $this->con->prepare($sql);
+            $stmt = $this->con->prepare($sql);
 
-        // Bind parameters
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->bindParam(':restaurant_id', $restaurant_id);
-        $stmt->bindParam(':order_id', $order_id);
-        $stmt->bindParam(':rating', $rating);
-        $stmt->bindParam(':review_text', $review_text);
-        $stmt->bindParam(':status', $status);
+            // Bind parameters
+            $stmt->bindParam(':user_id', $user_id);
+            $stmt->bindParam(':restaurant_id', $restaurant_id);
+            $stmt->bindParam(':order_id', $order_id);
+            $stmt->bindParam(':rating', $rating);
+            $stmt->bindParam(':review_text', $review_text);
+            $stmt->bindParam(':status', $status);
 
-        return $stmt->execute();
-    } catch (PDOException $e) {
-        throw new Exception("Failed to add review: " . $e->getMessage());
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to add review: " . $e->getMessage());
+        }
     }
-}
 
 
-public function getRestaurantReviews($restaurant_id)
-{
-    try {
-        $sql = "SELECT 
+    public function getRestaurantReviews($restaurant_id)
+    {
+        try {
+            $sql = "SELECT 
                     rv.review_id, 
                     rv.user_id, 
                     rv.order_id, 
@@ -1572,37 +1568,37 @@ public function getRestaurantReviews($restaurant_id)
                 WHERE rv.restaurant_id = :restaurant_id
                 ORDER BY rv.created_at DESC";
 
-        $stmt = $this->con->prepare($sql);
-        $stmt->bindParam(':restaurant_id', $restaurant_id, PDO::PARAM_INT);
-        $stmt->execute();
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':restaurant_id', $restaurant_id, PDO::PARAM_INT);
+            $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        throw new Exception("Failed to fetch reviews for the restaurant: " . $e->getMessage());
-    }
-}
-
-
-public function calculateAverageRating($restaurant_id)
-{
-    try {
-        $reviews = $this->getRestaurantReviews($restaurant_id);
-
-        if (count($reviews) === 0) {
-            return null; // No reviews available
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch reviews for the restaurant: " . $e->getMessage());
         }
-
-        $totalRating = 0;
-        foreach ($reviews as $review) {
-            $totalRating += $review['rating'];
-        }
-
-        $averageRating = $totalRating / count($reviews);
-        return round($averageRating, 1); // Round to 1 decimal place
-    } catch (Exception $e) {
-        throw new Exception("Failed to calculate average rating: " . $e->getMessage());
     }
-}
+
+
+    public function calculateAverageRating($restaurant_id)
+    {
+        try {
+            $reviews = $this->getRestaurantReviews($restaurant_id);
+
+            if (count($reviews) === 0) {
+                return null; // No reviews available
+            }
+
+            $totalRating = 0;
+            foreach ($reviews as $review) {
+                $totalRating += $review['rating'];
+            }
+
+            $averageRating = $totalRating / count($reviews);
+            return round($averageRating, 1); // Round to 1 decimal place
+        } catch (Exception $e) {
+            throw new Exception("Failed to calculate average rating: " . $e->getMessage());
+        }
+    }
 
 
     // public function getOrderItemsByOrderId($order_id)
