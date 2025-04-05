@@ -78,14 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         } else {
             // Call the changePassword method
             if ($obj->changePassword($id, $current_password, $new_password, $confirm_password)) {
-            $success = "Password changed successfully!";
+                $success = "Password changed successfully!";
             } else {
-            $error = "Failed to change password. Please try again.";
+                $error = "Failed to change password. Please try again.";
             }
         }
-        } catch (Exception $e) {
+    } catch (Exception $e) {
         $error = $e->getMessage();
-        }
+    }
 }
 ?>
 
