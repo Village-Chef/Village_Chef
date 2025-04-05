@@ -9,7 +9,16 @@ if (!isset($_SESSION['admin'])) {
 require '../dbCon.php';
 $obj = new Foodies();
 
-$users = $obj->getAllUsers();
+// $users = $obj->getAllUsers();
+$filters = [
+    'search' => $_GET['search'] ?? '',
+    'status' => $_GET['status'] ?? '',
+    'role' => $_GET['role'] ?? ''
+];
+
+$users = $obj->getFilteredUsers($filters);
+$statuses = $obj->getAllUserStatuses();
+$roles = $obj->getAllUserRoles();
 ?>
 
 <!DOCTYPE html>
@@ -52,22 +61,54 @@ $users = $obj->getAllUsers();
 
             <main class="flex-1 relative overflow-y-auto focus:outline-none p-6">
                 <!-- Search and Add User -->
-                <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">
-                    <div class="w-full md:w-1/3">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
+                <form action="users.php" method="GET">
+                    <div class="flex flex-col md:flex-row justify-between mb-6 gap-4 items-center">
+                        <div class="flex flex-1 gap-4">
+                            <div class="relative w-full md:w-1/3">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" name="search" value="<?= htmlspecialchars($filters['search']) ?>"
+                                    class="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-xl bg-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                                    placeholder="Search User...">
                             </div>
-                            <input type="text"
-                                class="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-xl bg-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                placeholder="Search users...">
+                            <div class="w-full md:w-1/5">
+                                <select id="status-filter" name="status"
+                                    class="block w-full pl-3 pr-3 py-2 border border-gray-700 rounded-xl bg-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent">
+                                    <option value="">All Statuses</option>
+                                    <?php foreach ($statuses as $status): ?>
+                                        <option value="<?= $status ?>" <?= $filters['status'] === $status ? 'selected' : '' ?>>
+                                            <?= ucfirst($status) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="w-full md:w-1/5">
+                                <select id="role-filter" name="role"
+                                    class="block w-full pl-3 pr-3 py-2 border border-gray-700 rounded-xl bg-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent">
+                                    <option value="">All Roles</option>
+                                    <?php foreach ($roles as $role): ?>
+                                        <option value="<?= $role ?>" <?= $filters['role'] === $role ? 'selected' : '' ?>>
+                                            <?= ucfirst($role) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <button type="submit"
+                                class="px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
+                                Apply Filter
+                            </button>
+                            <a href="users.php"
+                                class="px-4 py-2 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/30 transition-colors">
+                                Reset
+                            </a>
                         </div>
+                        <!-- <a href="addUser.php"
+                            class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
+                            <i class="fas fa-plus mr-2"></i> Add User
+                        </a> -->
                     </div>
-                    <button type="button"
-                        class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
-                        <i class="fas fa-plus mr-2"></i> Add User
-                    </button>
-                </div>
+                </form>
 
                 <!-- Users Table -->
                 <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
@@ -92,65 +133,73 @@ $users = $obj->getAllUsers();
                             </tr>
                         </thead>
                         <tbody class="bg-gray-800 divide-y divide-gray-700">
-                            <?php foreach ($users as $user): ?>
-                                <tr class="hover:bg-gray-700/20 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full border-2 border-accent/30"
-                                                    src="<?php echo !empty($user['profile_pic']) ? $user['profile_pic'] : 'assets/dp.png'; ?>"
-                                                    alt="User avatar">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-white">
-                                                    <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>
-                                                </div>
-                                                <div class="text-xs text-gray-400">
-                                                    @
-                                                    <?php echo strtolower($user['first_name']); ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-300"><?php echo $user['email']; ?></td>
-                                    <td class="px-6 py-4 text-sm text-gray-300"><?php echo $user['phone']; ?></td>
-                                    <td class="px-6 py-4">
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-accent/20 text-accent">
-                                            <?php echo ucfirst($user['role']); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center">
-                                            <span
-                                                class="w-2 h-2 rounded-full mr-2 <?php echo $user['status'] == 'active' ? 'bg-green-500' : 'bg-red-500'; ?>"></span>
-                                            <span class="text-sm text-gray-300">
-                                                <?php echo ucfirst($user['status']); ?>
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-300">
-                                        <?php echo date('M d, Y', strtotime($user['created_at'])); ?>
-                                    </td>
-                                    <td class="px-6 py-4 text-right text-sm font-medium">
-                                        <div class="flex justify-end space-x-3">
-                                            <button
-                                                onclick="openModal('<?php echo $user['user_id']; ?>', '<?php echo $user['status']; ?>')"
-                                                class="text-accent hover:text-accent/80 transition-colors">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button onclick="openDeleteModal('<?php echo $user['user_id']; ?>')"
-                                                class="text-red-500 hover:text-red-400 transition-colors">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
+                            <?php if (empty($users)): ?>
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-400">
+                                        No records found.
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php else: ?>
+                                <?php foreach ($users as $user): ?>
+                                    <tr class="hover:bg-gray-700/20 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full border-2 border-accent/30"
+                                                        src="<?php echo !empty($user['profile_pic']) ? $user['profile_pic'] : 'assets/dp.png'; ?>"
+                                                        alt="User avatar">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-white">
+                                                        <?php echo $user['first_name'] . ' ' . $user['last_name']; ?>
+                                                    </div>
+                                                    <div class="text-xs text-gray-400">
+                                                        @
+                                                        <?php echo strtolower($user['first_name']); ?>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-300"><?php echo $user['email']; ?></td>
+                                        <td class="px-6 py-4 text-sm text-gray-300"><?php echo $user['phone']; ?></td>
+                                        <td class="px-6 py-4">
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full bg-accent/20 text-accent">
+                                                <?php echo ucfirst($user['role']); ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <span
+                                                    class="w-2 h-2 rounded-full mr-2 <?php echo $user['status'] == 'active' ? 'bg-green-500' : 'bg-red-500'; ?>"></span>
+                                                <span class="text-sm text-gray-300">
+                                                    <?php echo ucfirst($user['status']); ?>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-300">
+                                            <?php echo date('M d, Y', strtotime($user['created_at'])); ?>
+                                        </td>
+                                        <td class="px-6 py-4 text-right text-sm font-medium">
+                                            <div class="flex justify-end space-x-3">
+                                                <button
+                                                    onclick="openModal('<?php echo $user['user_id']; ?>', '<?php echo $user['status']; ?>')"
+                                                    class="text-accent hover:text-accent/80 transition-colors">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button onclick="openDeleteModal('<?php echo $user['user_id']; ?>')"
+                                                    class="text-red-500 hover:text-red-400 transition-colors">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Pagination -->
+                <!-- Pagination
                 <div
                     class="bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-700 mt-4 rounded-xl">
                     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
@@ -186,7 +235,7 @@ $users = $obj->getAllUsers();
                             </a>
                         </nav>
                     </div>
-                </div>
+                </div> -->
             </main>
         </div>
     </div>

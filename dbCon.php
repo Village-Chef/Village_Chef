@@ -141,6 +141,63 @@ class Foodies
         }
     }
 
+    function getFilteredUsers($filters = []) {
+        try {
+            $sql = "SELECT * FROM users WHERE 1=1";
+    
+            // Add filters dynamically
+            if (!empty($filters['search'])) {
+                $sql .= " AND (first_name LIKE :search OR last_name LIKE :search OR email LIKE :search)";
+            }
+            if (!empty($filters['status'])) {
+                $sql .= " AND status = :status";
+            }
+            if (!empty($filters['role'])) {
+                $sql .= " AND role = :role";
+            }
+    
+            $stmt = $this->con->prepare($sql);
+    
+            // Bind parameters
+            if (!empty($filters['search'])) {
+                $searchTerm = '%' . $filters['search'] . '%';
+                $stmt->bindParam(':search', $searchTerm);
+            }
+            if (!empty($filters['status'])) {
+                $stmt->bindParam(':status', $filters['status']);
+            }
+            if (!empty($filters['role'])) {
+                $stmt->bindParam(':role', $filters['role']);
+            }
+    
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch filtered users: " . $e->getMessage());
+        }
+    }
+    
+    function getAllUserStatuses() {
+        try {
+            $sql = "SELECT DISTINCT status FROM users";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the status column
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch user statuses: " . $e->getMessage());
+        }
+    }
+    
+    function getAllUserRoles() {
+        try {
+            $sql = "SELECT DISTINCT role FROM users";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the role column
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch user roles: " . $e->getMessage());
+        }
+    }
 
     function updateUserStatus($user_id, $status)
     {
@@ -301,6 +358,47 @@ class Foodies
         }
     }
 
+    function getFilteredRestaurants($filters = []) {
+        try {
+            $sql = "SELECT * FROM restaurants WHERE 1=1";
+    
+            // Add filters dynamically
+            if (!empty($filters['search'])) {
+                $sql .= " AND (name LIKE :search OR address LIKE :search)";
+            }
+            if (!empty($filters['status'])) {
+                $sql .= " AND status = :status";
+            }
+    
+            $stmt = $this->con->prepare($sql);
+    
+            // Bind parameters
+            if (!empty($filters['search'])) {
+                $searchTerm = '%' . $filters['search'] . '%';
+                $stmt->bindParam(':search', $searchTerm);
+            }
+            if (!empty($filters['status'])) {
+                $stmt->bindParam(':status', $filters['status']);
+            }
+    
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch filtered restaurants: " . $e->getMessage());
+        }
+    }
+    
+    function getAllRestaurantStatuses() {
+        try {
+            $sql = "SELECT DISTINCT status FROM restaurants";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch only the status column
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch restaurant statuses: " . $e->getMessage());
+        }
+    }
+
     function updateRestaurant($id, $restaurant_pic, $rname, $rphone, $raddress, $rcity, $rstate, $rzip_code, $status)
     {
         try {
@@ -403,6 +501,30 @@ class Foodies
         }
     }
 
+    function getFilteredCuisines($filters = []) {
+        try {
+            $sql = "SELECT * FROM cuisines WHERE 1=1";
+    
+            // Add search filter dynamically
+            if (!empty($filters['search'])) {
+                $sql .= " AND (cuisine_name LIKE :search OR description LIKE :search)";
+            }
+    
+            $stmt = $this->con->prepare($sql);
+    
+            // Bind search parameter
+            if (!empty($filters['search'])) {
+                $searchTerm = '%' . $filters['search'] . '%';
+                $stmt->bindParam(':search', $searchTerm);
+            }
+    
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch filtered cuisines: " . $e->getMessage());
+        }
+    }
+
     function updateCuisine($id, $cuisine_name, $description)
     {
         try {
@@ -475,6 +597,69 @@ class Foodies
         }
     }
 
+    function getFilteredMenuItems($filters = []) {
+        try {
+            $sql = "SELECT mi.*, r.name AS restaurant_name, c.cuisine_name 
+                    FROM menu_items mi
+                    JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
+                    JOIN cuisines c ON mi.cuisine_id = c.cuisine_id
+                    WHERE 1=1";
+    
+            // Add filters dynamically
+            if (!empty($filters['search'])) {
+                $sql .= " AND (mi.item_name LIKE :search OR mi.description LIKE :search)";
+            }
+            if (!empty($filters['restaurant'])) {
+                $sql .= " AND mi.restaurant_id = :restaurant";
+            }
+            if (!empty($filters['cuisine'])) {
+                $sql .= " AND mi.cuisine_id = :cuisine";
+            }
+            if ($filters['availability'] !== '') { // Check explicitly as it could be '0'
+                $sql .= " AND mi.is_available = :availability";
+            }
+            if (!empty($filters['price_range'])) {
+                $range = explode('-', $filters['price_range']);
+                if (count($range) == 2) {
+                    $sql .= " AND mi.price BETWEEN :price_min AND :price_max";
+                } elseif (strpos($filters['price_range'], '+') !== false) {
+                    $sql .= " AND mi.price >= :price_min";
+                }
+            }
+    
+            $stmt = $this->con->prepare($sql);
+    
+            // Bind parameters
+            if (!empty($filters['search'])) {
+                $searchTerm = '%' . $filters['search'] . '%';
+                $stmt->bindParam(':search', $searchTerm);
+            }
+            if (!empty($filters['restaurant'])) {
+                $stmt->bindParam(':restaurant', $filters['restaurant'], PDO::PARAM_INT);
+            }
+            if (!empty($filters['cuisine'])) {
+                $stmt->bindParam(':cuisine', $filters['cuisine'], PDO::PARAM_INT);
+            }
+            if ($filters['availability'] !== '') {
+                $stmt->bindParam(':availability', $filters['availability'], PDO::PARAM_INT);
+            }
+            if (!empty($filters['price_range'])) {
+                $range = explode('-', $filters['price_range']);
+                if (count($range) == 2) {
+                    $stmt->bindParam(':price_min', $range[0]);
+                    $stmt->bindParam(':price_max', $range[1]);
+                } elseif (strpos($filters['price_range'], '+') !== false) {
+                    $min = str_replace('+', '', $filters['price_range']);
+                    $stmt->bindParam(':price_min', $min);
+                }
+            }
+    
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch filtered menu items: " . $e->getMessage());
+        }
+    }
 
     function getAllMenuItems()
     {
@@ -629,12 +814,18 @@ class Foodies
             }
 
             $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Fetch order items for each order
+            foreach ($orders as &$order) {
+                $order['items'] = $this->getOrderItems($order['order_id']);
+            }
+
+            return $orders;
         } catch (PDOException $e) {
             throw new Exception("Failed to fetch orders: " . $e->getMessage());
         }
     }
-
     function getAllOrderStatuses()
     {
         try {
@@ -688,7 +879,8 @@ class Foodies
                     u.first_name AS customer_first_name, 
                     u.last_name AS customer_last_name, 
                     r.name AS restaurant_name, 
-                    p.payment_method, 
+                    p.payment_method,
+                    p.payment_id , 
                     p.amount AS payment_amount, 
                     p.status AS payment_status, 
                     GROUP_CONCAT(mi.item_name SEPARATOR ', ') AS items, 
@@ -727,19 +919,19 @@ class Foodies
     {
         try {
             $sql = "SELECT 
-                    p.payment_id, 
-                    p.order_id, 
-                    p.amount, 
-                    p.payment_method, 
-                    p.status AS payment_status, 
-                    p.payment_date, 
-                    u.first_name, 
-                    u.last_name, 
-                    u.email 
-                FROM payments p
-                JOIN orders o ON p.order_id = o.order_id
-                JOIN users u ON o.user_id = u.user_id
-                WHERE 1=1";
+                p.payment_id, 
+                p.order_id, 
+                p.amount, 
+                p.payment_method, 
+                p.status AS payment_status, 
+                p.payment_date, 
+                u.first_name, 
+                u.last_name, 
+                u.email 
+            FROM payments p
+            JOIN orders o ON p.order_id = o.order_id
+            JOIN users u ON o.user_id = u.user_id
+            WHERE 1=1";
 
             // Add filters dynamically
             if (!empty($filters['status'])) {
@@ -791,7 +983,8 @@ class Foodies
                     $stmt->bindParam(':amount_min', $range[0]);
                     $stmt->bindParam(':amount_max', $range[1]);
                 } elseif (strpos($filters['amount_range'], '+') !== false) {
-                    $stmt->bindParam(':amount_min', str_replace('+', '', $filters['amount_range']));
+                    $amountMin = str_replace('+', '', $filters['amount_range']); // Assign to a variable
+                    $stmt->bindParam(':amount_min', $amountMin); // Use the variable here
                 }
             }
             if (!empty($filters['search'])) {
@@ -839,7 +1032,7 @@ class Foodies
                     COUNT(*) AS total_payments,
                     SUM(CASE WHEN status = 'successful' THEN 1 ELSE 0 END) AS successful_payments,
                     SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed_payments,
-                    SUM(CASE WHEN status = 'refunded' THEN 1 ELSE 0 END) AS refunded_payments,
+                    SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_payments,
                     SUM(amount) AS total_amount
                 FROM payments
             ";
@@ -909,8 +1102,100 @@ class Foodies
 
 
 
+    public function getFilteredReviews($filters)
+    {
+        $sql = "SELECT r.*, u.first_name, u.last_name, u.email, u.profile_pic, res.name as restaurant_name 
+            FROM reviews r
+            JOIN users u ON r.user_id = u.user_id
+            JOIN restaurants res ON r.restaurant_id = res.restaurant_id
+            WHERE 1=1";
+
+        if (!empty($filters['rating'])) {
+            $sql .= " AND r.rating = :rating";
+        }
+        if (!empty($filters['restaurant'])) {
+            $sql .= " AND r.restaurant_id = :restaurant";
+        }
+        if (!empty($filters['status'])) {
+            $sql .= " AND r.status = :status";
+        }
+        if (!empty($filters['date_from'])) {
+            $sql .= " AND r.created_at >= :date_from";
+        }
+        if (!empty($filters['date_to'])) {
+            $sql .= " AND r.created_at <= :date_to";
+        }
+        if (!empty($filters['search'])) {
+            $sql .= " AND (u.first_name LIKE :search OR u.last_name LIKE :search OR r.review_text LIKE :search)";
+        }
+
+        $stmt = $this->con->prepare($sql);
+
+        // Bind parameters
+        if (!empty($filters['rating'])) {
+            $stmt->bindValue(':rating', $filters['rating']);
+        }
+        if (!empty($filters['restaurant'])) {
+            $stmt->bindValue(':restaurant', $filters['restaurant']);
+        }
+        if (!empty($filters['status'])) {
+            $stmt->bindValue(':status', $filters['status']);
+        }
+        if (!empty($filters['date_from'])) {
+            $stmt->bindValue(':date_from', $filters['date_from']);
+        }
+        if (!empty($filters['date_to'])) {
+            $stmt->bindValue(':date_to', $filters['date_to']);
+        }
+        if (!empty($filters['search'])) {
+            $searchTerm = '%' . $filters['search'] . '%';
+            $stmt->bindValue(':search', $searchTerm);
+        }
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllReviewsWithDetails()
+    {
+        $sql = "SELECT r.*, u.first_name, u.last_name, u.email, u.profile_pic, res.name as restaurant_name 
+                FROM reviews r
+                JOIN users u ON r.user_id = u.user_id
+                JOIN restaurants res ON r.restaurant_id = res.restaurant_id";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function deleteReview($id)
+    {
+        $sql = "DELETE FROM reviews WHERE review_id = :id";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    public function updateReviewStatus($id, $status)
+    {
+        $sql = "UPDATE reviews SET status = :status WHERE review_id = :id";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
 
 
+    public function addReview($user_id, $restaurant_id, $rating, $review_text)
+    {
+        $sql = "INSERT INTO reviews (user_id, restaurant_id, rating, review_text) 
+                VALUES (:user_id, :restaurant_id, :rating, :review_text)";
+        $stmt = $this->con->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->bindParam(':restaurant_id', $restaurant_id);
+        $stmt->bindParam(':rating', $rating);
+        $stmt->bindParam(':review_text', $review_text);
+        return $stmt->execute();
+    }
 
 
 

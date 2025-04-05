@@ -20,6 +20,11 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         array (
             'WpOrg\\Requests\\' => 15,
         ),
+        'S' => 
+        array (
+            'Svg\\' => 4,
+            'Sabberworm\\CSS\\' => 15,
+        ),
         'R' => 
         array (
             'Razorpay\\Tests\\' => 15,
@@ -28,6 +33,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'P' => 
         array (
             'PHPMailer\\PHPMailer\\' => 20,
+        ),
+        'F' => 
+        array (
+            'FontLib\\' => 8,
         ),
     );
 
@@ -40,6 +49,14 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         array (
             0 => __DIR__ . '/..' . '/rmccue/requests/src',
         ),
+        'Svg\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg',
+        ),
+        'Sabberworm\\CSS\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sabberworm/php-css-parser/src',
+        ),
         'Razorpay\\Tests\\' => 
         array (
             0 => __DIR__ . '/..' . '/razorpay/razorpay/tests',
@@ -51,6 +68,10 @@ class ComposerStaticInit2185d2f99bcd56787481d9357a5972d3
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
+        'FontLib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib',
         ),
     );
 

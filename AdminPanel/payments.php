@@ -15,7 +15,7 @@ $filters = [
     'date_from' => $_GET['date_from'] ?? '',
     'date_to' => $_GET['date_to'] ?? '',
     'amount_range' => $_GET['amount_range'] ?? '',
-    'search' => $_GET['search'] ?? '' // Add the search parameter
+    'search' => $_GET['search'] ?? '' 
 ];
 
 
@@ -49,6 +49,8 @@ $payments = $obj->getAllPayments($filters);
 $paymentMethods = $obj->getPaymentMethods();
 $paymentStatuses = $obj->getPaymentStatuses();
 $paymentSummary = $obj->getPaymentSummary();
+
+
 
 
 ?>
@@ -88,6 +90,28 @@ $paymentSummary = $obj->getPaymentSummary();
         }
 
     </script>
+    <style>
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2d3748;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #eab308;
+            /* yellow-500 */
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #d97706;
+            /* Slightly darker yellow */
+        }
+    </style>
 </head>
 
 <body class="bg-primary text-gray-100">
@@ -113,14 +137,10 @@ $paymentSummary = $obj->getPaymentSummary();
                             </div>
                         </div>
                         <div class="flex space-x-2">
-                            <button type="button"
-                                class="inline-flex items-center px-4 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700/30 transition-colors">
-                                <i class="fas fa-file-export mr-2"></i> Export
-                            </button>
-                            <button type="button"
+                            <a href="generate_payment_report.php"
                                 class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                                 <i class="fas fa-file-invoice-dollar mr-2"></i> Generate Report
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -171,16 +191,16 @@ $paymentSummary = $obj->getPaymentSummary();
                             </div>
                         </div>
 
-                        <!-- Refunded Payments -->
+                        <!-- Pending Payments -->
                         <div class="bg-gray-800 rounded-xl border border-gray-700 p-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-yellow-900/30 rounded-full p-3">
                                     <i class="fas fa-undo text-yellow-400 text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-400">Refunded</p>
+                                    <p class="text-sm font-medium text-gray-400">Pending</p>
                                     <h3 class="text-xl font-semibold text-white">
-                                        <?php echo $paymentSummary['refunded_payments']; ?>
+                                        <?php echo $paymentSummary['pending_payments']; ?>
                                     </h3>
                                 </div>
                             </div>
@@ -367,7 +387,8 @@ $paymentSummary = $obj->getPaymentSummary();
     <div id="paymentDetailModal"
         class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center <?= isset($_GET['payment_id']) && $paymentDetails ? '' : 'hidden' ?> z-50">
         <?php if ($paymentDetails): ?>
-            <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-2xl mx-4">
+            <div
+                class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-2xl font-bold text-accent">Payment Details</h1>
                     <button onclick="closeModal()" class="text-gray-400 hover:text-accent transition-colors">
@@ -433,7 +454,7 @@ $paymentSummary = $obj->getPaymentSummary();
                         <div class="space-y-2">
 
 
-                            
+
 
 
 
@@ -497,6 +518,11 @@ $paymentSummary = $obj->getPaymentSummary();
         <?php endif; ?>
     </div>
 
+
+
+    <script>
+
+    </script>
 </body>
 
 </html>

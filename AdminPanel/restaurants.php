@@ -8,7 +8,16 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
-$restaurants = $obj->getAllRestaurants();
+
+$filters = [
+    'search' => $_GET['search'] ?? '',
+    'status' => $_GET['status'] ?? ''
+];
+
+$restaurants_data = $obj->getFilteredRestaurants($filters);
+// Fetch filtered restaurants and statuses
+// $restaurants = $obj->getFilteredRestaurants($filters);
+$statuses = $obj->getAllRestaurantStatuses();
 
 ?>
 
@@ -41,22 +50,43 @@ $restaurants = $obj->getAllRestaurants();
 
             <main class="flex-1 relative overflow-y-auto focus:outline-none p-6">
                 <!-- Search and Add Restaurant -->
-                <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">
-                    <div class="w-full md:w-1/3">
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
+                <form action="restaurants.php" method="GET">
+                    <div class="flex flex-col md:flex-row justify-between mb-6 gap-4 items-center">
+                        <div class="flex flex-1 gap-4">
+                            <div class="relative w-full md:w-1/3">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="text" name="search" value="<?= htmlspecialchars($filters['search']) ?>"
+                                    class="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-xl bg-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+                                    placeholder="Search restaurants...">
                             </div>
-                            <input type="text"
-                                class="block w-full pl-10 pr-3 py-2 border border-gray-700 rounded-xl bg-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                placeholder="Search restaurants...">
+                            <div class="w-full md:w-1/4">
+                                <select id="status-filter" name="status"
+                                    class="block w-full pl-3 pr-3 py-2 border border-gray-700 rounded-xl bg-gray-800 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent">
+                                    <option value="">All Statuses</option>
+                                    <?php foreach ($statuses as $status): ?>
+                                        <option value="<?= $status ?>" <?= $filters['status'] === $status ? 'selected' : '' ?>>
+                                            <?= ucfirst($status) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <button type="submit"
+                                class="px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
+                                Apply Filter
+                            </button>
+                            <a href="restaurants.php"
+                                class="px-4 py-2 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/30 transition-colors">
+                                Reset
+                            </a>
                         </div>
+                        <a href="addRestaurant.php"
+                            class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
+                            <i class="fas fa-plus mr-2"></i> Add Restaurant
+                        </a>
                     </div>
-                    <a href="addRestaurant.php"
-                        class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
-                        <i class="fas fa-plus mr-2"></i> Add Restaurant
-                    </a>
-                </div>
+                </form>
 
                 <!-- Restaurants Table -->
                 <div class="bg-gray-800 rounded-xl shadow-xl border border-gray-700 overflow-hidden">
@@ -80,79 +110,86 @@ $restaurants = $obj->getAllRestaurants();
                         </thead>
                         <tbody class="bg-gray-800 divide-y divide-gray-700">
                             <!-- Restaurant Row -->
-
-                            <?php
-                            foreach ($restaurants as $restaurant) {
-
-                                ?>
-                                <tr class="hover:bg-gray-700/20 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-12 w-12">
-                                                <img class="h-12 w-12 rounded-full border-2 border-accent/30 object-cover"
-                                                    src="<?php echo $restaurant['restaurant_pic']; ?>" alt="Burger King">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-white">
-                                                    <?php echo $restaurant['name']; ?>
-                                                </div>
-                                                <div class="text-xs text-gray-400">Fast Food</div>
-                                            </div>
-                                        </div>
+                            <?php if (empty($restaurants_data)): ?>
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-400">
+                                        No records found.
                                     </td>
-                                    <!-- <td class="px-6 py-4">
+                                </tr>
+                            <?php else: ?>
+                                <?php
+                                foreach ($restaurants_data as $restaurant) {
+
+                                    ?>
+                                    <tr class="hover:bg-gray-700/20 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-12 w-12">
+                                                    <img class="h-12 w-12 rounded-full border-2 border-accent/30 object-cover"
+                                                        src="<?php echo $restaurant['restaurant_pic']; ?>" alt="Burger King">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-white">
+                                                        <?php echo $restaurant['name']; ?>
+                                                    </div>
+                                                    <div class="text-xs text-gray-400">Fast Food</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <!-- <td class="px-6 py-4">
                                     <div class="text-sm text-gray-300">Michael Johnson</div>
                                     <div class="text-xs text-gray-500">michael@example.com</div>
                                 </td> -->
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-300"><?php echo $restaurant['phone']; ?></div>
-                                        <div class="text-xs text-gray-500"></div><?php echo $restaurant['city']; ?>
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm text-gray-300"><?php echo $restaurant['phone']; ?></div>
+                                            <div class="text-xs text-gray-500"></div><?php echo $restaurant['city']; ?>
+                        </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-xs text-gray-500"></div><?php echo $restaurant['address']; ?>
+                </div>
+                <div class="text-sm text-gray-300"><?php echo $restaurant['zip_code']; ?></div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center">
+                        <span class="w-2 h-2 rounded-full mr-2 <?php
+                        if ($restaurant['status'] == "open"):
+                            echo 'bg-green-500';
+                        elseif ($restaurant['status'] == "closed"):
+                            echo 'bg-red-500';
+                        else:
+                            echo 'bg-yellow-500';
+                        endif;
+                        ?>"></span>
+                        <span class="text-sm text-gray-300"><?php echo $restaurant['status']; ?></span>
                     </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="text-xs text-gray-500"></div><?php echo $restaurant['address']; ?>
-            </div>
-            <div class="text-sm text-gray-300"><?php echo $restaurant['zip_code']; ?></div>
-            </td>
-            <td class="px-6 py-4">
-                <div class="flex items-center">
-                    <span class="w-2 h-2 rounded-full mr-2 <?php
-                    if ($restaurant['status'] == "open"):
-                        echo 'bg-green-500';
-                    elseif ($restaurant['status'] == "closed"):
-                        echo 'bg-red-500';
-                    else:
-                        echo 'bg-yellow-500';
-                    endif;
-                    ?>"></span>
-                    <span class="text-sm text-gray-300"><?php echo $restaurant['status']; ?></span>
-                </div>
-            </td>
-            <td class="px-6 py-4 text-right">
-                <div class="flex justify-end space-x-3">
-                    <a href="updateRestaurant.php?id=<?php echo $restaurant['restaurant_id'] ?>"
-                        class="text-accent hover:text-accent/80 transition-colors">
-                        <i class="fas fa-edit"></i>
-                    </a>
-                    <button onclick="openDeleteModal('<?php echo $restaurant['restaurant_id']; ?>')"
-                        class="text-red-500 hover:text-red-400 transition-colors">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                    <a href="viewRestaurant.php?id=<?php echo $restaurant['restaurant_id'] ?>"
-                        class="text-red-500 hover:text-red-400 transition-colors">
-                        <i class="fas fa-eye"></i>
-                    </a>
-                </div>
-            </td>
-            </tr>
-            <?php
-                            }
-                            ?>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end space-x-3">
+                        <a href="updateRestaurant.php?id=<?php echo $restaurant['restaurant_id'] ?>"
+                            class="text-accent hover:text-accent/80 transition-colors">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button onclick="openDeleteModal('<?php echo $restaurant['restaurant_id']; ?>')"
+                            class="text-red-500 hover:text-red-400 transition-colors">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <a href="viewRestaurant.php?id=<?php echo $restaurant['restaurant_id'] ?>"
+                            class="text-red-500 hover:text-red-400 transition-colors">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>
+                </td>
+                </tr>
+                <?php
+                                }
+                                ?>
+        <?php endif; ?>
         </tbody>
         </table>
     </div>
 
-    <!-- Pagination -->
+    <!-- Pagination
     <div class="bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-700 mt-4 rounded-xl">
         <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
@@ -182,7 +219,7 @@ $restaurants = $obj->getAllRestaurants();
                 </a>
             </nav>
         </div>
-    </div>
+    </div> -->
 
     <div id="deleteModal"
         class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">

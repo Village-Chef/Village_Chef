@@ -26,6 +26,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 }
             }
         }
+
+        function openModal() {
+            document.getElementById('logOut').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('logOut').classList.add('hidden');
+        }
     </script>
     <!-- Heroicons (for icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -62,7 +69,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <!-- Dashboard Link -->
                         <nav class="flex-1 px-4 space-y-2">
                             <!-- Dashboard Link -->
-                            <a href="#"
+                            <a href="dashboard.php"
                                 class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'dashboard.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
                                 <i
                                     class="fas fa-home mr-3 text-lg <?php echo ($current_page === 'dashboard.php') ? 'text-accent' : 'text-gray-400'; ?>"></i>
@@ -120,7 +127,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <!-- Orders Link -->
                             <a href="orders.php"
                                 class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'orders.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
-                                <i class="fas fa-shopping-cart mr-3 text-gray-400 group-hover:text-accent text-lg"></i>
+                                <i
+                                    class="fas fa-shopping-cart mr-3 <?php echo ($current_page === 'orders.php') ? 'text-accent' : 'text-gray-400' ?> group-hover:text-accent text-lg"></i>
                                 Orders
                                 <?php if ($current_page === 'orders.php'): ?>
                                     <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
@@ -133,7 +141,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <!-- Payments Link -->
                             <a href="payments.php"
                                 class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'payments.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
-                                <i class="fas fa-credit-card mr-3 text-gray-400 group-hover:text-accent text-lg"></i>
+                                <i
+                                    class="fas fa-credit-card mr-3 <?php echo ($current_page === 'payments.php') ? 'text-accent' : 'text-gray-400' ?> group-hover:text-accent text-lg"></i>
                                 Payments
                                 <?php if ($current_page === 'payments.php'): ?>
                                     <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
@@ -146,7 +155,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <!-- Reviews Link -->
                             <a href="reviews.php"
                                 class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl <?php echo ($current_page === 'reviews.php') ? 'bg-gray-800 text-white' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?> transition-all duration-200">
-                                <i class="fas fa-star mr-3 text-gray-400 group-hover:text-accent text-lg"></i>
+                                <i
+                                    class="fas fa-star mr-3 <?php echo ($current_page === 'reviews.php') ? 'text-accent' : 'text-gray-400' ?> group-hover:text-accent text-lg"></i>
                                 Reviews
                                 <?php if ($current_page === 'reviews.php'): ?>
                                     <i class="fas fa-chevron-right ml-auto text-accent text-xs"></i>
@@ -172,8 +182,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </div>
 
                             <!-- Logout Button -->
-                            <a href="logout.php"
-                                class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:bg-red-600/20 hover:text-red-400 transition-all duration-200">
+                            <a onclick="openModal()"
+                                class="flex items-center px-4 py-3 text-sm font-medium rounded-xl text-gray-300 hover:bg-red-600/20 hover:text-red-400 transition-all cursor-pointer duration-200">
                                 <i class="fas fa-sign-out-alt mr-3 text-gray-400 group-hover:text-red-400"></i>
                                 Logout
                             </a>
@@ -182,6 +192,31 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </div>
         </div>
 
+    </div>
+
+    <div id="logOut" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-accent">Logout</h1>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form method="POST" action="logout.php" class="space-y-6">
+                <p class="text-gray-300">Are you sure you want to Logout?</p>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal()"
+                        class="px-6 py-2.5 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/30 hover:text-white transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-6 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-500 font-medium transition-colors">
+                        Logout
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 

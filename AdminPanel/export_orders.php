@@ -21,7 +21,7 @@ class PDF extends Fpdi
         $this->SetY(15);
         $this->SetFont('Arial', 'B', 20);
         $this->SetTextColor(33, 150, 243); // Blue color
-        $this->Cell(0, 10, 'Foodies Order Report', 0, 1, 'C');
+        $this->Cell(0, 10, 'Village Chef Order Report', 0, 1, 'C');
 
         // Subtitle
         $this->SetFont('Arial', 'I', 12);
@@ -161,7 +161,7 @@ try {
     $pdf->SetFont('Arial', 'I', 10);
     $pdf->Cell(0, 8, '* All amounts in Indian Rupees (Rs.)', 0, 1, 'C');
 
-    $pdf->Output('D', 'Foodies_Orders_Report_' . date('Ymd_His') . '.pdf');
+    $pdf->Output('I', 'VillageChef_Orders_Report_' . date('Ymd_His') . '.pdf');
     exit();
 
 } catch (Exception $e) {

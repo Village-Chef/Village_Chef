@@ -118,10 +118,10 @@ if (isset($_GET['view_order']) && !empty($_GET['view_order'])) {
                             class="inline-flex items-center px-4 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700/30 transition-colors">
                             <i class="fas fa-file-export mr-2"></i> Export
                         </a>
-                        <button type="button"
+                        <!-- <button type="button"
                             class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                             <i class="fas fa-plus mr-2"></i> Create Order
-                        </button>
+                        </button> -->
                     </div>
                 </div>
 
@@ -205,91 +205,97 @@ if (isset($_GET['view_order']) && !empty($_GET['view_order'])) {
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
-
-                            <?php
-                            foreach ($result as $row) {
-                                ?>
-                                <tr class="hover:bg-gray-700/20 transition-colors">
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm font-medium text-white"><?php echo $row['order_id'] ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
-                                                <img class="h-10 w-10 rounded-full border border-gray-600"
-                                                    src="<?php echo $row['profile_pic'] ?>" alt="">
-                                            </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-white"><?php echo $row['first_name'] ?>
-                                                    <?php echo $row['last_name'] ?>
-                                                </div>
-                                                <div class="text-sm text-gray-400"><?php echo $row['email'] ?></div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-300"><?php echo $row['restaurant_name'] ?></td>
-                                    <td class="px-6 py-4 text-sm text-accent font-medium">₹
-                                        <?php echo $row['total_amount'] ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php
-                                        $status = $row['status'];
-                                        $statusClasses = [
-                                            'pending' => 'bg-yellow-900/30 text-yellow-400',
-                                            'confirmed' => 'bg-blue-900/30 text-blue-400',
-                                            'preparing' => 'bg-orange-900/30 text-orange-400',
-                                            'out_for_delivery' => 'bg-purple-900/30 text-purple-400',
-                                            'delivered' => 'bg-green-900/30 text-green-400',
-                                            'cancelled' => 'bg-red-900/30 text-red-400'
-                                        ];
-                                        ?>
-                                        <span
-                                            class="px-2.5 py-1 rounded-full text-xs <?php echo $statusClasses[$status]; ?>">
-                                            <?php echo ucfirst(str_replace('_', ' ', $status)); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-300">
-                                        <?php
-                                        $date = new DateTime($row['order_date']);
-                                        echo $date->format('M d, Y') . '<br><span class="text-xs">' . $date->format('g:i A') . '</span>';
-                                        ?>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-300">
-                                        <?php
-                                        $date = new DateTime($row['updated_at']);
-                                        echo $date->format('M d, Y') . '<br><span class="text-xs">' . $date->format('g:i A') . '</span>';
-                                        ?>
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <div class="flex justify-end space-x-3">
-                                            <button
-                                                onclick="window.location.href='orders.php?view_order=<?php echo urlencode($row['order_id']); ?>'"
-                                                class="text-blue-400 hover:text-blue-300">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button
-                                                onclick="openModal('<?php echo $row['order_id']; ?>', '<?php echo $row['status']; ?>')"
-                                                class="text-accent hover:text-accent/80 transition-colors">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button onclick="openDeleteModal('<?php echo $row['order_id']; ?>')"
-                                                class="text-red-500 hover:text-red-400 transition-colors">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </div>
+                            <?php if (empty($result)): ?>
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-400">
+                                        No records found.
                                     </td>
                                 </tr>
-
+                            <?php else: ?>
                                 <?php
-                            }
-                            ?>
+                                foreach ($result as $row) {
+                                    ?>
+                                    <tr class="hover:bg-gray-700/20 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="text-sm font-medium text-white"><?php echo $row['order_id'] ?></div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10">
+                                                    <img class="h-10 w-10 rounded-full border border-gray-600"
+                                                        src="<?php echo $row['profile_pic'] ?>" alt="">
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-white"><?php echo $row['first_name'] ?>
+                                                        <?php echo $row['last_name'] ?>
+                                                    </div>
+                                                    <div class="text-sm text-gray-400"><?php echo $row['email'] ?></div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-300"><?php echo $row['restaurant_name'] ?></td>
+                                        <td class="px-6 py-4 text-sm text-accent font-medium">₹
+                                            <?php echo $row['total_amount'] ?>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <?php
+                                            $status = $row['status'];
+                                            $statusClasses = [
+                                                'pending' => 'bg-yellow-900/30 text-yellow-400',
+                                                'confirmed' => 'bg-blue-900/30 text-blue-400',
+                                                'preparing' => 'bg-orange-900/30 text-orange-400',
+                                                'out_for_delivery' => 'bg-purple-900/30 text-purple-400',
+                                                'delivered' => 'bg-green-900/30 text-green-400',
+                                                'cancelled' => 'bg-red-900/30 text-red-400'
+                                            ];
+                                            ?>
+                                            <span
+                                                class="px-2.5 py-1 rounded-full text-xs <?php echo $statusClasses[$status]; ?>">
+                                                <?php echo ucfirst(str_replace('_', ' ', $status)); ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-300">
+                                            <?php
+                                            $date = new DateTime($row['order_date']);
+                                            echo $date->format('M d, Y') . '<br><span class="text-xs">' . $date->format('g:i A') . '</span>';
+                                            ?>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-300">
+                                            <?php
+                                            $date = new DateTime($row['updated_at']);
+                                            echo $date->format('M d, Y') . '<br><span class="text-xs">' . $date->format('g:i A') . '</span>';
+                                            ?>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <div class="flex justify-end space-x-3">
+                                                <button
+                                                    onclick="window.location.href='orders.php?view_order=<?php echo urlencode($row['order_id']); ?>'"
+                                                    class="text-blue-400 hover:text-blue-300">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button
+                                                    onclick="openModal('<?php echo $row['order_id']; ?>', '<?php echo $row['status']; ?>')"
+                                                    class="text-accent hover:text-accent/80 transition-colors">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <!-- <button onclick="openDeleteModal('<?php echo $row['order_id']; ?>')"
+                                                class="text-red-500 hover:text-red-400 transition-colors">
+                                                <i class="fas fa-trash"></i>
+                                            </button> -->
+                                            </div>
+                                        </td>
+                                    </tr>
 
+                                    <?php
+                                }
+                                ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Pagination -->
-                <div
+                <!-- <div
                     class="bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-700 mt-4 rounded-xl">
                     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
@@ -313,121 +319,166 @@ if (isset($_GET['view_order']) && !empty($_GET['view_order'])) {
                             </a>
                         </nav>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Order Details Modal -->
-                <div class="fixed inset-0 flex items-center justify-center <?php echo isset($orderDetails) ? '' : 'hidden'; ?>"
+                <div class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center <?php echo isset($orderDetails) ? '' : 'hidden'; ?> z-50"
                     id="order-details-modal">
-                    <div class="bg-black/60 absolute inset-0"></div>
                     <div
-                        class="bg-gray-800 rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full z-50">
-                        <div class="bg-gray-800 px-6 py-4">
-                            <div class="text-center">
-                                <?php if ($orderDetails): ?>
-                                    <h3 class="text-lg leading-6 font-medium text-white mb-4">
-                                        Order Details - <?php echo htmlspecialchars($orderDetails['order_id']); ?>
-                                    </h3>
-                                    <div class="bg-gray-700 p-4 rounded-xl mb-4">
-                                        <div class="flex justify-between mb-2">
-                                            <span class="text-sm font-medium text-gray-400">Customer:</span>
-                                            <span class="text-sm text-white">
-                                                <?php echo htmlspecialchars($orderDetails['customer_first_name'] . ' ' . $orderDetails['customer_last_name']); ?>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between mb-2">
-                                            <span class="text-sm font-medium text-gray-400">Restaurant:</span>
-                                            <span class="text-sm text-white">
-                                                <?php echo htmlspecialchars($orderDetails['restaurant_name']); ?>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between mb-2">
-                                            <span class="text-sm font-medium text-gray-400">Date:</span>
-                                            <span class="text-sm text-white">
-                                                <?php echo date('M d, Y g:i A', strtotime($orderDetails['order_date'])); ?>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between mb-2">
-                                            <span class="text-sm font-medium text-gray-400">Status:</span>
-                                            <span
-                                                class="px-2.5 py-1 rounded-full text-xs <?php echo $statusClasses[$orderDetails['order_status']]; ?>">
-                                                <?php echo formatStatus($orderDetails['order_status']); ?>
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-sm font-medium text-gray-400">Payment Method:</span>
-                                            <span class="text-sm text-white">
-                                                <?php echo htmlspecialchars($orderDetails['payment_method']); ?>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <h4 class="text-md font-medium text-white mb-2">Order Items</h4>
-                                    <div class="border border-gray-700 rounded-xl overflow-hidden mb-4">
-                                        <table class="min-w-full divide-y divide-gray-700">
-                                            <thead class="bg-gray-700">
-                                                <tr>
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">
-                                                        Item</th>
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">
-                                                        Qty</th>
-                                                    <th
-                                                        class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">
-                                                        Price</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="bg-gray-800 divide-y divide-gray-700">
-                                                <?php
-                                                $items = explode(', ', $orderDetails['items']);
-                                                $quantities = explode(', ', $orderDetails['quantities']);
-                                                $prices = explode(', ', $orderDetails['prices']);
-
-                                                for ($i = 0; $i < count($items); $i++) {
-                                                    ?>
-                                                    <tr>
-                                                        <td class="px-6 py-4 text-sm text-left text-white">
-                                                            <?php echo htmlspecialchars($items[$i]); ?>
-                                                        </td>
-                                                        <td class="px-6 py-4 text-sm text-left text-white">
-                                                            <?php echo htmlspecialchars($quantities[$i]); ?>
-                                                        </td>
-                                                        <td class="px-6 py-4 text-sm text-left text-white">
-                                                            <?php echo htmlspecialchars($prices[$i]); ?>
-                                                        </td>
-                                                    </tr>
-                                                    <?php
-                                                }
-                                                ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="bg-gray-700 p-4 rounded-xl">
-                                        <div class="flex justify-between mb-2">
-                                            <span class="text-sm font-medium text-gray-400">Total Amount:</span>
-                                            <span
-                                                class="text-sm text-white">₹<?php echo htmlspecialchars($orderDetails['total_amount']); ?></span>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <span class="text-sm font-medium text-gray-400">Delivery Address:</span>
-                                            <span
-                                                class="text-sm text-white"><?php echo htmlspecialchars($orderDetails['delivery_address']); ?></span>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
-                                    <h3 class="text-lg leading-6 font-medium text-white">
-                                        Order Details Not Found
-                                    </h3>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="bg-gray-800 px-4 py-3 sm:flex sm:flex-row-reverse">
-                            <button type="button" onclick="window.location.href='orders.php'"
-                                class="w-full inline-flex justify-center rounded-xl border border-gray-600 px-4 py-2 bg-gray-700 text-base font-medium text-gray-300 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent sm:ml-3 sm:w-auto sm:text-sm">
-                                Close
+                        class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                        <div class="flex justify-between items-center mb-6">
+                            <h1 class="text-2xl font-bold text-accent">
+                                Order Details - <?php echo htmlspecialchars($orderDetails['order_id'] ?? ''); ?>
+                            </h1>
+                            <button onclick="window.location.href='orders.php'"
+                                class="text-gray-400 hover:text-accent transition-colors">
+                                <i class="fas fa-times text-xl"></i>
                             </button>
+                        </div>
+
+                        <div class="space-y-5">
+                            <!-- Order Overview -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-700/30 p-4 rounded-xl">
+                                <div>
+                                    <p class="text-sm text-gray-400">Customer</p>
+                                    <p class="text-white font-medium">
+                                        <?php echo htmlspecialchars($orderDetails['customer_first_name'] . ' ' . $orderDetails['customer_last_name']); ?>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Restaurant</p>
+                                    <p class="text-white font-medium">
+                                        <?php echo htmlspecialchars($orderDetails['restaurant_name']); ?>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Order Date</p>
+                                    <p class="text-white font-medium">
+                                        <?php echo date('M d, Y h:i A', strtotime($orderDetails['order_date'])); ?>
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-400">Payment Method</p>
+                                    <p class="text-white font-medium">
+                                        <?php echo htmlspecialchars($orderDetails['payment_method']); ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Status & Delivery -->
+                            <div class="bg-gray-700/30 p-4 rounded-xl">
+                                <h3 class="text-lg font-semibold text-accent mb-3">Order Status</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-400">Order Status</p>
+                                        <span
+                                            class="px-2.5 py-1 rounded-full text-xs <?= $statusClasses[$orderDetails['order_status']] ?? 'bg-gray-600' ?>">
+                                            <?= formatStatus($orderDetails['order_status']) ?>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-400">Delivery Address</p>
+                                        <p class="text-white">
+                                            <?= htmlspecialchars($orderDetails['delivery_address']) ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Items -->
+                            <div class="bg-gray-700/30 p-4 rounded-xl">
+                                <h3 class="text-lg font-semibold text-accent mb-3">Order Items</h3>
+                                <div class="border border-gray-600 rounded-lg overflow-hidden">
+                                    <table class="min-w-full divide-y divide-gray-600">
+                                        <thead class="bg-gray-700">
+                                            <tr>
+                                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-300">Item
+                                                </th>
+                                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-300">Qty
+                                                </th>
+                                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-300">Price
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-600">
+                                            <?php
+                                            $items = explode(', ', $orderDetails['items']);
+                                            $quantities = explode(', ', $orderDetails['quantities']);
+                                            $prices = explode(', ', $orderDetails['prices']);
+
+                                            for ($i = 0; $i < count($items); $i++) {
+                                                echo '<tr class="hover:bg-gray-600/20">';
+                                                echo '<td class="px-4 py-3 text-sm text-white">' . htmlspecialchars($items[$i]) . '</td>';
+                                                echo '<td class="px-4 py-3 text-sm text-white">' . htmlspecialchars($quantities[$i]) . '</td>';
+                                                echo '<td class="px-4 py-3 text-sm text-white">₹' . htmlspecialchars($prices[$i]) . '</td>';
+                                                echo '</tr>';
+                                            }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Payment Summary -->
+                            <div class="bg-gray-700/30 p-4 rounded-xl">
+                                <h3 class="text-lg font-semibold text-accent mb-3">Payment Summary</h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Items Total</span>
+                                        <span
+                                            class="text-white">₹<?= htmlspecialchars($orderDetails['total_amount']) ?></span>
+                                    </div>
+                                    <div class="flex justify-between border-t border-gray-600 pt-2">
+                                        <span class="text-gray-400 font-medium">Total Amount</span>
+                                        <span
+                                            class="text-accent font-medium">₹<?= htmlspecialchars($orderDetails['total_amount']) ?></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                                <div class="flex items-center space-x-3">
+                                    <span class="text-sm text-gray-400">Need help with this order?</span>
+                                    <a href="#" class="text-accent hover:text-accent/80 text-sm">Contact Support</a>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button onclick="window.location.href='orders.php'"
+                                        class="px-6 py-2 border border-gray-600 text-gray-300 rounded-xl hover:bg-gray-700/30 transition-colors">
+                                        Close
+                                    </button>
+                                    <a href="print_receipt.php?payment_id=<?= htmlspecialchars($orderDetails['payment_id'], ENT_QUOTES, 'UTF-8') ?>"
+                                        class="px-6 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
+                                        Print Invoice
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <style>
+                    /* Custom Scrollbar */
+                    .custom-scrollbar::-webkit-scrollbar {
+                        width: 8px;
+                    }
+
+                    .custom-scrollbar::-webkit-scrollbar-track {
+                        background: #2d3748;
+                        border-radius: 10px;
+                    }
+
+                    .custom-scrollbar::-webkit-scrollbar-thumb {
+                        background: #eab308;
+                        /* yellow-500 */
+                        border-radius: 10px;
+                    }
+
+                    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                        background: #d97706;
+                        /* Slightly darker yellow */
+                    }
+                </style>
             </main>
         </div>
     </div>
