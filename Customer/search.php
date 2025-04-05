@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,9 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/@themesberg/flowbite@latest/dist/flowbite.bundle.js"></script>
 </head>
+
 <body class="min-h-screen text-white bg-black">
     <!-- Navbar placeholder - would be replaced with your actual navbar -->
-    <nav class="bg-zinc-900 border-b border-zinc-800 py-4">
+    <!-- <nav class="bg-zinc-900 border-b border-zinc-800 py-4">
         <div class="container mx-auto px-4 flex justify-between items-center">
             <a href="#" class="text-2xl font-bold text-yellow-500">Village Chef</a>
             <div class="hidden md:flex space-x-6">
@@ -32,54 +34,116 @@
                 </button>
             </div>
         </div>
-    </nav>
+    </nav> -->
+    <?php require("navbar.php");
 
+    if (isset($_GET['query'])) {
+        $searchQuery = htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); // Sanitize the input
+        // echo "<h1 class='text-2xl font-bold mb-6'>Search Results for: " . $searchQuery . "</h1>";
+
+        try {
+            // Call the search method
+            $results = $obj->search($searchQuery);
+        } catch (Exception $e) {
+            echo "<p class='text-red-500'>Error: " . $e->getMessage() . "</p>";
+        }
+    } else {
+        echo "<p class='text-gray-400'>Please enter a search query.</p>";
+    }
+    if (isset($_SESSION['user']['user_id'])) {
+        $uid = $_SESSION['user']['user_id'];
+    }
+    if (isset($_GET['query'])){
+        $query = htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); // Sanitize the input
+    }
+
+    if (isset($_GET['addtoCart'])) {
+        $allcart = $obj->getAllCarts();
+        $userHasCart = false;
+        foreach ($allcart as $cart) {
+            if ($cart['user_id'] == $uid && $cart['status'] == 'active') {
+                $userHasCart = true;
+                $cart_id = $cart['cart_id'];
+                break;
+            }
+        }
+        if (!$userHasCart) {
+            $cart_id = $obj->addCart($uid);
+        }
+
+        $obj->addCartItem($cart_id, $_GET['addtoCart'], 1, $_GET['price']);
+        echo "<script> window.location.href='search.php?query=$query'; </script>";
+    }
+
+
+
+
+    // Add this at the top of your file
+    if (isset($_GET['updateCart']) && isset($_GET['item_id']) && isset($_GET['quantity'])) {
+        $cart_id = $_GET['updateCart'];
+        $item_id = $_GET['item_id'];
+        $quantity = $_GET['quantity'];
+
+        // Don't allow quantity to go below 1
+        if ($quantity <= 0) {
+            // Delete the item from cart if quantity is 0 or negative
+            $obj->deleteCartItem($cart_id, $item_id);
+        } else {
+            // Update quantity if it's 1 or more
+            $obj->updateCartItemQuantity($cart_id, $item_id, $quantity);
+        }
+        echo "<script> window.location.href='search.php?query=$query'; </script>";
+    }
+    ?>
+    <!-- <diV class="pt-20"></diV> -->
     <!-- Search Hero Section -->
-    <div class="relative bg-zinc-900 py-16">
+    <div class="relative bg-zinc-900 py-32">
         <div class="absolute inset-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
-                 alt="Food Background" class="w-full h-full object-cover opacity-10">
+            <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80"
+                alt="Food Background" class="w-full h-full object-cover opacity-10">
         </div>
         <div class="relative container mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-6">Find Your Perfect Meal</h1>
             <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
                 Search for restaurants, dishes, cuisines, or anything food-related. Your next delicious meal is just a search away.
             </p>
-            
+
             <!-- Main Search Bar -->
             <div class="max-w-3xl mx-auto">
                 <div class="relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                    <input type="search" id="main-search" 
-                           class="block w-full p-4 pl-10 text-lg rounded-lg bg-zinc-800 border border-zinc-700 placeholder-gray-400 text-white focus:ring-yellow-500 focus:border-yellow-500" 
-                           placeholder="Search for restaurants, dishes, cuisines..." required>
-                    <button type="submit" 
+                    <form method="GET">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="search" name="query" id="main-search"
+                            class="block w-full p-4 pl-10 text-lg rounded-lg bg-zinc-800 border border-zinc-700 placeholder-gray-400 text-white focus:ring-yellow-500 focus:border-yellow-500"
+                            placeholder="Search for restaurants, dishes, cuisines..." required>
+                        <button type="submit"
                             class="absolute right-2.5 bottom-2.5 bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-black text-sm px-4 py-2 transition">
-                        Search
-                    </button>
+                            Search
+                        </button>
+                    </form>
                 </div>
-                
+
                 <!-- Search Suggestions -->
                 <div class="flex flex-wrap justify-center mt-4 gap-2">
-                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition">
+                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
                         Pizza
                     </span>
-                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition">
+                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
                         Italian
                     </span>
-                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition">
+                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
                         Burger
                     </span>
-                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition">
+                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
                         Chinese
                     </span>
-                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition">
+                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
                         Vegetarian
                     </span>
-                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition">
-                        Fast Food
+                    <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
+                        gujrati
                     </span>
                 </div>
             </div>
@@ -89,11 +153,11 @@
     <!-- Search Filters and Results -->
     <div class="container mx-auto px-4 py-10">
         <!-- Filters and Sort -->
-        <div class="flex flex-col md:flex-row justify-between mb-8 gap-4">
+        <div class="flex flex-col md:flex-row justify-end mb-8 gap-4">
             <!-- Filters -->
-            <div class="flex flex-wrap gap-2">
-                <button id="filter-dropdown-button" data-dropdown-toggle="filter-dropdown" 
-                        class="flex items-center bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg text-sm px-4 py-2.5 transition">
+            <!-- <div class="flex flex-wrap gap-2">
+                <button id="filter-dropdown-button" data-dropdown-toggle="filter-dropdown"
+                    class="flex items-center bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg text-sm px-4 py-2.5 transition">
                     <i class="fas fa-filter mr-2"></i>
                     Filters
                     <i class="fas fa-chevron-down ml-2"></i>
@@ -119,7 +183,7 @@
                                 <label for="mexican" class="ml-2 text-sm text-gray-300">Mexican</label>
                             </div>
                         </div>
-                        
+
                         <h6 class="text-sm font-medium mt-4 mb-3">Price Range</h6>
                         <div class="space-y-2">
                             <div class="flex items-center">
@@ -135,7 +199,7 @@
                                 <label for="price-3" class="ml-2 text-sm text-gray-300">$$$ (Expensive)</label>
                             </div>
                         </div>
-                        
+
                         <h6 class="text-sm font-medium mt-4 mb-3">Rating</h6>
                         <div class="space-y-2">
                             <div class="flex items-center">
@@ -147,16 +211,16 @@
                                 <label for="rating-3" class="ml-2 text-sm text-gray-300">3+ Stars</label>
                             </div>
                         </div>
-                        
+
                         <div class="flex justify-between mt-6">
                             <button class="text-sm text-gray-400 hover:text-white">Clear All</button>
                             <button class="text-sm bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-1 rounded-lg transition">Apply</button>
                         </div>
                     </div>
                 </div>
-                
-                <button id="dietary-dropdown-button" data-dropdown-toggle="dietary-dropdown" 
-                        class="flex items-center bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg text-sm px-4 py-2.5 transition">
+
+                <button id="dietary-dropdown-button" data-dropdown-toggle="dietary-dropdown"
+                    class="flex items-center bg-zinc-800 hover:bg-zinc-700 text-white font-medium rounded-lg text-sm px-4 py-2.5 transition">
                     <i class="fas fa-leaf mr-2"></i>
                     Dietary
                     <i class="fas fa-chevron-down ml-2"></i>
@@ -177,24 +241,24 @@
                                 <label for="gluten-free" class="ml-2 text-sm text-gray-300">Gluten-Free</label>
                             </div>
                         </div>
-                        
+
                         <div class="flex justify-between mt-6">
                             <button class="text-sm text-gray-400 hover:text-white">Clear</button>
                             <button class="text-sm bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-1 rounded-lg transition">Apply</button>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="flex items-center bg-zinc-800 text-white font-medium rounded-lg text-sm px-4 py-2.5">
                     <i class="fas fa-map-marker-alt mr-2"></i>
                     <span class="truncate max-w-[100px] md:max-w-none">Near Me</span>
                 </div>
-            </div>
-            
+            </div> -->
+
             <!-- Sort -->
             <div class="flex items-center">
                 <label for="sort" class="mr-2 text-sm font-medium text-gray-300">Sort by:</label>
-                <select id="sort" class="bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 p-2.5">
+                <select id="sort" name="sort" class="bg-zinc-800 border border-zinc-700 text-white text-sm rounded-lg focus:ring-yellow-500 focus:border-yellow-500 p-2.5">
                     <option value="relevance">Relevance</option>
                     <option value="rating">Rating (High to Low)</option>
                     <option value="reviews">Most Reviews</option>
@@ -203,220 +267,188 @@
                 </select>
             </div>
         </div>
-        
+
         <!-- Search Results -->
         <div class="mb-8">
             <h2 class="text-2xl font-bold mb-6">Search Results</h2>
-            
+
             <!-- Results Count and View Toggle -->
-            <div class="flex justify-between items-center mb-4">
-                <p class="text-gray-400">Showing 24 results for "pizza"</p>
-                <div class="flex space-x-2">
-                    <button class="bg-zinc-800 p-2 rounded-lg text-yellow-500">
-                        <i class="fas fa-th-large"></i>
-                    </button>
-                    <button class="bg-zinc-800 p-2 rounded-lg text-gray-400 hover:text-white">
-                        <i class="fas fa-list"></i>
-                    </button>
+
+            <?php if (isset($_GET['query'])) { ?>
+                <div class="mb-4">
+                    <?php if (isset($results) && count($results) > 0) { ?>
+                        <p class="text-gray-400">Showing <?php echo count($results); ?> result<?php echo count($results) > 1 ? 's' : ''; ?> for "<?php echo htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); ?>"</p>
+                    <?php } else { ?>
+                        <p class="text-gray-400">No results found for "<?php echo htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); ?>"</p>
+                    <?php } ?>
                 </div>
-            </div>
-            
-            <!-- Results Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Restaurant Card 1 -->
-                <div class="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                             alt="Pizza Restaurant" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-1"></i>
-                            4.8
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-semibold group-hover:text-yellow-500 transition">Domino's Pizza</h3>
-                            <span class="bg-yellow-500/10 text-yellow-500 text-xs px-2 py-1 rounded-md">$$</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mt-1">Italian, Pizza, Fast Food</p>
-                        <div class="flex items-center mt-2 text-sm text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
-                            <span>2.3 km away</span>
-                            <span class="mx-2">•</span>
-                            <span class="text-green-500">Open now</span>
-                        </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">30-45 min</span>
-                            <a href="#" class="text-yellow-500 hover:text-yellow-400 text-sm font-medium">View Menu</a>
-                        </div>
-                    </div>
+                <!-- Results Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <?php
+                    if (count($results) > 0) {
+                        print_r($results); // Debugging line to check the structure of $results
+                        foreach ($results as $result) {
+
+
+                            // Display results based on type (restaurant or menu_item)
+                            if ($result['type'] === 'restaurant') {
+                    ?>
+                                <div class="bg-zinc-900 <?php echo ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') ? 'opacity-50' : '' ?> rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group">
+                                    <div class="relative">
+                                        <img src="../AdminPanel/<?php echo $result['rest_image_url']; ?>"
+                                            alt="Italian Restaurant" class="w-full h-48 object-cover <?php echo ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') ? '' : 'group-hover:scale-105' ?>   transition duration-300">
+                                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
+                                            <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                            4.7
+                                        </div>
+                                        <?php if ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed'): ?>
+                                            <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md z-10">
+                                                Currently Closed
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="text-lg font-semibold <?php echo ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') ? 'text-gray-400' : 'group-hover:text-yellow-500' ?>  transition"><?php echo $result['rest_name'] ?></h3>
+                                            <!-- <span class="bg-yellow-500/10 text-yellow-500 text-xs px-2 py-1 rounded-md">$$$</span> -->
+                                        </div>
+                                        <p class="text-sm text-gray-400 mt-1">Italian, Pizza, Pasta</p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-400">
+                                            <i class="fas fa-map-marker-alt mr-1"></i>
+                                            <span>1.8 km away</span>
+                                            <span class="mx-2">•</span>
+                                            <span class=" <?php echo ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') ? 'text-gray-400' : 'text-green-500' ?>"><?php echo ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') ? 'Closed' : 'Open Now' ?></span>
+                                        </div>
+                                        <div class="mt-3 flex items-center justify-between">
+                                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">20-35 min</span>
+                                            <?php if ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') {
+                                            } else {
+
+                                            ?>
+                                                <a href="restaurant.php?id=<?php echo $result['rest_id'] ?>" class="text-yellow-500 hover:text-yellow-400 text-sm font-medium">View Menu</a>
+                                            <?php
+
+                                            }
+                                            ?>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php
+                            }
+                            if ($result['type'] === 'menu_item') {
+                                // $res=$result['item_restaurant_name'];
+                            ?>
+
+                                <div class="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group <?php echo ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) ? 'opacity-50' : ''; ?>">
+                                    <div class="relative">
+                                        <img src="../AdminPanel/<?php echo htmlspecialchars($result['item_image_url']); ?>"
+                                            alt="<?php echo htmlspecialchars($result['item_name']); ?>"
+                                            class="w-full h-48 object-cover <?php echo ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) ? '' : 'group-hover:scale-105'; ?> transition duration-300">
+
+                                        <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md">
+                                            Bestseller
+                                        </div>
+                                        <?php if ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0): ?>
+                                            <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md z-10">
+                                                Currently Closed
+                                            </span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="p-4">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="text-lg font-semibold <?php echo ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) ? 'text-gray-400' : 'group-hover:text-yellow-500'; ?> transition">
+                                                <?php echo htmlspecialchars($result['item_name']); ?>
+                                            </h3>
+                                            <span class="text-lg font-bold  <?php echo ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) ? 'text-gray-400' : 'text-yellow-500' ?>">₹<?php echo htmlspecialchars($result['item_price']); ?></span>
+                                        </div>
+                                        <p class="text-sm text-gray-400 mt-1">at <a href="#" class=" <?php echo ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) ? ' text-gray-400' : 'text-white' ?> hover:text-yellow-500"><?php echo htmlspecialchars($result['item_restaurant_name']); ?></a></p>
+                                        <div class="flex items-center mt-2 text-sm text-gray-400">
+                                            <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center mr-2">
+                                                <i class="fas fa-fire text-red-500 mr-1"></i>
+                                                Spicy
+                                            </span>
+                                            <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center">
+                                                <i class="fas fa-utensils mr-1"></i>
+                                                Non-Veg
+                                            </span>
+                                        </div>
+                                        <div class="mt-3 flex items-center justify-between">
+                                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">30 min delivery</span>
+                                            <?php if ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) { ?>
+                                                <button class="text-gray-400 bg-gray-700 cursor-not-allowed text-xs font-medium px-3 py-1 rounded-lg transition flex items-center" disabled>
+                                                    <i class="fas fa-cart-plus mr-1"></i>
+                                                    Unavailable
+                                                </button>
+                                            <?php } else { ?>
+
+
+                                                <?php
+                                                $cartItems = $obj->getCartItems($uid);
+                                                $itemExists = false;
+                                                $itemQuantity = 0;
+
+                                                // Check if item exists in cart
+                                                foreach ($cartItems as $cartItem) {
+                                                    if ($cartItem['item_id'] == $result['item_id']) {
+                                                        $itemExists = true;
+                                                        $itemQuantity = $cartItem['quantity'];
+                                                        break;
+                                                    }
+                                                }
+                                                if ($itemExists) { ?>
+
+                                                    <div class="flex items-center gap-3 rounded-full border border-white px-2 py-1 text-sm">
+
+                                                        <a
+                                                            href="<?php echo $_SERVER['PHP_SELF']; ?>?id=<?php echo $result['rest_id']; ?>&updateCart=<?php echo $cartItem['cart_id']; ?>&item_id=<?php echo $result['item_id']; ?>&action=decrease&quantity=<?php echo $itemQuantity - 1; ?>&query=<?php echo $query; ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                                                fill="#eab308" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" class="lucide lucide-minus text-yellow-500 cursor-pointer">
+                                                                <path d="M5 12h14" />
+                                                            </svg>
+                                                        </a>
+                                                        <span class="text-sm"><?php echo $itemQuantity; ?></span>
+                                                        <a
+                                                            href="<?php echo $_SERVER['PHP_SELF']; ?>?id=<?php echo $result['rest_id']; ?>&updateCart=<?php echo $cartItem['cart_id']; ?>&item_id=<?php echo $result['item_id']; ?>&action=increase&quantity=<?php echo $itemQuantity + 1; ?>&query=<?php echo $query; ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                                                fill="#eab308" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round" class="lucide lucide-plus cursor-pointer text-yellow-500">
+                                                                <path d="M5 12h14" />
+                                                                <path d="M12 5v14" />
+                                                            </svg>
+                                                        </a>
+                                                    </div>
+
+                                                <?php } else {
+                                                ?>
+                                                    <form
+                                                        action="?id=<?php echo $result['rest_id']; ?>&addtoCart=<?php echo $result['item_id'] ?>&price=<?php echo $result['item_price'] ?>"
+                                                        method="POST">
+                                                        <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
+                                                            <i class="fas fa-cart-plus mr-1"></i>
+                                                            Add to Cart
+                                                        </button>
+                                                    </form>
+
+                                                <?php
+                                                } ?>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                    <?php }
+                        }
+                    } else {
+                        echo "<p class='text-gray-400'>No results found for your search.</p>";
+                    }
+                    ?>
+
                 </div>
-                
-                <!-- Restaurant Card 2 -->
-                <div class="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                             alt="Pizza Restaurant" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-1"></i>
-                            4.5
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-semibold group-hover:text-yellow-500 transition">Pizza Hut</h3>
-                            <span class="bg-yellow-500/10 text-yellow-500 text-xs px-2 py-1 rounded-md">$$</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mt-1">Italian, Pizza, Fast Food</p>
-                        <div class="flex items-center mt-2 text-sm text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
-                            <span>3.1 km away</span>
-                            <span class="mx-2">•</span>
-                            <span class="text-green-500">Open now</span>
-                        </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">25-40 min</span>
-                            <a href="#" class="text-yellow-500 hover:text-yellow-400 text-sm font-medium">View Menu</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Menu Item Card -->
-                <div class="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                             alt="Pepperoni Pizza" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-1"></i>
-                            4.9
-                        </div>
-                        <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-md">
-                            Bestseller
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-semibold group-hover:text-yellow-500 transition">Pepperoni Pizza</h3>
-                            <span class="text-lg font-bold text-yellow-500">₹299</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mt-1">at <a href="#" class="text-white hover:text-yellow-500">Papa John's</a></p>
-                        <div class="flex items-center mt-2 text-sm text-gray-400">
-                            <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center mr-2">
-                                <i class="fas fa-fire text-red-500 mr-1"></i>
-                                Spicy
-                            </span>
-                            <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center">
-                                <i class="fas fa-utensils mr-1"></i>
-                                Non-Veg
-                            </span>
-                        </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">30 min delivery</span>
-                            <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
-                                <i class="fas fa-cart-plus mr-1"></i>
-                                Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Restaurant Card 3 -->
-                <div class="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
-                             alt="Italian Restaurant" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-1"></i>
-                            4.7
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-semibold group-hover:text-yellow-500 transition">Papa John's</h3>
-                            <span class="bg-yellow-500/10 text-yellow-500 text-xs px-2 py-1 rounded-md">$$$</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mt-1">Italian, Pizza, Pasta</p>
-                        <div class="flex items-center mt-2 text-sm text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
-                            <span>1.8 km away</span>
-                            <span class="mx-2">•</span>
-                            <span class="text-green-500">Open now</span>
-                        </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">20-35 min</span>
-                            <a href="#" class="text-yellow-500 hover:text-yellow-400 text-sm font-medium">View Menu</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Menu Item Card 2 -->
-                <div class="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                             alt="Cheese Pizza" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-1"></i>
-                            4.6
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-semibold group-hover:text-yellow-500 transition">Margherita Pizza</h3>
-                            <span class="text-lg font-bold text-yellow-500">₹249</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mt-1">at <a href="#" class="text-white hover:text-yellow-500">Domino's Pizza</a></p>
-                        <div class="flex items-center mt-2 text-sm text-gray-400">
-                            <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center mr-2">
-                                <i class="fas fa-leaf text-green-500 mr-1"></i>
-                                Veg
-                            </span>
-                            <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center">
-                                <i class="fas fa-cheese mr-1"></i>
-                                Cheesy
-                            </span>
-                        </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">25 min delivery</span>
-                            <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
-                                <i class="fas fa-cart-plus mr-1"></i>
-                                Add to Cart
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Restaurant Card 4 -->
-                <div class="bg-zinc-900 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition group">
-                    <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                             alt="Pizza Restaurant" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
-                        <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
-                            <i class="fas fa-star text-yellow-500 mr-1"></i>
-                            4.3
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-lg font-semibold group-hover:text-yellow-500 transition">Pizza Express</h3>
-                            <span class="bg-yellow-500/10 text-yellow-500 text-xs px-2 py-1 rounded-md">$</span>
-                        </div>
-                        <p class="text-sm text-gray-400 mt-1">Italian, Pizza, Fast Food</p>
-                        <div class="flex items-center mt-2 text-sm text-gray-400">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
-                            <span>4.2 km away</span>
-                            <span class="mx-2">•</span>
-                            <span class="text-green-500">Open now</span>
-                        </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">35-50 min</span>
-                            <a href="#" class="text-yellow-500 hover:text-yellow-400 text-sm font-medium">View Menu</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+            <?php } ?>
+
             <!-- Pagination -->
-            <div class="flex justify-center mt-10">
+            <!-- <div class="flex justify-center mt-10">
                 <nav aria-label="Page navigation">
                     <ul class="flex items-center -space-x-px h-10 text-base">
                         <li>
@@ -448,11 +480,11 @@
                         </li>
                     </ul>
                 </nav>
-            </div>
+            </div> -->
         </div>
-        
+
         <!-- Recent Searches -->
-        <div class="mt-12">
+        <!-- <div class="mt-12">
             <h3 class="text-xl font-bold mb-4">Recent Searches</h3>
             <div class="flex flex-wrap gap-2">
                 <a href="#" class="flex items-center bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-sm px-3 py-1.5 rounded-full transition">
@@ -472,10 +504,10 @@
                     <i class="fas fa-times ml-2 text-gray-500 hover:text-white"></i>
                 </a>
             </div>
-        </div>
-        
+        </div> -->
+
         <!-- Popular Searches -->
-        <div class="mt-8">
+        <!-- <div class="mt-8">
             <h3 class="text-xl font-bold mb-4">Popular Searches</h3>
             <div class="flex flex-wrap gap-2">
                 <a href="#" class="bg-zinc-800 hover:bg-zinc-700 text-gray-300 text-sm px-3 py-1.5 rounded-full transition">
@@ -503,69 +535,22 @@
                     Breakfast
                 </a>
             </div>
-        </div>
+        </div> -->
     </div>
-    
-    <!-- Footer placeholder - would be replaced with your actual footer -->
-    <footer class="bg-zinc-900 border-t border-zinc-800 py-10">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Village Chef</h3>
-                    <p class="text-gray-400 text-sm">Delicious food delivered to your doorstep.</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="#" class="hover:text-white">Home</a></li>
-                        <li><a href="#" class="hover:text-white">Menu</a></li>
-                        <li><a href="#" class="hover:text-white">About Us</a></li>
-                        <li><a href="#" class="hover:text-white">Contact</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li>123 Main Street, City</li>
-                        <li>Phone: (123) 456-7890</li>
-                        <li>Email: info@villagechef.com</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Follow Us</h3>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-8 pt-8 border-t border-zinc-800 text-center text-sm text-gray-400">
-                <p>&copy; 2023 Village Chef. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-    
+
+
+    <?php require("footer.php"); ?>
     <script>
         // Simple script to handle dropdown toggles
         document.addEventListener('DOMContentLoaded', function() {
             // For demonstration purposes only - in a real app, use Flowbite's built-in functionality
             const dropdownButtons = document.querySelectorAll('[data-dropdown-toggle]');
-            
+
             dropdownButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetId = this.getAttribute('data-dropdown-toggle');
                     const targetDropdown = document.getElementById(targetId);
-                    
+
                     if (targetDropdown.classList.contains('hidden')) {
                         targetDropdown.classList.remove('hidden');
                     } else {
@@ -573,19 +558,38 @@
                     }
                 });
             });
-            
+
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(event) {
                 dropdownButtons.forEach(button => {
                     const targetId = button.getAttribute('data-dropdown-toggle');
                     const targetDropdown = document.getElementById(targetId);
-                    
+
                     if (!button.contains(event.target) && !targetDropdown.contains(event.target)) {
                         targetDropdown.classList.add('hidden');
                     }
                 });
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all suggestion elements
+            const suggestions = document.querySelectorAll('.suggestion');
+            const searchInput = document.getElementById('main-search');
+            const searchForm = searchInput.closest('form');
+
+            // Add click event listener to each suggestion
+            suggestions.forEach(suggestion => {
+                suggestion.addEventListener('click', function() {
+                    // Set the clicked suggestion text to the search input
+                    searchInput.value = this.textContent.trim();
+
+                    // Submit the form
+                    searchForm.submit();
+                });
+            });
+        });
     </script>
 </body>
+
 </html>

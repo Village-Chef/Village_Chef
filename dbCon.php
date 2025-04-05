@@ -1746,4 +1746,75 @@ class Foodies
             throw new Exception("Failed to update user profile: " . $e->getMessage());
         }
     }
+
+    // ! Search 
+
+    public function search($query)
+    {
+        try {
+            $sql = "
+                SELECT 
+                    'restaurant' AS type,
+                    r.restaurant_id AS rest_id,
+                    r.name AS rest_name,
+                    r.address AS rest_description,
+                    r.city AS rest_city,
+                    r.state AS rest_state,
+                    r.zip_code AS rest_zip_code,
+                    r.phone AS rest_phone,
+                    r.restaurant_pic AS rest_image_url,
+                    r.status AS rest_status,
+                    NULL AS item_id, -- Placeholder for menu item-specific columns
+                    NULL AS item_name,
+                    NULL AS item_description,
+                    NULL AS item_price,
+                    NULL AS item_image_url,
+                    NULL AS item_availability,
+                    NULL AS item_tags,
+                    NULL AS item_restaurant_name,
+                    NULL AS item_restaurant_status -- Placeholder for restaurant status in menu items
+                FROM restaurants r
+                WHERE r.name LIKE :query OR r.address LIKE :query
+    
+                UNION ALL
+    
+                SELECT 
+                    'menu_item' AS type,
+                    NULL AS rest_id, -- Placeholder for restaurant-specific columns
+                    NULL AS rest_name,
+                    NULL AS rest_description,
+                    NULL AS rest_city,
+                    NULL AS rest_state,
+                    NULL AS rest_zip_code,
+                    NULL AS rest_phone,
+                    NULL AS rest_image_url,
+                    NULL AS rest_status,
+                    mi.item_id AS item_id,
+                    mi.item_name AS item_name,
+                    mi.description AS item_description,
+                    mi.price AS item_price,
+                    mi.image_url AS item_image_url,
+                    mi.is_available AS item_availability,
+                    mi.tags AS item_tags,
+                    r.name AS item_restaurant_name,
+                    r.status AS item_restaurant_status -- Fetch restaurant status for menu items
+                FROM menu_items mi
+                JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
+                WHERE mi.item_name LIKE :query OR mi.description LIKE :query
+            ";
+    
+            $stmt = $this->con->prepare($sql);
+    
+            // Bind the search query with wildcards
+            $searchTerm = '%' . $query . '%';
+            $stmt->bindParam(':query', $searchTerm, PDO::PARAM_STR);
+    
+            $stmt->execute();
+    
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Search failed: " . $e->getMessage());
+        }
+    }
+
 }
