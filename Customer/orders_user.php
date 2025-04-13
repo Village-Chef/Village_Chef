@@ -837,7 +837,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="flex justify-center mt-10">
+        <!-- <div class="flex justify-center mt-10">
             <nav class="flex items-center space-x-2">
                 <a href="#" class="px-3 py-2 rounded-md bg-zinc-800 text-gray-400 hover:bg-zinc-700 transition-colors">
                     <i class="fa-solid fa-chevron-left"></i>
@@ -854,7 +854,7 @@
                     <i class="fa-solid fa-chevron-right"></i>
                 </a>
             </nav>
-        </div>
+        </div> -->
 
     </main>
 

@@ -62,7 +62,7 @@
             echo "<p class='text-red-500'>Error: " . $e->getMessage() . "</p>";
         }
     } else {
-            $results = $obj->getAllResults();
+        $results = $obj->getAllResults();
     }
 
     if (isset($_GET['addtoCart'])) {
@@ -282,25 +282,25 @@
 
             <!-- Results Count and View Toggle -->
 
-            <?php if (isset($_GET['query']) || $results ) { 
-                $query="All";
-                if(isset($_GET['query'])) {
-                    $query=$_GET['query'];
+            <?php if (isset($_GET['query']) || $results) {
+                $query = "All";
+                if (isset($_GET['query'])) {
+                    $query = $_GET['query'];
                 }
-                ?>
+            ?>
                 <div class="mb-4">
                     <?php if (isset($results) && count($results) > 0) {
-                        
-                        ?>
+
+                    ?>
                         <p class="text-gray-400">Showing <?php echo count($results); ?> result<?php echo count($results) > 1 ? 's' : ''; ?> for "<?php echo htmlspecialchars($query, ENT_QUOTES, 'UTF-8'); ?>"</p>
-                    <?php } else { 
-                        
-                        ?>
-                        <p class="text-gray-400">No results found for "<?php echo htmlspecialchars($query?$query:'All', ENT_QUOTES, 'UTF-8'); ?>"</p>
+                    <?php } else {
+
+                    ?>
+                        <p class="text-gray-400">No results found for "<?php echo htmlspecialchars($query ? $query : 'All', ENT_QUOTES, 'UTF-8'); ?>"</p>
                     <?php } ?>
                 </div>
                 <!-- Results Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center items-center">
                     <?php
                     if (count($results) > 0) {
                         // print_r($results); // Debugging line to check the structure of $results
@@ -316,7 +316,24 @@
                                             alt="Italian Restaurant" class="w-full h-48 object-cover <?php echo ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') ? '' : 'group-hover:scale-105' ?>   transition duration-300">
                                         <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 rounded-md flex items-center">
                                             <i class="fas fa-star text-yellow-500 mr-1"></i>
-                                            4.7
+                                            <?php
+                                            // Get restaurant reviews and calculate average rating
+                                            $reviews = $obj->getRestaurantReviews($result['rest_id']); // Assuming $result['rest_id'] contains the restaurant ID
+                                            $reviewCount = count($reviews);
+                                            $avgRating = 0;
+
+                                            if ($reviewCount > 0) {
+                                                $totalRating = 0;
+                                                foreach ($reviews as $review) {
+                                                    $totalRating += $review['rating'];
+                                                }
+                                                $avgRating = round($totalRating / $reviewCount, 1);
+                                            }
+
+                                            // Display the average rating and review count
+                                            echo $avgRating > 0 ? $avgRating : 'N/A';
+                                            ?>
+                                            <span class="ml-1">(<?php echo $reviewCount; ?>)</span>
                                         </div>
                                         <?php if ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed'): ?>
                                             <span class="absolute top-2 left-2 bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-md z-10">
@@ -329,7 +346,7 @@
                                             <h3 class="text-lg font-semibold <?php echo ($result['rest_status'] === 'inactive' || $result['rest_status'] === 'closed') ? 'text-gray-400' : 'group-hover:text-yellow-500' ?>  transition"><?php echo $result['rest_name'] ?></h3>
                                             <!-- <span class="bg-yellow-500/10 text-yellow-500 text-xs px-2 py-1 rounded-md">$$$</span> -->
                                         </div>
-                                        <p class="text-sm text-gray-400 mt-1">Italian, Pizza, Pasta</p>
+                                        <!-- <p class="text-sm text-gray-400 mt-1">Italian, Pizza, Pasta <?php echo $result['item_tags']; ?></p> -->
                                         <div class="flex items-center mt-2 text-sm text-gray-400">
                                             <i class="fas fa-map-marker-alt mr-1"></i>
                                             <span>1.8 km away</span>
@@ -380,7 +397,7 @@
                                             <span class="text-lg font-bold  <?php echo ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) ? 'text-gray-400' : 'text-yellow-500' ?>">₹<?php echo htmlspecialchars($result['item_price']); ?></span>
                                         </div>
                                         <p class="text-sm text-gray-400 mt-1">at <a href="#" class=" <?php echo ($result['item_restaurant_status'] == "inactive" || $result['item_availability'] == 0) ? ' text-gray-400' : 'text-white' ?> hover:text-yellow-500"><?php echo htmlspecialchars($result['item_restaurant_name']); ?></a></p>
-                                        <div class="flex items-center mt-2 text-sm text-gray-400">
+                                        <!-- <div class="flex items-center mt-2 text-sm text-gray-400">
                                             <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center mr-2">
                                                 <i class="fas fa-fire text-red-500 mr-1"></i>
                                                 Spicy
@@ -389,6 +406,28 @@
                                                 <i class="fas fa-utensils mr-1"></i>
                                                 Non-Veg
                                             </span>
+                                        </div> -->
+                                        <div class="flex items-center mt-2 text-sm text-gray-400 flex-wrap gap-2">
+                                            <?php
+                                            if (!empty($result['item_tags'])) {
+                                                // Decode JSON string into an array
+                                                $tags = json_decode($result['item_tags'], true);
+                                                if (is_array($tags)) {
+                                                    foreach ($tags as $tag) {
+                                            ?>
+                                                        <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center mr-2">
+                                                            <i class="fas fa-fire text-red-500 mr-1"></i>
+                                                            <?php echo $tag; ?>
+                                                        </span>
+                                            <?php
+                                                    }
+                                                } else {
+                                                    echo '<span class="text-gray-400">Invalid tags format</span>';
+                                                }
+                                            } else {
+                                                echo '<span class="text-gray-400">No tags available</span>';
+                                            }
+                                            ?>
                                         </div>
                                         <div class="mt-3 flex items-center justify-between">
                                             <span class="text-sm bg-zinc-800 px-2 py-1 rounded-md">30 min delivery</span>
@@ -401,18 +440,23 @@
 
 
                                                 <?php
-                                                $cartItems = $obj->getCartItems($uid);
                                                 $itemExists = false;
                                                 $itemQuantity = 0;
-
-                                                // Check if item exists in cart
-                                                foreach ($cartItems as $cartItem) {
-                                                    if ($cartItem['item_id'] == $result['item_id']) {
-                                                        $itemExists = true;
-                                                        $itemQuantity = $cartItem['quantity'];
-                                                        break;
+                                                if (isset($_SESSION['user']['user_id'])) {
+                                                    $cartItems = $obj->getCartItems($uid);
+                                                    // Check if item exists in cart
+                                                    foreach ($cartItems as $cartItem) {
+                                                        if ($cartItem['item_id'] == $result['item_id']) {
+                                                            $itemExists = true;
+                                                            $itemQuantity = $cartItem['quantity'];
+                                                            break;
+                                                        }
                                                     }
                                                 }
+
+
+
+
                                                 if ($itemExists) { ?>
 
                                                     <div class="flex items-center gap-3 rounded-full border border-white px-2 py-1 text-sm">
@@ -437,16 +481,35 @@
                                                         </a>
                                                     </div>
 
-                                                <?php } else {
-                                                ?>
-                                                    <form
-                                                        action="?id=<?php echo $result['rest_id']; ?>&addtoCart=<?php echo $result['item_id'] ?>&price=<?php echo $result['item_price'] ?>"
-                                                        method="POST">
-                                                        <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
-                                                            <i class="fas fa-cart-plus mr-1"></i>
-                                                            Add to Cart
-                                                        </button>
-                                                    </form>
+                                                    <?php } else {
+                                                    if (isset($_SESSION['user']['user_id'])) {
+                                                    ?>
+                                                        <form
+                                                            action="?id=<?php echo $result['rest_id']; ?>&addtoCart=<?php echo $result['item_id'] ?>&price=<?php echo $result['item_price'] ?>"
+                                                            method="POST">
+                                                            <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
+                                                                <i class="fas fa-cart-plus mr-1"></i>
+                                                                Add to Cart
+                                                            </button>
+                                                        </form>
+                                                    <?php
+                                                    } else {
+                                                    ?>
+                                                        <form
+                                                            action="login.php"
+                                                            method="POST">
+                                                            <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
+                                                                <i class="fas fa-cart-plus mr-1"></i>
+                                                                Add to Cart
+                                                            </button>
+                                                        </form>
+                                                    <?php
+
+                                                    }
+                                                    ?>
+
+
+
 
                                                 <?php
                                                 } ?>

@@ -217,6 +217,7 @@
     $prices = explode(",", $orderByIdMain['prices']);
     $imageUrls = explode(",", $orderByIdMain['image_urls']);
     if ($orderByIdMain) {
+        // print_r($orderByIdMain);
     ?>
 
         <!-- Main Content -->
@@ -253,7 +254,7 @@
             </div>
 
 
-            <!-- Order Status - Pending -->
+            <!-- Order Status - preparing -->
             <div class="order-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mb-8">
                 <h2 class="text-lg font-semibold mb-6">Order Status</h2>
 
@@ -274,28 +275,28 @@
 
                     <!-- Line 1 (Completed) -->
                     <div
-                        class="progress-line  <?php echo ($orderByIdMain['order_status'] === "pending" ? 'active' : 'completed') ?> flex-1 mx-2">
+                        class="progress-line  <?php echo ($orderByIdMain['order_status'] === "preparing" ? 'active' : 'completed') ?> flex-1 mx-2">
                     </div>
 
-                    <!-- Step 2: Preparing (Active) -->
+                    <!-- Step 2: preparing (Active) -->
                     <div
-                        class="flex flex-col items-center progress-step  <?php echo ($orderByIdMain['order_status'] === "pending" ? 'active' : 'completed') ?>">
+                        class="flex flex-col items-center progress-step  <?php echo ($orderByIdMain['order_status'] === "preparing" ? 'active' : 'completed') ?>">
                         <div
-                            class="step-number w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-yellow-500 <?php echo ($orderByIdMain['order_status'] === "pending" ? 'active' : 'completed') ?>  text-black">
+                            class="step-number w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-yellow-500 <?php echo ($orderByIdMain['order_status'] === "preparing" ? 'active' : 'completed') ?>  text-black">
                             <i class="fa-solid fa-utensils"></i>
                         </div>
-                        <span class="step-label text-sm font-medium text-yellow-500">Preparing</span>
+                        <span class="step-label text-sm font-medium text-yellow-500">preparing</span>
                         <span
-                            class="text-xs <?php echo ($orderByIdMain['order_status'] === "pending" ? 'text-yellow-500' : 'text-green-400') ?> mt-1">In
+                            class="text-xs <?php echo ($orderByIdMain['order_status'] === "preparing" ? 'text-yellow-500' : 'text-green-400') ?> mt-1">In
                             progress</span>
                     </div>
 
-                    <!-- Line 2 (Pending) -->
+                    <!-- Line 2 (preparing) -->
                     <div
-                        class="progress-line <?php echo ($orderByIdMain['order_status'] === "delivered" ||  $orderByIdMain['order_status'] === "out_for_delivery" ? 'completed' : 'pending') ?> flex-1 mx-2">
+                        class="progress-line <?php echo ($orderByIdMain['order_status'] === "delivered" ||  $orderByIdMain['order_status'] === "out_for_delivery" ? 'completed' : 'preparing') ?> flex-1 mx-2">
                     </div>
 
-                    <!-- Step 3: On the Way (Pending) -->
+                    <!-- Step 3: On the Way (preparing) -->
                     <div
                         class="flex flex-col items-center progress-step <?php echo ($orderByIdMain['order_status'] === "delivered" ? 'completed' : '') ?>">
                         <div class="step-number w-10 h-10 rounded-full flex items-center justify-center mb-2 bg-zinc-800 ">
@@ -309,12 +310,12 @@
                             for delivery</span>
                     </div>
 
-                    <!-- Line 3 (Pending) -->
+                    <!-- Line 3 (preparing) -->
                     <div
-                        class="progress-line <?php echo ($orderByIdMain['order_status'] === "delivered" ? 'completed' : 'pending') ?> flex-1 mx-2">
+                        class="progress-line <?php echo ($orderByIdMain['order_status'] === "delivered" ? 'completed' : 'preparing') ?> flex-1 mx-2">
                     </div>
 
-                    <!-- Step 4: Delivered (Pending) -->
+                    <!-- Step 4: Delivered (preparing) -->
                     <div
                         class="flex flex-col items-center progress-step <?php echo ($orderByIdMain['order_status'] === "delivered" ? 'completed' : '') ?>">
                         <div
@@ -329,7 +330,7 @@
                     </div>
                 </div>
 
-                <div class="bg-zinc-800 rounded-lg p-4 <?php echo ($orderByIdMain['order_status'] === "pending" ? '' : 'hidden')  ?>">
+                <div class="bg-zinc-800 rounded-lg p-4 <?php echo ($orderByIdMain['order_status'] === "preparing" ? '' : 'hidden')  ?>">
                     <div class="flex items-start">
                         <i class="fa-solid fa-info-circle text-yellow-500 mt-1 mr-3"></i>
                         <div>

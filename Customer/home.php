@@ -24,6 +24,12 @@ session_start();
     <!-- Navbar -->
     <?php require 'navbar.php'; ?>
 
+    <?php 
+    if(isset($_SESSION['user'])) {
+        echo "<script>window.location.href = 'menu.php';</script>";
+    }
+    ?>
+
     <!-- Hero Section -->
     <section class=" lg:container h-screen mx-auto px-4  py-20 flex flex-col md:flex-row items-center">
         <div class="md:w-1/2 mb-8 md:mb-0">

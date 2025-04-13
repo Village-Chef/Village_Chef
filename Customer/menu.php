@@ -438,7 +438,7 @@ if (isset($_GET['sort'])) {
         <?php
         foreach ($getAllMenuItems as $allMenu) {
         ?>
-          <div class="menu-card group relative rounded-2xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-800 <?php echo ($allMenu['is_available'] == "
+          <div class="menu-card h-fit group relative rounded-2xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-800 <?php echo ($allMenu['is_available'] == "
             0") ? 'opacity-60' : 'hover:border-yellow-500/30 hover:-translate-y-2'; ?> transition-all duration-300 ">
             <!-- Image Section with Hover Effect -->
             <div class="relative overflow-hidden">

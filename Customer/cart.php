@@ -441,7 +441,7 @@
                             class="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
                             <i class="fa-solid fa-utensils mr-2"></i> Browse Menu
                         </a>
-                        <a href="cart.php"
+                        <a href="orders_user.php"
                             class="bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
                             <i class="fa-solid fa-clock-rotate-left mr-2"></i> View Past Orders
                         </a>
@@ -526,7 +526,7 @@
 
                 </div> -->
 
-                <div class="flex w-full flex-col md:flex-row justify-center items-center gap-6 rounded-lg">
+                <div class="flex w-full flex-col md:flex-row justify-center  gap-6 rounded-lg">
                     <!-- Right Side Process -->
                     <div class="w-full p-4">
                         <div class="max-w-2xl mx-auto">
@@ -1017,7 +1017,7 @@
             "description": "Testing Razorpay",
             "image": "https://your-logo-url.com/logo.png",
             "handler": function (response) {
-                alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
+                // alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
                 window.location.href = "cart.php?payment_id=" + response.razorpay_payment_id;
             },
             "prefill": {
