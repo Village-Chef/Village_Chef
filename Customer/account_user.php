@@ -7,6 +7,8 @@
     require "navbar.php";
     $ActivePage = "Account";
 
+    
+
     if (isset(($_SESSION['user']['user_id']))) {
         $uid = $_SESSION['user']['user_id'];
         $cartItems = $obj->getCartItems($uid);
@@ -17,7 +19,8 @@
         foreach ($usersAllOrders as $usersorders) {
             $totalOrders += 1;
         }
-    }
+    } 
+
 
     // $getitems=$obj->getOrderItemsByOrderId();
 

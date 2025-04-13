@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div class="menu-card group relative rounded-2xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-800 <?php echo ($allMenu['is_available'] == "
+    <div class="menu-card h-fit group relative rounded-2xl overflow-hidden shadow-lg bg-zinc-900 border border-zinc-800 <?php echo ($allMenu['is_available'] == "
             0") ? 'opacity-60' : 'hover:border-yellow-500/30 hover:-translate-y-2'; ?> transition-all duration-300 ">
         <!-- Image Section with Hover Effect -->
         <div class="relative overflow-hidden">
@@ -86,7 +86,7 @@
                 $tags = is_string($data) ? json_decode($data, true) : $data;
 
                 foreach ($tags as $tag) {
-                    ?>
+                ?>
 
                     <span class="bg-zinc-800 text-gray-300 text-xs px-2 py-1 rounded-md flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24"
@@ -99,7 +99,7 @@
                         <?php echo $tag ?>
                     </span>
 
-                    <?php
+                <?php
                 }
                 ?>
             </div>
@@ -112,20 +112,25 @@
                         ₹<?php echo $allMenu['price']; ?>
                     </div>
 
-                    
+
                     <?php
-                    $cartItems = $obj->getCartItems($uid);
+
                     $itemExists = false;
                     $itemQuantity = 0;
+                    if (isset($_SESSION['user']['user_id'])) {
 
-                    // Check if item exists in cart
-                    foreach ($cartItems as $cartItem) {
-                        if ($cartItem['item_id'] == $allMenu['item_id']) {
-                            $itemExists = true;
-                            $itemQuantity = $cartItem['quantity'];
-                            break;
+                        $cartItems = $obj->getCartItems($uid);
+
+                        foreach ($cartItems as $cartItem) {
+                            if ($cartItem['item_id'] == $allMenu['item_id']) {
+                                $itemExists = true;
+                                $itemQuantity = $cartItem['quantity'];
+                                break;
+                            }
                         }
                     }
+                    // Check if item exists in cart
+
 
                     if ($itemExists) { ?>
                         <div class="flex items-center gap-3 rounded-full border border-white px-2 py-1 text-sm">
@@ -149,16 +154,36 @@
                                 </svg>
                             </a>
                         </div>
-                    <?php } else { ?>
-                        <form
-                            action="?id=<?php echo $id; ?>&addtoCart=<?php echo $allMenu['item_id'] ?>&price=<?php echo $allMenu['price'] ?>"
-                            method="POST">
-                            <button type="submit"
-                                class="bg-yellow-500 text-black text-xs font-semibold px-4 p-1 rounded-md z-10">
-                                Add to Cart
-                            </button>
-                        </form>
-                    <?php } ?>
+                        <?php } else {
+                        if (isset($_SESSION['user']['user_id'])) {
+                        ?>
+                            <form
+                                action="?id=<?php echo $id; ?>&addtoCart=<?php echo $allMenu['item_id'] ?>&price=<?php echo $allMenu['price'] ?>"
+                                method="POST">
+                                <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
+                                    <i class="fas fa-cart-plus mr-1"></i>
+                                    Add to Cart
+                                </button>
+                            </form>
+                        <?php
+                        } else {
+                        ?>
+                            <form
+                                action="login.php"
+                                method="POST">
+                                <button class="text-black bg-yellow-500 hover:bg-yellow-600 text-xs font-medium px-3 py-1 rounded-lg transition flex items-center">
+                                    <i class="fas fa-cart-plus mr-1"></i>
+                                    Add to Cart
+                                </button>
+                            </form>
+                    <?php
+
+                        }
+                    } ?>
+
+
+
+
                 </div>
 
             </div>
