@@ -48,7 +48,15 @@
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $error_message = 'Invalid email address';
         } else if (strlen($password) < 8) {
-            $error_message = 'Password must be at least 8 characters long';
+            $error_message = 'Password must be at least 8 characters long.';
+        } elseif (!preg_match('/[A-Z]/', $password)) {
+            $error_message = 'Password must contain at least one uppercase letter.';
+        } elseif (!preg_match('/[a-z]/', $password)) {
+            $error_message = 'Password must contain at least one lowercase letter.';
+        } elseif (!preg_match('/[0-9]/', $password)) {
+            $error_message = 'Password must contain at least one number.';
+        } elseif (!preg_match('/[\W_]/', $password)) {
+            $error_message = 'Password must contain at least one special character.';
         } elseif (strlen($phone) != 10) {
             $error_message = 'Phone number must be 10 digits long';
         } else {
@@ -175,10 +183,13 @@
                 } catch (Exception $e) {
                     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                 }
-            } catch (Exception $e) {
-                echo "Registration failed: " . $e->getMessage();
+            } catch (Throwable $e) {
+                $error_message =  "Registration failed: " . $e->getMessage();
             }
         }
+
+
+
 
 
     }
@@ -196,7 +207,7 @@
                         toast: true,
                         position: 'top-end',
                         icon: 'success',
-                        title: 'Registration successful',
+                        title: '<?PHP $error_message ?>',
                         showConfirmButton: false,
                         timer: 2000
                     }).then(function () {
@@ -238,7 +249,7 @@
                     </div>
                     <div class="mb-6">
                         <label class="flex items-center">
-                            <input type="checkbox"
+                            <input type="checkbox" required
                                 class="form-checkbox bg-zinc-800 border-zinc-700 text-yellow-500 rounded">
                             <span class="ml-2 text-sm text-gray-400">I agree to the <a href="#"
                                     class="text-yellow-500 hover:underline">Terms of Service</a> and <a href="#"
@@ -267,6 +278,8 @@
             <?php endif; ?>
         </div>
     </main>
+
+    <?php require"footer.php"; ?>
 
     <!-- Add Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>

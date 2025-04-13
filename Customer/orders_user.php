@@ -1,3 +1,5 @@
+<!-- Add this before </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
 <body class="min-h-screen bg-black text-white">
 
     <?php require "navbar.php";
@@ -36,7 +38,7 @@
                 $orderItems = $obj->getOrderItems($paymentDetails['order_id']);
 
                 // print_r($orderItems);
-
+    
                 $grand_total = $paymentDetails['amount'];
 
                 $platform_fee = 6;
@@ -59,7 +61,7 @@
     // $paymentMethods = $obj->getPaymentMethods();
     // $paymentStatuses = $obj->getPaymentStatuses();
     // $paymentSummary = $obj->getPaymentSummary();
-
+    
     ?>
 
     <script>
@@ -410,36 +412,11 @@
                             </li>
                         </ul>
                     </div>
-
-                    <!-- <button class="flex gap-3 cursor-pointer w-fit rounded-full text-md px-4 py-2 items-center bg-zinc-900 text-yellow-500" type="button" data-dropdown-toggle="sort-dropdown">
-                    Sort By
-                    <svg class="h-5 w-5 stroke-[2px] cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button> -->
-
-                    <!-- Dropdown menu -->
-                    <!-- <div class="hidden text-base z-50 list-none bg-zinc-900 divide-y divide-gray-100 rounded shadow my-4" id="sort-dropdown">
-                    <ul class="py-1" aria-labelledby="dropdown">
-                        <li>
-                            <a href="?sort=newest" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white block px-4 py-2">Newest First</a>
-                        </li>
-                        <li>
-                            <a href="?sort=oldest" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white block px-4 py-2">Oldest First</a>
-                        </li>
-                        <li>
-                            <a href="?sort=highest" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white block px-4 py-2">Highest Amount</a>
-                        </li>
-                        <li>
-                            <a href="?sort=lowest" class="text-sm hover:bg-zinc-800 bg-zinc-900 text-white block px-4 py-2">Lowest Amount</a>
-                        </li>
-                    </ul>
-                </div> -->
                 </div>
             </div>
             <?php
             if ($usersAllOrders == null) {
-            ?>
+                ?>
                 <!-- No Orders Content -->
                 <div class="bg-zinc-900 rounded-xl border border-zinc-800 p-8 md:p-16">
                     <div class="flex flex-col items-center justify-center text-center">
@@ -490,13 +467,13 @@
                                 <h3 class="text-lg font-semibold mb-2">First Order Special</h3>
                                 <p class="text-gray-400 mb-4">Get 20% off on your first order with us. Use code WELCOME20 at
                                     checkout.</p>
-                                <div class="flex justify-between items-center">
+                                <div class="flex sm:flex-row flex-col justify-between items-center">
                                     <div>
                                         <span class="text-sm text-gray-400">Valid until:</span>
                                         <span class="text-white ml-2">June 30, 2023</span>
                                     </div>
                                     <a href="menu.php"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm transition-colors">
+                                        class="bg-yellow-500 sm:mt-0 mt-3 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm transition-colors">
                                         Order Now
                                     </a>
                                 </div>
@@ -519,13 +496,13 @@
                                 <h3 class="text-lg font-semibold mb-2">Free Delivery Weekend</h3>
                                 <p class="text-gray-400 mb-4">Enjoy free delivery on all orders over ₹500 this weekend. No
                                     code needed.</p>
-                                <div class="flex justify-between items-center">
+                                <div class="flex sm:flex-row flex-col justify-between items-center">
                                     <div>
                                         <span class="text-sm text-gray-400">Valid until:</span>
                                         <span class="text-white ml-2">Sunday, May 28</span>
                                     </div>
                                     <a href="menu.php"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm transition-colors">
+                                        class="bg-yellow-500 sm:mt-0 mt-3 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm transition-colors">
                                         Order Now
                                     </a>
                                 </div>
@@ -548,13 +525,13 @@
                                 <h3 class="text-lg font-semibold mb-2">Free Delivery Weekend</h3>
                                 <p class="text-gray-400 mb-4">Enjoy free delivery on all orders over ₹500 this weekend. No
                                     code needed.</p>
-                                <div class="flex justify-between items-center">
+                                <div class="flex sm:flex-row flex-col justify-between items-center">
                                     <div>
                                         <span class="text-sm text-gray-400">Valid until:</span>
                                         <span class="text-white ml-2">Sunday, May 28</span>
                                     </div>
                                     <a href="menu.php"
-                                        class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm transition-colors">
+                                        class="bg-yellow-500 sm:mt-0 mt-3 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg text-sm transition-colors">
                                         Order Now
                                     </a>
                                 </div>
@@ -571,7 +548,7 @@
 
 
                     if ($filter === "all" || $orders['status'] == $filter) {
-                ?>
+                        ?>
 
                         <div
                             class="order-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:border-yellow-500/30">
@@ -605,10 +582,10 @@
                                                 <div class="h-16 w-16 rounded-lg overflow-hidden bg-zinc-800 mr-4">
                                                     <?php
                                                     foreach ($image_urls as $image_url) {
-                                                    ?>
+                                                        ?>
                                                         <img src="../AdminPanel/<?php echo $image_url; ?>" alt="Domino's Special Pizza"
                                                             class="h-full w-full object-cover" />
-                                                    <?php
+                                                        <?php
                                                     }
                                                     ?>
                                                 </div>
@@ -655,12 +632,12 @@
                                 </div>
                             </div>
                         </div>
-            <?php
+                        <?php
                     }
                 }
             }
             // print_r($usersAllOrders);
-
+            
             ?>
             <!-- <div class="order-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 hover:border-yellow-500/30">
                 <div class="p-6">
@@ -859,7 +836,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-zinc-900 pt-16 pb-8 mt-16">
+    <!-- <footer class="bg-zinc-900 pt-16 pb-8 mt-16">
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                 <div>
@@ -935,7 +912,12 @@
                 </p>
             </div>
         </div>
-    </footer>
+    </footer> -->
+    <?php
+
+    require "footer.php";
+
+    ?>
     <!-- Payment Details Model -->
     <div id="paymentDetailModal"
         class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center <?= isset($_GET['payment_id']) && $paymentDetails ? '' : 'hidden' ?> z-50">
@@ -1032,10 +1014,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex items-center space-x-3">
                             <span class="text-sm text-gray-400">Payment Status:</span>
-                            <span
-                                class="px-2.5 py-1 rounded-full text-xs <?=
-                                                                        $paymentDetails['payment_status'] === 'successful' ? 'bg-green-900/30 text-green-400' : ($paymentDetails['payment_status'] === 'failed' ? 'bg-red-900/30 text-red-400' :
-                                                                            'bg-yellow-900/30 text-yellow-400') ?>">
+                            <span class="px-2.5 py-1 rounded-full text-xs <?=
+                                $paymentDetails['payment_status'] === 'successful' ? 'bg-green-900/30 text-green-400' : ($paymentDetails['payment_status'] === 'failed' ? 'bg-red-900/30 text-red-400' :
+                                    'bg-yellow-900/30 text-yellow-400') ?>">
                                 <?= ucfirst($paymentDetails['payment_status']) ?>
                             </span>
                         </div>
@@ -1081,7 +1062,7 @@
 
     <script>
         // Mobile menu toggle functionality
-        document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+        document.getElementById('mobile-menu-toggle').addEventListener('click', function () {
             document.getElementById('mobile-menu').classList.toggle('open');
 
             // Change icon between bars and times (x)

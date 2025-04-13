@@ -120,7 +120,7 @@ if (isset($_GET['id'])) {
                                         <?php endfor; ?>
                                     </div>
                                     <span class="text-white font-bold"><?php echo $avgRating; ?></span>
-                                    <span class="text-gray-300 ml-1">(<?php echo $reviewCount; ?> reviews)</span>
+                                    <span class="text-gray-300 ml-1">(<?php echo $reviewCount; ?>)</span>
                                 </div>
                                 <button onclick="document.getElementById('reviews-section').scrollIntoView({behavior: 'smooth'})"
                                     class="mt-2 text-sm text-yellow-500 hover:text-yellow-400 transition">
@@ -136,13 +136,13 @@ if (isset($_GET['id'])) {
                         <!-- Sidebar -->
                         <div class="w-full sm:w-fit">
                             <h2 class="text-lg font-semibold border-b border-zinc-700 pb-2 mb-3">Order Online</h2>
-                            <ul class="space-y-2 px-4">
+                            <!-- <ul class="space-y-2 px-4">
                                 <li class="cursor-pointer text-yellow-500 font-medium">Veg Pizza (13)</li>
                                 <li class="cursor-pointer text-gray-400">Non Veg Pizza (12)</li>
                                 <li class="cursor-pointer text-gray-400">Meals And Deals (6)</li>
                                 <li class="cursor-pointer text-gray-400">Thin n Crispy Pizzas (6)</li>
                                 <li class="cursor-pointer text-gray-400">Flavour Fun Range (6)</li>
-                            </ul>
+                            </ul> -->
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-6 md:px-10">
@@ -206,43 +206,7 @@ if (isset($_GET['id'])) {
                                 <?php endfor; ?>
                             </div>
 
-                            <div class="bg-zinc-900 rounded-xl p-6 flex-1">
-                                <h3 class="font-semibold mb-3">What customers are saying</h3>
 
-                                <?php
-                                // Get most common tags from reviews
-                                $tags = [
-                                    'Delicious food' => 85,
-                                    'Great service' => 72,
-                                    'Value for money' => 65,
-                                    'Fast delivery' => 58,
-                                    'Good portions' => 45
-                                ];
-                                ?>
-
-                                <!-- <div class="flex flex-wrap gap-2 mb-4">
-                                    <?php foreach ($tags as $tag => $count) : ?>
-                                        <span class="bg-zinc-800 text-gray-300 text-xs px-3 py-1 rounded-full">
-                                            <?php echo $tag; ?> (<?php echo $count; ?>)
-                                        </span>
-                                    <?php endforeach; ?>
-                                </div> -->
-
-                                <div class="mt-4">
-                                    <h4 class="text-sm font-medium mb-2">Popular dishes mentioned</h4>
-                                    <div class="flex flex-wrap gap-2">
-                                        <span class="bg-yellow-500/10 text-yellow-500 text-xs px-3 py-1 rounded-full">
-                                            Margherita Pizza (24)
-                                        </span>
-                                        <span class="bg-yellow-500/10 text-yellow-500 text-xs px-3 py-1 rounded-full">
-                                            Pepperoni Pizza (18)
-                                        </span>
-                                        <span class="bg-yellow-500/10 text-yellow-500 text-xs px-3 py-1 rounded-full">
-                                            Garlic Bread (15)
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <!-- Review List -->
@@ -384,13 +348,13 @@ if (isset($_GET['id'])) {
             </main>
         </div>
 
-        <a href="menu.php" class="fixed cursor-pointer top-0 mt-20 left-0 m-5 flex px-4 hover:scale-105 transition-all py-2 gap-2 rounded-full bg-yellow-500">
+        <a href="menu.php" class="fixed cursor-pointer bottom-0 mt-20 right-0 m-5 flex  hover:scale-105 transition-all p-4 gap-2 rounded-full bg-yellow-500">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-arrow-left-icon lucide-arrow-left text-black">
                 <path d="m12 19-7-7 7-7" />
                 <path d="M19 12H5" />
             </svg>
-            <span class="text-black font-bold"> Back</span>
+            <!-- <span class="text-black font-bold"></span> -->
         </a>
     </main>
 

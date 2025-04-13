@@ -304,10 +304,10 @@
                         <h2 class="text-xl font-bold mb-1"><?php echo $userdata['first_name']; ?>
                             <?php echo $userdata['last_name']; ?>
                         </h2>
-                        <p class="text-yellow-500 text-sm mb-4">Premium Member</p>
-                        <div class="bg-zinc-800 text-green-500 px-3 py-1 rounded-full text-sm font-medium mb-4">
+                        <!-- <p class="text-yellow-500 text-sm mb-4">Premium Member</p> -->
+                        <!-- <div class="bg-zinc-800 text-green-500 px-3 py-1 rounded-full text-sm font-medium mb-4">
                             Active
-                        </div>
+                        </div> -->
                         <div class="w-full border-t border-zinc-800 pt-4 mt-2">
                             <div class="flex justify-between items-center mb-3">
                                 <span class="text-gray-400 text-sm">Member Since</span>
@@ -336,9 +336,9 @@
 
                     <!-- Account Actions -->
                     <div class="profile-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800 p-6 mt-6">
-                        <h3 class="text-lg font-semibold mb-4">Account Actions</h3>
+                        <!-- <h3 class="text-lg font-semibold mb-4">Account Actions</h3> -->
                         <div class="space-y-3">
-                            <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+                            <!-- <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
                                 <i class="fa-solid fa-lock mr-3 w-5 text-center"></i>
                                 <span>Change Password</span>
                             </a>
@@ -349,12 +349,12 @@
                             <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
                                 <i class="fa-solid fa-shield-alt mr-3 w-5 text-center"></i>
                                 <span>Privacy Settings</span>
-                            </a>
-                            <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
+                            </a> -->
+                            <!-- <a href="#" class="flex items-center text-gray-400 hover:text-yellow-500 transition-colors">
                                 <i class="fa-solid fa-trash mr-3 w-5 text-center"></i>
                                 <span>Delete Account</span>
-                            </a>
-                            <div class="pt-3 border-t border-zinc-800 mt-3">
+                            </a> -->
+                            <div class="">
                                 <a onclick="logout()"
                                     class="flex items-center cursor-pointer text-red-500 hover:text-red-400 transition-colors">
                                     <i class="fa-solid fa-sign-out-alt mr-3 w-5 text-center"></i>
@@ -417,7 +417,7 @@
                         <h3 class="text-lg font-semibold mb-4">Account Information</h3>
 
                         <div class="space-y-4">
-                            <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                            <!-- <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
                                 <span class="text-gray-400">Account Type</span>
                                 <span
                                     class="bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full text-sm font-medium">Premium</span>
@@ -426,17 +426,17 @@
                             <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
                                 <span class="text-gray-400">Role</span>
                                 <span class="text-white">Customer</span>
-                            </div>
+                            </div> -->
 
-                            <div class="flex justify-between items-center pb-3 border-b border-zinc-800">
+                            <div class="flex justify-between items-center pb-3  ">
                                 <span class="text-gray-400">Orders Placed</span>
                                 <span class="text-white"><?php echo $totalOrders; ?></span>
                             </div>
 
-                            <div class="flex justify-between items-center">
+                            <!-- <div class="flex justify-between items-center">
                                 <span class="text-gray-400">Loyalty Points</span>
                                 <span class="text-yellow-500 font-semibold">1,250 pts</span>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
@@ -472,7 +472,7 @@
                             ?>
 
 
-                            <div class="flex items-start">
+                            <!-- <div class="flex items-start">
                                 <div class="bg-zinc-800 p-2 rounded-full mr-3">
                                     <i class="fa-solid fa-star text-yellow-500"></i>
                                 </div>
@@ -492,7 +492,7 @@
                                             Combo</span> to favorites</p>
                                     <p class="text-gray-400 text-sm">May 10, 2023 at 1:45 PM</p>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
