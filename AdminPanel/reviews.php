@@ -5,6 +5,21 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+$msg = '';
+
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
+
 require_once '../dbCon.php';
 $foodies = new Foodies();
 
@@ -45,6 +60,9 @@ try {
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function openDeleteModal(userId) {
             document.getElementById('delete_user_id').value = userId;
@@ -94,7 +112,18 @@ try {
             <?php include 'header.php'; ?>
 
             <main class="flex-1 relative overflow-y-auto focus:outline-none p-6">
-
+                <?php if (!empty($msg)): ?>
+                    <script>
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: '<?php echo $icon; ?>',
+                            title: '<?php echo $msg; ?>',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    </script>
+                <?php endif; ?>
                 <form action="reviews.php" method="GET">
                     <!-- Search and Filters -->
                     <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">

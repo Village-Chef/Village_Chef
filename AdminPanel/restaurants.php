@@ -2,12 +2,25 @@
 session_start();
 require '../dbCon.php';
 $obj = new Foodies();
+$msg = '';
 
 if (!isset($_SESSION['admin'])) {
     header('Location: login.php');
     exit();
 }
 
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
 
 $filters = [
     'search' => $_GET['search'] ?? '',
@@ -15,7 +28,7 @@ $filters = [
 ];
 
 $restaurants_data = $obj->getFilteredRestaurants($filters);
-// Fetch filtered restaurants and statuses
+
 // $restaurants = $obj->getFilteredRestaurants($filters);
 $statuses = $obj->getAllRestaurantStatuses();
 
@@ -30,6 +43,9 @@ $statuses = $obj->getAllRestaurantStatuses();
     <title>Restaurant Management | Food Ordering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function openDeleteModal(userId) {
             document.getElementById('delete_user_id').value = userId;
@@ -81,6 +97,18 @@ $statuses = $obj->getAllRestaurantStatuses();
                                 Reset
                             </a>
                         </div>
+                        <?php if (!empty($msg)): ?>
+                            <script>
+                                Swal.fire({
+                                    toast: true,
+                                    position: 'top-end',
+                                    icon: '<?php echo $icon; ?>', // Use the dynamic icon
+                                    title: '<?php echo $msg; ?>',
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                            </script>
+                        <?php endif; ?>
                         <a href="addRestaurant.php"
                             class="inline-flex items-center px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                             <i class="fas fa-plus mr-2"></i> Add Restaurant

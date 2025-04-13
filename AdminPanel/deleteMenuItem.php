@@ -12,7 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnDelete'])) {
     $item_id = $_POST['item_id'];
 
     try {
-        $obj->deleteMenuItem($item_id);
+        if ($obj->deleteMenuItem($item_id)) {
+            $_SESSION['success'] = "Menu Item Deleted successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to delete Menu Item. Please try again.";
+        }
         header('location:menuItems.php');
         exit();
     } catch (Exception $e) {

@@ -14,9 +14,13 @@ try {
     $users = $foodies->getAllUsers();
     $restaurants = $foodies->getAllRestaurants();
     $menuItems = $foodies->getAllMenuItems();
+    $payments = $foodies->getAllPayments();
+    
 
     // Calculate stats
-    $totalRevenue = $paymentSummary['total_amount'] ?? 0;
+    // $srevenue = $paymentSummary['total_successful_amount'] ?? 0;
+    // $frevenue = $paymentSummary['total_pending_amount'] ?? 0;
+    $totalRevenue =  $paymentSummary['total_successful_amount'] ?? 0;
     $totalOrders = count($orders);
     $totalUsers = count($users);
     $activeRestaurants = count(array_filter($restaurants, fn($r) => $r['status'] === 'open'));
@@ -29,18 +33,12 @@ try {
     }, []);
 
     // Recent activities (last 5 users and orders)
-    $recentUsers = array_slice(array_reverse($users), 0, 5);
+    $recentUsers = array_slice(array_reverse($users), 0, 8);
     $recentOrders = array_slice(array_reverse($orders), 0, 5);
 
     // Recent orders for table
     $recentOrdersTable = array_slice($orders, -5, 5);
     // Existing data fetches
-    $paymentSummary = $foodies->getPaymentSummary();
-    $orders = $foodies->getAllOrders();
-    $users = $foodies->getAllUsers();
-    $restaurants = $foodies->getAllRestaurants();
-    $menuItems = $foodies->getAllMenuItems();
-    $payments = $foodies->getAllPayments();
 
     // Chart 1: Revenue Trend Data (Last 30 Days)
     $revenueData = [];
@@ -144,7 +142,7 @@ try {
     <div class="flex h-screen overflow-hidden">
         <?php include 'sidebar.php'; ?>
 
-        <div class="flex flex-col w-0 flex-1 overflow-hidden">
+        <div id="mainContent" class="flex flex-col w-0 flex-1 overflow-hidden">
             <?php include 'header.php'; ?>
 
             <main class="flex-1 relative overflow-y-auto focus:outline-none p-6 space-y-8">
@@ -319,7 +317,7 @@ try {
                         </div>
 
                         <!-- Top Products -->
-                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                        <!-- <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700">
                             <h2 class="text-xl font-bold mb-6">Popular Menu Items</h2>
                             <div class="space-y-6">
                                 <?php foreach ($menuItems as $item): ?>
@@ -335,7 +333,7 @@ try {
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 

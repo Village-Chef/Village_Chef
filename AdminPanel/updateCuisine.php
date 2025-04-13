@@ -12,16 +12,35 @@ $obj = new Foodies();
 
 $id = $_GET['id'];
 $cuisine = $obj->getCuisineById($id);
+$error = "";
+$success = "";
 
 if (isset($_POST['btnSubmit'])) {
     try {
         $cuisine_name = $_POST['cuisine_name'];
         $description = $_POST['description'];
-        $obj->updateCuisine($id, $cuisine_name, $description);
+
+        if (empty($cuisine_name)) {
+            throw new Exception("Cuisine name is required.");
+        }
+
+        if (strlen($cuisine_name) < 3 || strlen($cuisine_name) > 50) {
+            throw new Exception("Cuisine name must be between 3 and 50 characters.");
+        }
+
+        if (!empty($description) && strlen($description) > 255) {
+            throw new Exception("Description cannot exceed 255 characters.");
+        }
+
+        if ($obj->updateCuisine($id, $cuisine_name, $description)) {
+            $_SESSION['success'] = "Cuisine updated successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to update Cuisine. Please try again.";
+        }
         header('location:cuisine.php');
         exit();
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+    } catch (Exception $e) {
+        $error = $e->getMessage();
     }
 
 }
@@ -65,7 +84,16 @@ if (isset($_POST['btnSubmit'])) {
                     <h1 class="text-2xl font-bold text-accent mb-6 flex items-center">
                         <i class="fas fa-edit mr-2"></i> Update Cuisine
                     </h1>
-
+                    <?php if ($error): ?>
+                        <div class="mb-6 p-4 bg-red-900/30 border border-red-800 rounded-xl text-red-400">
+                            <?php echo $error; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($success): ?>
+                        <div class="mb-6 p-4 bg-green-900/30 border border-green-800 rounded-xl text-green-400">
+                            <?php echo $success; ?>
+                        </div>
+                    <?php endif; ?>
                     <form method="post" class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
 
                         <div class="mb-4">
@@ -75,7 +103,7 @@ if (isset($_POST['btnSubmit'])) {
                             <input type="text" id="cuisine_name" name="cuisine_name"
                                 value="<?php echo $cuisine['cuisine_name']; ?>"
                                 class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                placeholder="e.g., Italian, Chinese, Mexican" required>
+                                placeholder="e.g., Italian, Chinese, Mexican">
                         </div>
                         <!-- Description Field -->
                         <div class="mb-4">

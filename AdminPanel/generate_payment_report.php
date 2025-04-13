@@ -190,10 +190,10 @@ class ProfessionalPDF extends Fpdi
 
         // Summary cards
         $metrics = [
-            ['title' => 'Total Revenue', 'value' => 'Rs. ' . number_format($this->summaryData['total_amount'], 2), 'icon' => '$'],
+            ['title' => 'Total Revenue', 'value' => 'Rs. ' . number_format($this->summaryData['total_successful_amount'], 2), 'icon' => '$'],
             ['title' => 'Total Payments', 'value' => $this->summaryData['total_payments'], 'icon' => '#'],
             ['title' => 'Successful', 'value' => $this->summaryData['successful_payments'], 'icon' => '@'],
-            ['title' => 'Failed', 'value' => $this->summaryData['failed_payments'], 'icon' => 'X']
+            ['title' => 'Refunded', 'value' => $this->summaryData['refunded_payments'], 'icon' => 'X']
         ];
 
         $cardWidth = 85;

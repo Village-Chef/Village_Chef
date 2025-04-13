@@ -26,7 +26,7 @@ class PDF extends Fpdi
         // Subtitle
         $this->SetFont('Arial', 'I', 12);
         $this->SetTextColor(0, 0, 0); // Black
-        $this->Cell(0, 6, 'Delicious Orders, Perfect Records', 0, 1, 'C');
+        $this->Cell(0, 6, 'We are delighted to serve you!', 0, 1, 'C');
 
         // Line break
         $this->Ln(8);
@@ -48,7 +48,6 @@ class PDF extends Fpdi
 
     function BasicTable($header, $data)
     {
-        // Colors, line width and bold font
         $this->SetFillColor(245, 245, 245); // Light gray
         $this->SetTextColor(0);
         $this->SetDrawColor(150, 150, 150);
@@ -119,6 +118,7 @@ if (!isset($_SESSION['admin'])) {
 try {
     $obj = new Foodies();
     $orders = $obj->getAllOrders();
+    $paymentSummary = $obj->getPaymentSummary();
 
     $pdf = new PDF('L');
     $pdf->AliasNbPages();
@@ -131,7 +131,8 @@ try {
     $pdf->SetFont('Arial', '', 10);
 
     $totalOrders = count($orders);
-    $totalRevenue = array_sum(array_column($orders, 'total_amount'));
+    // $totalRevenue = array_sum(array_column($orders, 'total_amount'));
+    $totalRevenue = $paymentSummary['total_successful_amount']??0;
 
     $pdf->SetX(10);
     $pdf->Cell(135, 8, 'Total Orders: ' . $totalOrders, 1, 0, 'C');

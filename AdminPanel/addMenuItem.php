@@ -6,12 +6,29 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+$msg = '';
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
+
+
 require '../dbCon.php';
 $obj = new Foodies();
 
 $restaurants = $obj->getAllRestaurants();
 $cuisines = $obj->getAllCuisines();
 $tags = $obj->getAllTags();
+$error = "";
+$success = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
     $restaurant_id = $_POST['restaurant_id'];
@@ -35,11 +52,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
     $selected_tags_json = json_encode($selected_tags);
 
     try {
-        $obj->addMenuItem($restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available, $selected_tags_json);
+        if (empty($restaurant_id) || empty($cuisine_id) || empty($item_name) || empty($price)) {
+            throw new Exception("All required fields must be filled.");
+        }
+
+        if (!is_numeric($price) || $price <= 0) {
+            throw new Exception("Price must be a positive number.");
+        }
+
+        if ($image_url['error'] === UPLOAD_ERR_NO_FILE) {
+            throw new Exception("Menu item image is required.");
+        } elseif ($image_url['error'] !== UPLOAD_ERR_OK) {
+            throw new Exception("Error uploading the menu item image.");
+        } else {
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (!in_array($image_url['type'], $allowedTypes)) {
+                throw new Exception("Invalid image format. Only JPG, PNG, and GIF are allowed.");
+            }
+
+            if ($image_url['size'] > 2 * 1024 * 1024) { // 2MB limit
+                throw new Exception("Image size exceeds the 2MB limit.");
+            }
+        }
+
+        if ($obj->addMenuItem($restaurant_id, $cuisine_id, $item_name, $description, $price, $image_url, $is_available, $selected_tags_json)) {
+            $_SESSION['success'] = "Menu Item Added successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to Add Menu Item. Please try again.";
+        }
+        // $success = "Menu item added successfully!";
         header('location:menuItems.php');
         exit();
     } catch (Exception $e) {
-        $error_message = "Failed to add menu item: " . $e->getMessage();
+        $error = $e->getMessage();
     }
 }
 ?>
@@ -53,6 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
     <title>Add Menu Item | Food Ordering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -99,10 +147,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                     <h1 class="text-2xl font-bold text-accent mb-6 flex items-center">
                         <i class="fas fa-plus mr-2"></i> Add Menu Item
                     </h1>
-                    <?php if (isset($error_message)): ?>
-                        <div class="bg-red-500 text-white p-4 rounded mb-6">
-                            <?php echo $error_message; ?>
+                    <?php if ($error): ?>
+                        <div class="mb-6 p-4 bg-red-900/30 border border-red-800 rounded-xl text-red-400">
+                            <?php echo $error; ?>
                         </div>
+                    <?php endif; ?>
+                    <?php if ($success): ?>
+                        <div class="mb-6 p-4 bg-green-900/30 border border-green-800 rounded-xl text-green-400">
+                            <?php echo $success; ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($msg)): ?>
+                        <script>
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: '<?php echo $icon; ?>',
+                                title: '<?php echo $msg; ?>',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        </script>
                     <?php endif; ?>
                     <form method="post" action="addMenuItem.php" enctype="multipart/form-data"
                         class="bg-gray-800 p-6 rounded-xl border border-gray-700 shadow-md">
@@ -112,8 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                     Restaurant <span class="text-accent">*</span>
                                 </label>
                                 <select id="restaurant_id" name="restaurant_id"
-                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                    required>
+                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent">
                                     <option value="">Select a restaurant</option>
                                     <?php foreach ($restaurants as $restaurant): ?>
                                         <option value="<?php echo $restaurant['restaurant_id']; ?>">
@@ -127,8 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                     Cuisine <span class="text-accent">*</span>
                                 </label>
                                 <select id="cuisine_id" name="cuisine_id"
-                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                    required>
+                                    class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent">
                                     <option value="">Select a cuisine</option>
                                     <?php foreach ($cuisines as $cuisine): ?>
                                         <option value="<?php echo $cuisine['cuisine_id']; ?>">
@@ -143,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                 </label>
                                 <input type="text" id="item_name" name="item_name"
                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                    placeholder="e.g., Margherita Pizza" required>
+                                    placeholder="e.g., Margherita Pizza">
                             </div>
                             <div class="col-span-2">
                                 <label for="description" class="block text-sm font-medium text-gray-300 mb-2">
@@ -159,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
                                 </label>
                                 <input type="number" id="price" name="price" step="0.01"
                                     class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-300 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
-                                    placeholder="e.g., 12.99" required>
+                                    placeholder="e.g., 12.99">
                             </div>
                             <div class="col-span-2">
                                 <label class="block text-sm font-medium text-gray-300 mb-2">Tags</label>
@@ -232,12 +295,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnAddMenuItem'])) {
             document.getElementById('file-name').textContent = fileName;
 
             if (this.files[0]) {
+                const file = this.files[0];
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Invalid image format. Only JPG, PNG, and GIF are allowed.');
+                    this.value = '';
+                    return;
+                }
+
+
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('Image size exceeds the 2MB limit.');
+                    this.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById('preview-img').src = e.target.result;
                     document.getElementById('image-preview').classList.remove('hidden');
                 };
-                reader.readAsDataURL(this.files[0]);
+                reader.readAsDataURL(file);
             } else {
                 document.getElementById('image-preview').classList.add('hidden');
             }

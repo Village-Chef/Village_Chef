@@ -13,6 +13,41 @@ class Foodies
         $this->con = new PDO($dsn, username: $user, password: $pass);
     }
 
+    public function getUserByEmail($email)
+    {
+        try {
+            $sql = "SELECT * FROM users WHERE email = :email";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch user by email: " . $e->getMessage());
+        }
+    }
+
+
+    public function updatePassword($email, $password_hash)
+    {
+        try {
+
+            $sql = "UPDATE users SET password_hash = :password_hash WHERE email = :email";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':password_hash', $password_hash);
+            $stmt->bindParam(':email', $email);
+
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                $errorInfo = $stmt->errorInfo();
+                echo "Error updating password: " . implode(", ", $errorInfo) . "<br>";
+                return false;
+            }
+        } catch (PDOException $e) {
+            throw new Exception("Failed to update password: " . $e->getMessage());
+        }
+    }
+
     public function changePassword($user_id, $current_password, $new_password, $confirm_password)
     {
         try {
@@ -250,12 +285,12 @@ class Foodies
     }
 
 
-    function deleteUser($user_id)
+    public function deleteUser($user_id)
     {
         try {
             $sql = "DELETE FROM users WHERE user_id = :user_id";
             $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':user_id', $user_id);
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
             return $stmt->execute();
         } catch (PDOException $e) {
             throw new Exception("Failed to delete user: " . $e->getMessage());
@@ -1067,6 +1102,17 @@ class Foodies
         }
     }
 
+    public function updatePaymentStatus($payment_id)
+    {
+        try {
+            $sql = "UPDATE payments SET status = 'refunded' WHERE payment_id = :payment_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':payment_id', $payment_id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Failed to update payment status: " . $e->getMessage());
+        }
+    }
     function getPaymentSummary()
     {
         try {
@@ -1074,8 +1120,13 @@ class Foodies
                 SELECT 
                     COUNT(*) AS total_payments,
                     SUM(CASE WHEN status = 'successful' THEN 1 ELSE 0 END) AS successful_payments,
+                    SUM(CASE WHEN status = 'successful' THEN amount ELSE 0 END) AS total_successful_amount,
                     SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) AS failed_payments,
+                    SUM(CASE WHEN status = 'failed' THEN amount ELSE 0 END) AS total_failed_amount,
                     SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_payments,
+                    SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS total_pending_amount,
+                    SUM(CASE WHEN status = 'refunded' THEN 1 ELSE 0 END) AS refunded_payments,
+                    SUM(CASE WHEN status = 'refunded' THEN amount ELSE 0 END) AS total_refunded_payments,
                     SUM(amount) AS total_amount
                 FROM payments
             ";
@@ -1802,25 +1853,25 @@ class Foodies
                 JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
                 WHERE mi.item_name LIKE :query OR mi.description LIKE :query
             ";
-    
+
             $stmt = $this->con->prepare($sql);
-    
+
             // Bind the search query with wildcards
             $searchTerm = '%' . $query . '%';
             $stmt->bindParam(':query', $searchTerm, PDO::PARAM_STR);
-    
+
             $stmt->execute();
-    
+
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Search failed: " . $e->getMessage());
         }
     }
 
-public function getAllResults()
-{
-    try {
-        $sql = "
+    public function getAllResults()
+    {
+        try {
+            $sql = "
             SELECT 
                 'restaurant' AS type,
                 r.restaurant_id AS rest_id,
@@ -1869,13 +1920,13 @@ public function getAllResults()
             JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
         ";
 
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        throw new Exception("Failed to fetch all results: " . $e->getMessage());
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch all results: " . $e->getMessage());
+        }
     }
-}
 
 }

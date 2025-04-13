@@ -13,7 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdate'])) {
     $status = $_POST['status'];
 
     try {
-        $obj->updateUserStatus($user_id, $status);
+        if ($obj->updateUserStatus($user_id, $status)) {
+            $_SESSION['success'] = "User Status Updated successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to Update User Status. Please try again.";
+        }
         header('location:users.php');
         exit();
     } catch (Exception $e) {

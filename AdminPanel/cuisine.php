@@ -6,15 +6,30 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+$msg = '';
+
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
+
 require '../dbCon.php';
 $obj = new Foodies();
 
-// Initialize filters from GET parameters
+
 $filters = [
     'search' => $_GET['search'] ?? ''
 ];
 
-// Fetch filtered cuisines
+
 $result = $obj->getFilteredCuisines($filters);
 ?>
 
@@ -27,6 +42,9 @@ $result = $obj->getFilteredCuisines($filters);
     <title>Cuisine Management | Food Ordering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function openDeleteModal(cuisineId) {
             document.getElementById('delete_cuisine_id').value = cuisineId;
@@ -47,6 +65,18 @@ $result = $obj->getFilteredCuisines($filters);
 
             <main class="flex-1 relative overflow-y-auto focus:outline-none p-6">
                 <!-- Search and Add Cuisine -->
+                <?php if (!empty($msg)): ?>
+                    <script>
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: '<?php echo $icon; ?>',
+                            title: '<?php echo $msg; ?>',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    </script>
+                <?php endif; ?>
                 <form action="cuisine.php" method="GET">
                     <div class="flex flex-col md:flex-row justify-between mb-6 gap-4 items-center">
                         <div class="flex flex-1 gap-4">
@@ -62,7 +92,7 @@ $result = $obj->getFilteredCuisines($filters);
                                 class="px-4 py-2 bg-accent text-black rounded-xl hover:bg-accent/90 font-medium transition-colors">
                                 Apply Filter
                             </button>
-                            <a href="cuisines.php"
+                            <a href="cuisine.php"
                                 class="px-4 py-2 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/30 transition-colors">
                                 Reset
                             </a>
@@ -142,11 +172,13 @@ $result = $obj->getFilteredCuisines($filters);
                 </div>
 
                 <!-- Delete Modal -->
-                <div id="deleteModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">
+                <div id="deleteModal"
+                    class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">
                     <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-md mx-4">
                         <div class="flex justify-between items-center mb-6">
                             <h1 class="text-2xl font-bold text-accent">Delete Cuisine</h1>
-                            <button onclick="closeDeleteModal()" class="text-gray-400 hover:text-accent transition-colors">
+                            <button onclick="closeDeleteModal()"
+                                class="text-gray-400 hover:text-accent transition-colors">
                                 <i class="fas fa-times text-xl"></i>
                             </button>
                         </div>

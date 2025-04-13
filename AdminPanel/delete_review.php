@@ -12,7 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnDelete'])) {
     $review_id = $_POST['review_id'];
 
     try {
-        $obj->deleteReview($review_id);
+        if ($obj->deleteReview($review_id)) {
+            $_SESSION['success'] = "Review deleted successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to delete review. Please try again.";
+        }
         header('location:reviews.php');
         exit();
     } catch (Exception $e) {

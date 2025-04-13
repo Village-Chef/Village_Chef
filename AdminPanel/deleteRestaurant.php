@@ -9,15 +9,19 @@ if (!isset($_SESSION['admin'])) {
 $obj = new Foodies();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnDelete'])) {
-    $user_id = $_POST['restaurant_id'];
+    $restaurant_id = $_POST['restaurant_id'];
 
     try {
-        $obj->deleteRestaurant($user_id);
-        header('location:restaurants.php');
-        exit();
+        if ($obj->deleteRestaurant($restaurant_id)) {
+            $_SESSION['success'] = "Restaurant deleted successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to delete restaurant. Please try again.";
+        }
     } catch (Exception $e) {
-        $error_message = "restaurants deletion failed: " . $e->getMessage();
-        echo $error_message;
+        $_SESSION['error'] = "Restaurant deletion failed: " . $e->getMessage();
     }
+
+    header('location:restaurants.php');
+    exit();
 }
 ?>

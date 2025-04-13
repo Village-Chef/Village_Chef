@@ -53,7 +53,7 @@ class ReceiptPDF extends Fpdi
         $this->Ln(5);
         $this->SetFont('Helvetica', '', 9);
         $this->SetTextColor(...$this->primaryColor);
-        $this->Cell(0, 5, 'Thank you for dining with Foodies Inc.!', 0, 1, 'C');
+        $this->Cell(0, 5, 'Thank you for dining with Village Chef Inc.!', 0, 1, 'C');
     }
 
     function FancyTable($header, $data, $widths, $isSummary = false)

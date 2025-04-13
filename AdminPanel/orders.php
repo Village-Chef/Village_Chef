@@ -6,6 +6,22 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+$msg = '';
+
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
+
+
 require '../dbCon.php';
 
 $obj = new Foodies();
@@ -50,6 +66,9 @@ if (isset($_GET['view_order']) && !empty($_GET['view_order'])) {
     <title>Orders Management | Food Ordering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -107,6 +126,18 @@ if (isset($_GET['view_order']) && !empty($_GET['view_order'])) {
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-search text-gray-400"></i>
                                 </div>
+                                <?php if (!empty($msg)): ?>
+                                    <script>
+                                        Swal.fire({
+                                            toast: true,
+                                            position: 'top-end',
+                                            icon: '<?php echo $icon; ?>',
+                                            title: '<?php echo $msg; ?>',
+                                            showConfirmButton: false,
+                                            timer: 3000
+                                        });
+                                    </script>
+                                <?php endif; ?>
                                 <input type="text" name="search"
                                     value="<?php echo htmlspecialchars($_GET['search'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                                     class="block w-full pl-10 pr-3 py-2 bg-gray-800 border border-gray-700 rounded-xl placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"

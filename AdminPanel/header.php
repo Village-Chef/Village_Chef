@@ -36,10 +36,6 @@ $admin = isset($_SESSION['admin']) ? $_SESSION['admin'] : null;
 
 <body>
     <div class="relative z-10 flex-shrink-0 py-10 flex h-16 bg-primary shadow-xl border-b border-gray-800">
-        <!-- Mobile menu button -->
-        <button class="md:hidden px-4 text-accent hover:text-accent/80 focus:outline-none transition-colors">
-            <i class="fas fa-bars text-xl"></i>
-        </button>
 
         <div class="flex-1 px-4 flex justify-between items-center ">
             <!-- Welcome message -->

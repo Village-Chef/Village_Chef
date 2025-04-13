@@ -9,6 +9,21 @@ if (!isset($_SESSION['admin'])) {
 require '../dbCon.php';
 $obj = new Foodies();
 
+$msg = '';
+
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
+
 // $users = $obj->getAllUsers();
 $filters = [
     'search' => $_GET['search'] ?? '',
@@ -30,8 +45,11 @@ $roles = $obj->getAllUserRoles();
     <title>User Management | Food Ordering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-         tailwind.config = {
+        tailwind.config = {
             theme: {
                 extend: {
                     colors: {
@@ -48,6 +66,7 @@ $roles = $obj->getAllUserRoles();
         }
 
         function openDeleteModal(userId) {
+            console.log("Delete Modal - User ID:", userId);
             document.getElementById('delete_user_id').value = userId;
             document.getElementById('deleteModal').classList.remove('hidden');
         }
@@ -91,6 +110,18 @@ $roles = $obj->getAllUserRoles();
                                             <?= ucfirst($status) ?>
                                         </option>
                                     <?php endforeach; ?>
+                                    <?php if (!empty($msg)): ?>
+                                        <script>
+                                            Swal.fire({
+                                                toast: true,
+                                                position: 'top-end',
+                                                icon: '<?php echo $icon; ?>',
+                                                title: '<?php echo $msg; ?>',
+                                                showConfirmButton: false,
+                                                timer: 3000
+                                            });
+                                        </script>
+                                    <?php endif; ?>
                                 </select>
                             </div>
                             <div class="w-full md:w-1/5">
@@ -196,10 +227,10 @@ $roles = $obj->getAllUserRoles();
                                                     class="text-accent hover:text-accent/80 transition-colors">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <button onclick="openDeleteModal('<?php echo $user['user_id']; ?>')"
+                                                <!-- <button onclick="openDeleteModal('<?php echo $user['user_id']; ?>')"
                                                     class="text-red-500 hover:text-red-400 transition-colors">
                                                     <i class="fas fa-trash"></i>
-                                                </button>
+                                                </button> -->
                                             </div>
                                         </td>
                                     </tr>

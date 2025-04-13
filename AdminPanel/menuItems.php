@@ -6,10 +6,24 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+$msg = '';
+
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
+
 require '../dbCon.php';
 $obj = new Foodies();
 
-// Initialize filters from GET parameters
 $filters = [
     'search' => $_GET['search'] ?? '',
     'restaurant' => $_GET['restaurant'] ?? '',
@@ -18,11 +32,9 @@ $filters = [
     'price_range' => $_GET['price_range'] ?? ''
 ];
 
-// Fetch data for dropdowns
 $restaurants = $obj->getAllRestaurants();
 $cuisines = $obj->getAllCuisines();
 
-// Fetch filtered menu items (we'll add this method to Foodies class)
 $result = $obj->getFilteredMenuItems($filters);
 ?>
 
@@ -35,6 +47,9 @@ $result = $obj->getFilteredMenuItems($filters);
     <title>Menu Items Management | Food Ordering System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function openDeleteModal(userId) {
             document.getElementById('delete_user_id').value = userId;
@@ -78,7 +93,18 @@ $result = $obj->getFilteredMenuItems($filters);
                             </a>
                         </div>
                     </div>
-
+                    <?php if (!empty($msg)): ?>
+                        <script>
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: '<?php echo $icon; ?>',
+                                title: '<?php echo $msg; ?>',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        </script>
+                    <?php endif; ?>
                     <!-- Filter Options -->
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 mb-6">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">

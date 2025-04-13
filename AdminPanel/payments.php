@@ -6,6 +6,21 @@ if (!isset($_SESSION['admin'])) {
     exit();
 }
 
+$msg = '';
+
+if (isset($_SESSION['success'])) {
+    $msg = $_SESSION['success'];
+    $icon = 'success';
+    unset($_SESSION['success']);
+} elseif (isset($_SESSION['error'])) {
+    $msg = $_SESSION['error'];
+    $icon = 'error';
+    unset($_SESSION['error']);
+} else {
+    $msg = '';
+    $icon = '';
+}
+
 require '../dbCon.php';
 $obj = new Foodies();
 
@@ -15,7 +30,7 @@ $filters = [
     'date_from' => $_GET['date_from'] ?? '',
     'date_to' => $_GET['date_to'] ?? '',
     'amount_range' => $_GET['amount_range'] ?? '',
-    'search' => $_GET['search'] ?? '' 
+    'search' => $_GET['search'] ?? ''
 ];
 
 
@@ -51,7 +66,7 @@ $paymentStatuses = $obj->getPaymentStatuses();
 $paymentSummary = $obj->getPaymentSummary();
 
 
-
+$totalRevenue = $paymentSummary['total_successful_amount'] ?? 0;
 
 ?>
 
@@ -66,6 +81,9 @@ $paymentSummary = $obj->getPaymentSummary();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -87,6 +105,15 @@ $paymentSummary = $obj->getPaymentSummary();
 
         function openPaymentModal(paymentId) {
             window.location.href = "payments.php?payment_id=" + paymentId;
+        }
+
+
+        function openStatusModal(paymentId) {
+            document.getElementById('payment_id').value = paymentId;
+            document.getElementById('chanegeStatusModal').classList.remove('hidden');
+        }
+        function closeStatusModal() {
+            document.getElementById('chanegeStatusModal').classList.add('hidden');
         }
 
     </script>
@@ -143,17 +170,29 @@ $paymentSummary = $obj->getPaymentSummary();
                             </a>
                         </div>
                     </div>
-
+                    <?php if (!empty($msg)): ?>
+                        <script>
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: '<?php echo $icon; ?>',
+                                title: '<?php echo $msg; ?>',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        </script>
+                    <?php endif; ?>
                     <!-- Payment Summary Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <!-- Total Payments -->
                         <div class="bg-gray-800 rounded-xl border border-gray-700 p-4">
                             <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-green-900/30 rounded-full p-3">
-                                    <i class="fas fa-dollar-sign text-green-400 text-xl"></i>
+                                <div class="flex-shrink-0 bg-blue-900/30 rounded-full p-3">
+                                    <i class="text-blue-400 text-xl">₹</i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-400">Total Payments</p>
+                                    <p class="text-sm font-medium text-gray-400">Total Payments
+                                        (<?php echo number_format($paymentSummary['total_payments'], 2); ?>)</p>
                                     <h3 class="text-xl font-semibold text-white">
                                         ₹<?php echo number_format($paymentSummary['total_amount'], 2); ?>
                                     </h3>
@@ -164,20 +203,23 @@ $paymentSummary = $obj->getPaymentSummary();
                         <!-- Successful Payments -->
                         <div class="bg-gray-800 rounded-xl border border-gray-700 p-4">
                             <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-blue-900/30 rounded-full p-3">
-                                    <i class="fas fa-check-circle text-blue-400 text-xl"></i>
+                                <div class="flex-shrink-0 bg-green-900/30 rounded-full p-3">
+                                    <i class="fas fa-check-circle text-green-400 text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-400">Successful</p>
+                                    <p class="text-sm font-medium text-gray-400">Successful
+                                        (<?php echo $paymentSummary['successful_payments'] ?>)</p>
                                     <h3 class="text-xl font-semibold text-white">
-                                        <?php echo $paymentSummary['successful_payments']; ?>
+                                        <!-- <?php echo $paymentSummary['successful_payments']; ?> -->
+                                        ₹
+                                        <?php echo $paymentSummary['total_successful_amount']; ?>
                                     </h3>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Failed Payments -->
-                        <div class="bg-gray-800 rounded-xl border border-gray-700 p-4">
+                        <!-- <div class="bg-gray-800 rounded-xl border border-gray-700 p-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-red-900/30 rounded-full p-3">
                                     <i class="fas fa-times-circle text-red-400 text-xl"></i>
@@ -186,26 +228,50 @@ $paymentSummary = $obj->getPaymentSummary();
                                     <p class="text-sm font-medium text-gray-400">Failed</p>
                                     <h3 class="text-xl font-semibold text-white">
                                         <?php echo $paymentSummary['failed_payments']; ?>
+                                        ₹
+                                        <?php echo $paymentSummary['total_failed_amount']; ?>
                                     </h3>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <!-- Pending Payments -->
                         <div class="bg-gray-800 rounded-xl border border-gray-700 p-4">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-yellow-900/30 rounded-full p-3">
-                                    <i class="fas fa-undo text-yellow-400 text-xl"></i>
+                                    <i class="fas fa-hourglass-half text-yellow-400 text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm font-medium text-gray-400">Pending</p>
+                                    <p class="text-sm font-medium text-gray-400">Pending
+                                        (<?php echo $paymentSummary['pending_payments'] ?>)</p>
                                     <h3 class="text-xl font-semibold text-white">
-                                        <?php echo $paymentSummary['pending_payments']; ?>
+                                        <!-- <?php echo $paymentSummary['pending_payments']; ?> -->
+                                        ₹
+                                        <?php echo $paymentSummary['total_pending_amount']; ?>
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-800 rounded-xl border border-gray-700 p-4">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 bg-red-900/30 rounded-full p-3">
+                                    <i class="fas fa-undo text-red-400 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-400">Refunded
+                                        (<?php echo $paymentSummary['refunded_payments'] ?>)</p>
+                                    <h3 class="text-xl font-semibold text-white">
+                                        <!-- <?php echo $paymentSummary['refunded_payments']; ?> -->
+                                        ₹
+                                        <?php echo $paymentSummary['total_refunded_payments']; ?>
                                     </h3>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+
 
                     <!-- Filter Options -->
                     <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 mb-6">
@@ -349,7 +415,7 @@ $paymentSummary = $obj->getPaymentSummary();
                                 <td class="px-6 py-4">
                                     <span
                                         class="px-2.5 py-1 rounded-full text-xs 
-                                <?php echo $payment['payment_status'] === 'successful' ? 'bg-green-900/30 text-green-400' : ($payment['payment_status'] === 'failed' ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400'); ?>">
+                                <?php echo $payment['payment_status'] === 'successful' ? 'bg-green-900/30 text-green-400' : ($payment['payment_status'] === 'failed' ? 'bg-red-900/30 text-red-400' : ($payment['payment_status'] === 'refunded' ? 'bg-red-900/30 text-red-400' : 'bg-yellow-900/30 text-yellow-400')); ?>">
                                         <?php echo ucfirst($payment['payment_status']); ?>
                                     </span>
                                 </td>
@@ -365,8 +431,10 @@ $paymentSummary = $obj->getPaymentSummary();
                                             class="text-blue-400 hover:text-blue-300">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="text-yellow-400 hover:text-yellow-300"><i
-                                                class="fas fa-undo"></i></button>
+                                        <button
+                                            onclick="openStatusModal('<?= htmlspecialchars($payment['payment_id'], ENT_QUOTES, 'UTF-8') ?>')"
+                                            class="text-yellow-400 hover:text-yellow-300"><i class="fas fa-undo"></i></button>
+
                                     </div>
                                 </td>
                             </tr>
@@ -519,10 +587,34 @@ $paymentSummary = $obj->getPaymentSummary();
     </div>
 
 
+    <div id="chanegeStatusModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 p-8 rounded-2xl border border-gray-700 shadow-xl w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-accent">Payment Refund</h1>
+                <button onclick="closeStatusModal()" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
 
-    <script>
+            <form method="POST" action="updatePaymentStatus.php" class="space-y-6">
+                <input type="hidden" id="payment_id" name="payment_id">
 
-    </script>
+                <p class="text-gray-300">Are you sure you want to Refund This Payment?</p>
+
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeStatusModal()"
+                        class="px-6 py-2.5 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/30 hover:text-white transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" name="btnDelete"
+                        class="px-6 py-2.5 bg-red-600 text-white rounded-xl hover:bg-red-500 font-medium transition-colors">
+                        Yes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 
 </html>

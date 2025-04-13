@@ -13,7 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btnUpdate'])) {
     $status = $_POST['status'];
 
     try {
-        $obj->updateReviewStatus($review_id, $status);
+        if ($obj->updateReviewStatus($review_id, $status)) {
+            $_SESSION['success'] = "Review " . $status . " successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to update Review Status. Please try again.";
+        }
         header('location:reviews.php');
         exit();
     } catch (Exception $e) {

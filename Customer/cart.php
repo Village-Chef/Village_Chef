@@ -79,7 +79,7 @@
     <style>
         /* From Uiverse.io by pathikcomp */
         .main>.inp {
-            
+
             display: none;
         }
 
@@ -441,7 +441,7 @@
                             class="bg-yellow-500 hover:bg-yellow-600 text-black px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
                             <i class="fa-solid fa-utensils mr-2"></i> Browse Menu
                         </a>
-                        <a href="cart.php"
+                        <a href="orders_user.php"
                             class="bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center justify-center">
                             <i class="fa-solid fa-clock-rotate-left mr-2"></i> View Past Orders
                         </a>
@@ -854,7 +854,7 @@
             <?php } ?>
         </div>
 
-        
+
 
         <!-- <div class="bg-zinc-900 rounded-lg p-6">
                 <h2 class="text-2xl font-bold mb-4">Checkout</h2>
@@ -891,8 +891,8 @@
                 </form>
             </div> -->
 
-       
-        
+
+
     </main>
 
 
@@ -1060,22 +1060,22 @@
     ]);
 
     // echo json_encode(['orderId' => $order['id']]);
-
+    
     ?>
-     <label class="main fixed bottom-0 right-0 m-4">
-      Menu
-      <input class="inp" checked="" type="checkbox" />
-      <div class="bar">
-        <span class="top bar-list"></span>
-        <span class="middle bar-list"></span>
-        <span class="bottom bar-list"></span>
-      </div>
-      <section class="menu-container">
-        <div class="menu-list"><a href="menu.php">Menu</a></div>
-        <div class="menu-list"><a href="cart.php">Cart</a></div>
-        <div class="menu-list"><a href="orders_user.php">Past Orders</a></div>
-        <div class="menu-list"><a href="account_user.php">Account</a></div>
-      </section>
+    <label class="main fixed bottom-0 right-0 m-4">
+        Menu
+        <input class="inp" checked="" type="checkbox" />
+        <div class="bar">
+            <span class="top bar-list"></span>
+            <span class="middle bar-list"></span>
+            <span class="bottom bar-list"></span>
+        </div>
+        <section class="menu-container">
+            <div class="menu-list"><a href="menu.php">Menu</a></div>
+            <div class="menu-list"><a href="cart.php">Cart</a></div>
+            <div class="menu-list"><a href="orders_user.php">Past Orders</a></div>
+            <div class="menu-list"><a href="account_user.php">Account</a></div>
+        </section>
     </label>
 
 </body>
