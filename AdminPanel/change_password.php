@@ -119,17 +119,48 @@ if (isset($_POST['change_password'])) {
         <form method="POST">
             <div class="mb-4">
                 <label for="new_password" class="block text-gray-700 text-sm font-medium mb-2">New Password</label>
-                <input type="password" id="new_password" name="new_password"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
-                    required>
+                <div class="relative">
+                    <input type="password" id="new_password" name="new_password"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
+                        placeholder="••••••••" required>
+                    <button type="button" id="toggleNewPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 3a7 7 0 0 0-7 7c0 1.657 2.686 5 7 5s7-3.343 7-5a7 7 0 0 0-7-7zm0 12c-3.866 0-6-2.686-6-5s2.134-5 6-5 6 2.686 6 5-2.134 5-6 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div class="mb-4">
-                <label for="confirm_password" class="block text-gray-700 text-sm font-medium mb-2">Confirm
-                    Password</label>
-                <input type="password" id="confirm_password" name="confirm_password"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
-                    required>
+                <label for="confirm_password" class="block text-gray-700 text-sm font-medium mb-2">Confirm Password</label>
+                <div class="relative">
+                    <input type="password" id="confirm_password" name="confirm_password"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
+                        placeholder="••••••••" required>
+                    <button type="button" id="toggleConfirmPassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 3a7 7 0 0 0-7 7c0 1.657 2.686 5 7 5s7-3.343 7-5a7 7 0 0 0-7-7zm0 12c-3.866 0-6-2.686-6-5s2.134-5 6-5 6 2.686 6 5-2.134 5-6 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
+            <script>
+                const newPasswordInput = document.getElementById('new_password');
+                const toggleNewPasswordButton = document.getElementById('toggleNewPassword');
+                const confirmPasswordInput = document.getElementById('confirm_password');
+                const toggleConfirmPasswordButton = document.getElementById('toggleConfirmPassword');
+
+                toggleNewPasswordButton.addEventListener('click', function () {
+                    const type = newPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    newPasswordInput.setAttribute('type', type);
+                    this.querySelector('svg').setAttribute('fill', type === 'password' ? 'currentColor' : '#eab308');
+                });
+
+                toggleConfirmPasswordButton.addEventListener('click', function () {
+                    const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    confirmPasswordInput.setAttribute('type', type);
+                    this.querySelector('svg').setAttribute('fill', type === 'password' ? 'currentColor' : '#eab308');
+                });
+            </script>
             <button type="submit" name="change_password"
                 class="w-full bg-accent hover:bg-accent/90 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-150">
                 Change Password

@@ -283,7 +283,7 @@ try {
                                         </td>
                                         <td class="px-6 py-4 text-right">
                                             <div class="flex justify-end space-x-3">
-                                                <button class="text-accent hover:text-accent/80 view-btn"
+                                                <button class="text-blue-500 hover:text-accent/80 view-btn"
                                                     data-id="<?= $review['review_id'] ?>">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
