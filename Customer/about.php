@@ -32,7 +32,7 @@
                 doesn't compromise on taste or convenience.
             </p>
 
-            <h2 class="text-2xl font-bold mb-4">Meet Our Chefs</h2>
+            <!-- <h2 class="text-2xl font-bold mb-4">Meet Our Chefs</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="text-center">
                     <img src="https://placehold.co/200x200" alt="Chef Maria"
@@ -52,7 +52,7 @@
                     <h3 class="font-bold">Chef Aisha</h3>
                     <p class="text-gray-400">Specializes in Middle Eastern Cuisine</p>
                 </div>
-            </div>
+            </div> -->
         </div>
     </main>
 

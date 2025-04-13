@@ -54,15 +54,15 @@
           <div class="space-y-4">
             <div class="flex items-start">
               <i class="w-5 h-5 mt-1 mr-3 text-yellow-500 lucide-map-pin"></i>
-              <p>123 Culinary Street, Foodville, FC 12345</p>
+              <p>201 Ashirward Hostel</p>
             </div>
             <div class="flex items-start">
               <i class="w-5 h-5 mt-1 mr-3 text-yellow-500 lucide-phone"></i>
-              <p>+1 (555) 123-4567</p>
+              <p>+91 12345 67890</p>
             </div>
             <div class="flex items-start">
               <i class="w-5 h-5 mt-1 mr-3 text-yellow-500 lucide-mail"></i>
-              <p>info@villagechef.com</p>
+              <p>villagechef@gmailcom</p>
             </div>
             <div class="flex items-start">
               <i class="w-5 h-5 mt-1 mr-3 text-yellow-500 lucide-clock"></i>
@@ -70,7 +70,7 @@
             </div>
           </div>
 
-          <div class="mt-8">
+          <!-- <div class="mt-8">
             <h3 class="mb-4 text-xl font-bold">Follow Us</h3>
             <div class="flex space-x-4">
               <a href="#" class="text-gray-400 transition-colors hover:text-yellow-500">
@@ -86,7 +86,7 @@
                 <i class="w-6 h-6 lucide-linkedin"></i>
               </a>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

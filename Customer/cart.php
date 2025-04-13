@@ -802,10 +802,10 @@
                                     <span class="font-semibold">₹<?php echo $total ?></span>
                                 </div>
                                 <div class="flex justify-between py-2">
-                                    <span class="text-white">Delivery Fee | 1.7 kms</span>
+                                    <span class="text-white">Delivery Fee </span>
                                     <span class="font-semibold">₹<?php echo $DelFee ?></span>
                                 </div>
-                                <div class="flex justify-between py-2 text-yellow-500">
+                                <!-- <div class="flex justify-between py-2 text-yellow-500">
                                     <span>Delivery Tip</span>
                                     <div class="flex flex-row  gap-2">
                                         <a href="?tip=20"><span
@@ -813,7 +813,7 @@
                                         <a href="?tip=30"><span
                                                 class="px-3 py-1 cursor-pointer border border-yellow-500 <?php echo ($tip == 30) ? ' bg-yellow-500 ' : ''; ?> text-white rounded-full">30</span></a>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="flex justify-between py-2">
                                     <span class="text-white">Platform fee</span>
                                     <div class="flex flex-row gap-2">

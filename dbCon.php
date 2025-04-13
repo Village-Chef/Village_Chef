@@ -123,7 +123,7 @@ class Foodies
 
                 return $stmt->execute();
             }
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 throw new Exception("Email already exists...");
             }
@@ -150,7 +150,7 @@ class Foodies
             $stmt->bindParam(':pass', $password_hash);
 
             return $stmt->execute();
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             if ($e->getCode() == 23000) {
                 throw new Exception("Email already exists...");
             }

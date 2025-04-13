@@ -5,7 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once '../dbCon.php';
 $obj = new Foodies();
-$userdataNavbar=null;
+$userdataNavbar = null;
 if (isset($_SESSION['user']['user_id'])) {
     $user = $_SESSION['user']['user_id'];
     $userdataNavbar = $obj->getUserById($user);
@@ -55,23 +55,25 @@ if (isset($_SESSION['user']['user_id'])) {
     <header class="w-[100%] mx-auto  bgNavbar backdrop-blur-lg bg-opacity-30 fixed z-50  py-4 px-4">
         <div class="flex items-center justify-between">
             <!-- Logo -->
-            <div class="flex items-center">
-                <div class="mr-2">
-                    <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="text-black w-6 h-6" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat">
-                            <path
-                                d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
-                            <path d="M6 17h12" />
-                        </svg>
+            <a href="home.php">
+                <div class="flex items-center">
+                    <div class="mr-2">
+                        <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="text-black w-6 h-6" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chef-hat">
+                                <path
+                                    d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
+                                <path d="M6 17h12" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
+                        <span class="font-bold text-xl leading-none">CHEF</span>
                     </div>
                 </div>
-                <div class="flex flex-col">
-                    <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
-                    <span class="font-bold text-xl leading-none">CHEF</span>
-                </div>
-            </div>
+            </a>
 
             <!-- Desktop Navigation -->
             <nav class="hidden md:flex items-center space-x-8">
@@ -167,13 +169,13 @@ if (isset($_SESSION['user']['user_id'])) {
                             class="flex items-center justify-center border border-yellow-500 text-yellow-500  hover:bg-yellow-500 hover:text-black px-4 py-2 rounded-full w-full">
                             <i class="fa-solid fa-user sm:mr-2"></i>
                             <div class="sm:inline hidden">
-                                <?php if($userdataNavbar){
-                                    echo $userdataNavbar['first_name']; 
+                                <?php if ($userdataNavbar) {
+                                    echo $userdataNavbar['first_name'];
                                 } else {
                                     ?>
-                                      Guest
+                                    Guest
                                     <?php
-                                }?>
+                                } ?>
                             </div>
                         </button>
                     </a>

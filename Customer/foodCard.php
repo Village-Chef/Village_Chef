@@ -47,7 +47,7 @@
                     class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                     <div
                         class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 flex justify-center space-x-2">
-                        <button
+                        <!-- <button
                             class="bg-yellow-500 text-black text-xs font-medium px-3 py-2 rounded-lg hover:bg-yellow-600 transition flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -57,7 +57,7 @@
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                             Quick View
-                        </button>
+                        </button> -->
                     </div>
                 </div>
             <?php endif; ?>

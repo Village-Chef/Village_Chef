@@ -66,7 +66,7 @@ session_start();
                         showConfirmButton: false,
                         timer: 2000
                     }).then(function () {
-                        window.location.href = 'account_user.php';
+                        window.location.href = 'search.php';
                     });
                 </script>
             <?php else: ?>

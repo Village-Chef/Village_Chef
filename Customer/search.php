@@ -139,19 +139,19 @@
                         Pizza
                     </span>
                     <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
-                        Italian
+                        Dosa
                     </span>
                     <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
                         Burger
                     </span>
                     <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
-                        Chinese
+                        Samosa
                     </span>
                     <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
-                        Vegetarian
+                    Sandwich
                     </span>
                     <span class="text-sm bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded-full cursor-pointer transition suggestion">
-                        gujrati
+                    Fries
                     </span>
                 </div>
             </div>

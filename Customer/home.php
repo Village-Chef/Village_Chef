@@ -41,9 +41,11 @@ session_start();
                 Experience the finest culinary delights delivered right to your doorstep.
                 Fresh ingredients, authentic recipes, and unforgettable flavors.
             </p>
-            <button class="mt-8 bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-3 rounded-full">
-                Get Started
-            </button>
+            <a href="search.php">
+                <button class="mt-8 bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-3 rounded-full">
+                    Get Started
+                </button>
+            </a>
 
             <div class="mt-12 flex items-center">
                 <div class="flex -space-x-4">
@@ -268,7 +270,7 @@ session_start();
     </section>
 
     <!-- Call to Action Section -->
-    <section class="py-16 bg-gradient-to-r from-zinc-900 to-black">
+    <!-- <section class="py-16 bg-gradient-to-r from-zinc-900 to-black">
         <div class="max-w-7xl mx-auto px-4">
             <div class="bg-zinc-800 rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-8 md:mb-0">
@@ -299,11 +301,11 @@ session_start();
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 
     <!-- Footer -->
-    <footer class="bg-zinc-900 pt-16 pb-8">
+    <!-- <footer class="bg-zinc-900 pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                 <div>
@@ -383,7 +385,13 @@ session_start();
                 </p>
             </div>
         </div>
-    </footer>
+    </footer> -->
+
+    <?php 
+    
+    require "footer.php";
+
+    ?>
 
     <!-- Add Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
