@@ -2108,7 +2108,6 @@ class Foodies
             foreach ($menuItems as &$item) {
                 $item['cuisine_name'] = $cuisineMap[$item['cuisine_id']] ?? 'Unknown';
             }
-
             return $menuItems;
         } catch (PDOException $e) {
             throw new Exception("Failed to fetch menu items: " . $e->getMessage());
