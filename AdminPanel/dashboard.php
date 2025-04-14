@@ -34,7 +34,7 @@ try {
 
     // Recent activities
     $recentUsers = array_slice(array_reverse($users), 0, 8);
-    $recentOrders = array_slice($orders, 5,5);
+    $recentOrders = array_slice($orders, 0,5);
     // $recentOrdersTable = array_slice($orders, -5, 5);
 
     // Chart 1: Revenue Last 30 Days
@@ -47,7 +47,7 @@ try {
             $revenueData[$dateKey] = ($revenueData[$dateKey] ?? 0) + $payment['amount'];
         }
     }
-    ksort($revenueData); // Sort the array by keys in ascending order
+    ksort($revenueData);    
 
     // Chart 2: Order Status 
     $statusCounts = array_count_values(array_column($orders, 'status'));
