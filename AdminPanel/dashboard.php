@@ -9,6 +9,7 @@ require '../dbCon.php';
 $foodies = new Foodies();
 
 try {
+    date_default_timezone_set('Asia/Kolkata');
     $paymentSummary = $foodies->getPaymentSummary();
     $orders = $foodies->getAllOrders();
     $users = $foodies->getAllUsers();
@@ -22,19 +23,21 @@ try {
     $totalUsers = count($users);
     $activeRestaurants = count(array_filter($restaurants, fn($r) => $r['status'] === 'open'));
 
-    // Order status distribution
+    // Order status 
     $statusCounts = array_reduce($orders, function ($carry, $order) {
         $status = $order['status'];
         $carry[$status] = ($carry[$status] ?? 0) + 1;
         return $carry;
     }, []);
 
+
+
     // Recent activities
     $recentUsers = array_slice(array_reverse($users), 0, 8);
-    $recentOrders = array_slice(array_reverse($orders), 0, 5);
-    $recentOrdersTable = array_slice($orders, -5, 5);
+    $recentOrders = array_slice($orders, 5,5);
+    // $recentOrdersTable = array_slice($orders, -5, 5);
 
-    // Chart 1: Revenue Trend Data (Last 30 Days)
+    // Chart 1: Revenue Last 30 Days
     $revenueData = [];
     $thirtyDaysAgo = new DateTime('-30 days');
     foreach ($payments as $payment) {
@@ -44,11 +47,12 @@ try {
             $revenueData[$dateKey] = ($revenueData[$dateKey] ?? 0) + $payment['amount'];
         }
     }
+    ksort($revenueData); // Sort the array by keys in ascending order
 
-    // Chart 2: Order Status Distribution
+    // Chart 2: Order Status 
     $statusCounts = array_count_values(array_column($orders, 'status'));
 
-    // Chart 3: Payment Method Distribution
+    // Chart 3: Payment Method 
     $methodCounts = array_count_values(array_column($payments, 'payment_method'));
 
     // User registrations by date
@@ -101,10 +105,10 @@ try {
         }
     }
 
-    // Sort by order count (descending) and take top 5
+    // sort by order count descending top 5
     usort($topMenuItems, fn($a, $b) => $b['order_count'] - $a['order_count']);
     $topMenuItems = array_slice($topMenuItems, 0, 5);
-    date_default_timezone_set('Asia/Kolkata');
+    
     // Get today's stats for comparison
     $todayDate = date('Y-m-d');
     $todayRevenue = 0;
@@ -704,7 +708,7 @@ try {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-700/50">
-                                <?php foreach ($recentOrdersTable as $order):
+                                <?php foreach ($recentOrders as $order):
                                     $statusColor = match ($order['status']) {
                                         'delivered' => 'bg-green-900/30 text-green-400',
                                         'pending' => 'bg-yellow-900/30 text-yellow-400',
@@ -1017,7 +1021,7 @@ try {
                 }
             });
 
-            // Top Restaurants Horizontal Bar Chart (with Gradient Bars)
+            // Top Restaurants Horizontal Bar Chart 
             new Chart(document.getElementById('restaurantsChart'), {
                 type: 'bar',
                 data: {

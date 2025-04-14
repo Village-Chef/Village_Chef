@@ -1011,24 +1011,26 @@
         var options = {
             "key": "<?php echo $apiKey; ?>",
             "amount": <?php $totalMain = ($Gst + $PlatformFee + $DelFee + $tip + $total);
-            echo ($totalMain * 100); ?>, // Amount in paise (₹500)
+            echo ($totalMain * 100); ?>,
             "currency": "INR",
-            "name": "Demo Payment",
+            "name": "Village Chef Payment",
             "description": "Testing Razorpay",
-            "image": "https://your-logo-url.com/logo.png",
+            "image": "https://media-hosting.imagekit.io//fca9e6ca7b3f4e3f/logo.png?Expires=1837177792&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=Fr7pfetD1QH-pGF7ZRELRK4uXBHrSycyFZNytUU4UPhY-va3JCFlUkDZ74hC4-c0VyDa15O80nWdKzWNoNG66n5L9SlSbgelpClbMhO~FOsaUuo00pMoFTeaL8t7rhRQ2rwsFyuGOuRs6C9pLkqY~~DWNwqK6wgBXQre86vIiu2mQtSz~sVVovcIWJ22CSt6Bg7h9i7-4HksrVmMH9bh8AxYOpTS07KzlLqIKV~40GODtEmfAfTjZ9gcIyCou0UTyWBoLnIVKOjkrDAeh9FVFk9eVfrrPSY9cn5aluZ8ARloYCIYYghxOIkpZt4nYnEV9nQSANXxvY56jcyeu4KPCg__",
             "handler": function (response) {
                 // alert("Payment Successful! Payment ID: " + response.razorpay_payment_id);
                 window.location.href = "cart.php?payment_id=" + response.razorpay_payment_id;
             },
             "prefill": {
-                "name": "John Doe",
-                "email": "john@example.com",
-                "contact": "9876543210"
+                "name": "Parthiv Shingala",
+                "email": "parthivshingala@gmail.com",
+                "contact": "1234567890"
             },
             "theme": {
                 "color": "#3399cc"
             }
         };
+
+
 
         document.getElementById("pay-btn").onclick = function () {
             var rzp1 = new Razorpay(options);

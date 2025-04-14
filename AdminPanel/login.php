@@ -109,7 +109,7 @@ if (isset($_SESSION['success'])) {
                 </div>
             </div>
             <h1 class="text-3xl font-bold text-primary">Village Chef Admin</h1>
-            <p class="text-gray-600 mt-2">Sign in to your account</p>
+            <p class="text-gray-600 mt-2">Log in to your account</p>
         </div>
 
         <form method="POST">
@@ -126,9 +126,11 @@ if (isset($_SESSION['success'])) {
                     <input type="password" id="password" name="password"
                         class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
                         placeholder="••••••••" required>
-                    <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
+                    <button type="button" id="togglePassword"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10 3a7 7 0 0 0-7 7c0 1.657 2.686 5 7 5s7-3.343 7-5a7 7 0 0 0-7-7zm0 12c-3.866 0-6-2.686-6-5s2.134-5 6-5 6 2.686 6 5-2.134 5-6 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
+                            <path
+                                d="M10 3a7 7 0 0 0-7 7c0 1.657 2.686 5 7 5s7-3.343 7-5a7 7 0 0 0-7-7zm0 12c-3.866 0-6-2.686-6-5s2.134-5 6-5 6 2.686 6 5-2.134 5-6 5zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
                         </svg>
                     </button>
                 </div>
@@ -155,7 +157,7 @@ if (isset($_SESSION['success'])) {
 
             <button type="submit" name="btnLogin"
                 class="w-full bg-accent hover:bg-accent/90 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-150">
-                Sign In
+                Log-in
             </button>
         </form>
     </div>

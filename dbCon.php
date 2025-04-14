@@ -871,6 +871,9 @@ class Foodies
                 $sql .= " AND (o.order_id LIKE :search OR u.first_name LIKE :search OR u.last_name LIKE :search OR r.name LIKE :search)";
             }
 
+            // Add default ordering by order_date
+            $sql .= " ORDER BY o.order_date DESC";
+            date_default_timezone_set('Asia/Kolkata');
             $stmt = $this->con->prepare($sql);
 
             // Bind parameters
@@ -1039,6 +1042,9 @@ class Foodies
                            u.last_name LIKE :search OR 
                            u.email LIKE :search)";
             }
+
+            // Add default ordering by payment_date
+            $sql .= " ORDER BY p.payment_date DESC";
 
             $stmt = $this->con->prepare($sql);
 
@@ -2078,6 +2084,34 @@ class Foodies
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new Exception("Failed to fetch top customers: " . $e->getMessage());
+        }
+    }
+    function getAllMenuItemsWithCuisineMap()
+    {
+        try {
+            // Fetch all cuisines and create a map (cuisine_id => cuisine_name)
+            $cuisines = $this->getAllCuisines();
+            $cuisineMap = [];
+            foreach ($cuisines as $cuisine) {
+                $cuisineMap[$cuisine['cuisine_id']] = $cuisine['cuisine_name'];
+            }
+
+            // Fetch menu items with restaurant info (no cuisine join)
+            $sql = "SELECT mi.*, r.name as restaurant_name 
+                FROM menu_items mi
+                JOIN restaurants r ON mi.restaurant_id = r.restaurant_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->execute();
+            $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Attach cuisine_name to each menu item using the map
+            foreach ($menuItems as &$item) {
+                $item['cuisine_name'] = $cuisineMap[$item['cuisine_id']] ?? 'Unknown';
+            }
+
+            return $menuItems;
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch menu items: " . $e->getMessage());
         }
     }
 }
