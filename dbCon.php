@@ -1929,32 +1929,158 @@ class Foodies
         }
     }
 
-    function getAllMenuItemsWithCuisineMap()
-{
-    try {
-        // Fetch all cuisines and create a map (cuisine_id => cuisine_name)
-        $cuisines = $this->getAllCuisines();
-        $cuisineMap = [];
-        foreach ($cuisines as $cuisine) {
-            $cuisineMap[$cuisine['cuisine_id']] = $cuisine['cuisine_name'];
+    public function getRecentUsers($limit)
+    {
+        try {
+            $sql = "SELECT * FROM users ORDER BY created_at DESC LIMIT :limit";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch recent users: " . $e->getMessage());
         }
+    }
 
-        // Fetch menu items with restaurant info (no cuisine join)
-        $sql = "SELECT mi.*, r.name as restaurant_name 
+    public function getRecentRestaurants($limit)
+    {
+        try {
+            $sql = "SELECT * FROM restaurants ORDER BY created_at DESC LIMIT :limit";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch recent restaurants: " . $e->getMessage());
+        }
+    }
+
+    public function getRecentMenuItems($limit)
+    {
+        try {
+            $sql = "SELECT mi.*, r.name as restaurant_name 
+                    FROM menu_items mi 
+                    JOIN restaurants r ON mi.restaurant_id = r.restaurant_id 
+                    ORDER BY mi.created_at DESC LIMIT :limit";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch recent menu items: " . $e->getMessage());
+        }
+    }
+
+    public function getRecentOrders($limit)
+    {
+        try {
+            $sql = "SELECT o.*, u.first_name, u.last_name, r.name as restaurant_name 
+                    FROM orders o 
+                    JOIN users u ON o.user_id = u.user_id 
+                    JOIN restaurants r ON o.restaurant_id = r.restaurant_id 
+                    ORDER BY o.order_date DESC LIMIT :limit";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch recent orders: " . $e->getMessage());
+        }
+    }
+
+    public function getRecentReviews($limit)
+    {
+        try {
+            $sql = "SELECT r.*, u.first_name, u.last_name, res.name as restaurant_name 
+                    FROM reviews r 
+                    JOIN users u ON r.user_id = u.user_id 
+                    JOIN restaurants res ON r.restaurant_id = res.restaurant_id 
+                    ORDER BY r.created_at DESC LIMIT :limit";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch recent reviews: " . $e->getMessage());
+        }
+    }
+
+
+    function getMenuItemByIdForDisplay($id)
+    {
+        try {
+            $sql = "SELECT mi.*, r.name as restaurant_name, c.cuisine_name 
                 FROM menu_items mi
-                JOIN restaurants r ON mi.restaurant_id = r.restaurant_id";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute();
-        $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Attach cuisine_name to each menu item using the map
-        foreach ($menuItems as &$item) {
-            $item['cuisine_name'] = $cuisineMap[$item['cuisine_id']] ?? 'Unknown';
+                JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
+                JOIN cuisines c ON mi.cuisine_id = c.cuisine_id
+                WHERE mi.item_id = :id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch menu item: " . $e->getMessage());
         }
+    }
 
-        return $menuItems;
-    } catch (PDOException $e) {
-        throw new Exception("Failed to fetch menu items: " . $e->getMessage());
+    function getRelatedMenuItems($restaurant_id, $exclude_item_id, $limit = 4)
+    {
+        try {
+            $sql = "SELECT mi.*, r.name as restaurant_name, c.cuisine_name 
+                FROM menu_items mi
+                JOIN restaurants r ON mi.restaurant_id = r.restaurant_id
+                JOIN cuisines c ON mi.cuisine_id = c.cuisine_id
+                WHERE mi.restaurant_id = :restaurant_id AND mi.item_id != :exclude_item_id
+                LIMIT :limit";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':restaurant_id', $restaurant_id);
+            $stmt->bindParam(':exclude_item_id', $exclude_item_id);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch related menu items: " . $e->getMessage());
+        }
+    }
+
+    function getMenuItemReviews($item_id)
+    {
+        try {
+            $sql = "SELECT r.*, u.first_name, u.last_name, u.email, u.profile_pic
+                FROM reviews r
+                JOIN users u ON r.user_id = u.user_id
+                JOIN orders o ON r.order_id = o.order_id
+                JOIN order_items oi ON o.order_id = oi.order_id
+                WHERE oi.item_id = :item_id
+                GROUP BY r.review_id";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':item_id', $item_id);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch menu item reviews: " . $e->getMessage());
+        }
+    }
+
+    public function getTopCustomers($limit = 5)
+    {
+        try {
+            $sql = "SELECT u.user_id, u.first_name, u.last_name, u.email, COUNT(o.order_id) as order_count
+                FROM users u
+                JOIN orders o ON u.user_id = o.user_id
+                GROUP BY u.user_id
+                ORDER BY order_count DESC
+                LIMIT :limit";
+
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            throw new Exception("Failed to fetch top customers: " . $e->getMessage());
+        }
     }
 }
-}
+
+
+

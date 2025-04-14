@@ -46,17 +46,17 @@ $admin = isset($_SESSION['admin']) ? $_SESSION['admin'] : null;
                             Welcome back, <?php echo htmlspecialchars($admin['first_name']); ?>!
                         <?php endif; ?>
                     </h1>
-                    <p class="text-sm text-gray-400">Admin Dashboard</p>
+                    <p class="text-sm text-gray-400">Admin</p>
                 </div>
             </div>
 
             <!-- Right section -->
             <div class="flex items-center space-x-6">
                 <!-- Notification bell -->
-                <button class="text-gray-400 hover:text-accent transition-colors relative">
+                <a href="notifications.php" class="text-gray-400 hover:text-accent cursor-pointer transition-colors relative">
                     <i class="fas fa-bell text-xl"></i>
                     <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-                </button>
+                </a>
 
                 <!-- Profile dropdown -->
                 <div class="relative" id="profileDropdown">

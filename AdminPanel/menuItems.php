@@ -238,6 +238,10 @@ $result = $obj->getFilteredMenuItems($filters);
                                             </td>
                                             <td class="px-6 py-4 text-right">
                                                 <div class="flex justify-end space-x-3">
+                                                    <a href="viewMenuItems.php?id=<?= $results['item_id'] ?>"
+                                                        class="text-blue-500 hover:text-accent/80">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
                                                     <a href="updateMenuItem.php?id=<?= $results['item_id'] ?>"
                                                         class="text-accent hover:text-accent/80">
                                                         <i class="fas fa-edit"></i>

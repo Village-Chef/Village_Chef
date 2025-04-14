@@ -79,10 +79,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     </script>
     <style>
-        /* Add to your <style> section */
-        /* .sidebar-collapsed .nav-text {
-            display: none !important;
-        } */
+        body {
+            /* background-color: black; */
+            /* color: #f3f4f6; */
+            font-family: 'Poppins', sans-serif;
+        }
     </style>
     <!-- Heroicons (for icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -112,26 +113,26 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
                 <!-- <div class="flex items-center justify-center "> -->
 
-                    <div class="flex items-center md:mt-0 mt-10 justify-between px-6  pb-6">
-                        <div class="flex items-center">
-                            <div class="mr-2">
-                                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="text-black w-6 h-6" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <path
-                                            d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589a5 5 0 0 0-9.186 0a4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
-                                        <path d="M6 17h12" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div id="logoText" class="flex flex-col">
-                                <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
-                                <span class="font-bold text-xl leading-none text-white">CHEF</span>
+                <div class="flex items-center md:mt-0 mt-10 justify-between px-6  pb-6">
+                    <div class="flex items-center">
+                        <div class="mr-2">
+                            <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="text-black w-6 h-6" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path
+                                        d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589a5 5 0 0 0-9.186 0a4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z" />
+                                    <path d="M6 17h12" />
+                                </svg>
                             </div>
                         </div>
-    
+                        <div id="logoText" class="flex flex-col">
+                            <span class="text-yellow-500 font-bold italic text-xl leading-none">Village</span>
+                            <span class="font-bold text-xl leading-none text-white">CHEF</span>
+                        </div>
                     </div>
+
+                </div>
                 <!-- </div> -->
 
 
