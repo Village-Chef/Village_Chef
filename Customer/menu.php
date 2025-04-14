@@ -823,23 +823,22 @@ if (isset($_GET['sort'])) {
 
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const scrollContainer = document.querySelector(".noscorll");
+  document.addEventListener("DOMContentLoaded", function () {
+    const scrollContainers = document.querySelectorAll(".noscorll, .noscorllRest");
 
-      scrollContainer.addEventListener("wheel", function (event) {
-        event.preventDefault();
-        scrollContainer.scrollLeft += event.deltaY;
-      });
+    scrollContainers.forEach((scrollContainer) => {
+      if (scrollContainer) {
+        scrollContainer.addEventListener("wheel", function (event) {
+          if (event.deltaY !== 0) {
+            event.preventDefault();
+            scrollContainer.scrollLeft += event.deltaY;
+          }
+        });
+      }
     });
-    document.addEventListener("DOMContentLoaded", function () {
-      const scrollContainer = document.querySelector(".noscorllRest");
+  });
+</script>
 
-      scrollContainer.addEventListener("wheel", function (event) {
-        event.preventDefault();
-        scrollContainer.scrollLeft += event.deltaY;
-      });
-    });
-  </script>
 
   <!-- Footer -->
   <?php require 'footer.php' ?>

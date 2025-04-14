@@ -34,6 +34,10 @@
     $signup_success = false;
     $error_message = '';
 
+    if(isset($_SESSION['user'])) {
+        echo "<script>window.location.href = 'menu.php';</script>";
+    }
+
     if (isset($_POST['btnSubmit'])) {
         $fname = $_POST['fname'];
         $lname = $_POST['lname'];
