@@ -1,8 +1,10 @@
 <?php
 session_start();
 
+if(isset($_SESSION['user'])) {
+    echo "<script>window.location.href = 'menu.php';</script>";
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="en" class="bg-black">
 

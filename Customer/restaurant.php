@@ -5,6 +5,8 @@
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 }
+$bannerImg="";
+
 ?>
 
 <body class="min-h-screen text-white bg-black">
@@ -79,6 +81,10 @@ if (isset($_GET['id'])) {
     //     header("Location: restaurant-menu.php?id=$id&review_added=1");
     //     exit();
     // }
+    foreach ($getAllMenuItems as $allMenu) {
+        if ($id == $allMenu['restaurant_id'])
+            $bannerImg=$allMenu['image_url'];
+    }
     ?>
 
     <!-- Menu Section -->
@@ -89,8 +95,8 @@ if (isset($_GET['id'])) {
             <main>
                 <!-- Restaurant Banner with Review Summary -->
                 <div class="relative w-full h-60">
-                    <img src="../AdminPanel/<?php echo $restaurant['restaurant_pic'] ?>" alt="Restaurant Banner"
-                        class="w-full h-full object-cover">
+                    <img src="../AdminPanel/<?php echo $bannerImg ?>" alt="Restaurant Banner"
+                        class="w-full h-full rounded-full object-cover">
                     <div class="absolute inset-0 bg-black/50 flex flex-col justify-center p-6">
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                             <div>
@@ -134,8 +140,8 @@ if (isset($_GET['id'])) {
                 <div class="mx-auto p-6">
                     <div class="grid sm:grid-cols-[auto_1fr] gap-6">
                         <!-- Sidebar -->
-                        <div class="w-full sm:w-fit">
-                            <h2 class="text-lg font-semibold border-b border-zinc-700 pb-2 mb-3">Order Online</h2>
+                        <!-- <div class="w-full sm:w-fit">
+                            <h2 class="text-lg font-semibold border-b border-zinc-700 pb-2 mb-3">Order Online</h2> -->
                             <!-- <ul class="space-y-2 px-4">
                                 <li class="cursor-pointer text-yellow-500 font-medium">Veg Pizza (13)</li>
                                 <li class="cursor-pointer text-gray-400">Non Veg Pizza (12)</li>
@@ -143,11 +149,12 @@ if (isset($_GET['id'])) {
                                 <li class="cursor-pointer text-gray-400">Thin n Crispy Pizzas (6)</li>
                                 <li class="cursor-pointer text-gray-400">Flavour Fun Range (6)</li>
                             </ul> -->
-                        </div>
+                        <!-- </div> -->
 
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 sm:px-6 md:px-10">
                             <?php
                             foreach ($getAllMenuItems as $allMenu) {
+                                $bannerImg=$allMenu['image_url'];
                                 if ($id == $allMenu['restaurant_id'])
                                     require('foodCard.php');
                             }
