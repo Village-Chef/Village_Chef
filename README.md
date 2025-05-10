@@ -47,6 +47,9 @@ Create a `.env` file in the root directory and add the following:
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 PAYMENT_GATEWAY_KEY=your_payment_key
+
+"EmailPassword"=Email Id Passowrd Change
+Search & Replace with Your Original Passowrd
 ```  
 
 ---
