@@ -40,7 +40,7 @@ if (isset($_POST['send_otp'])) {
             $mail->Host = 'smtp.gmail.com'; // Example: Gmail SMTP
             $mail->SMTPAuth = true;
             $mail->Username = 'villagechefparthiv@gmail.com'; // Your email
-            $mail->Password = 'lkwp fbwk ehpw vbyd'; // Your password or App Password
+            $mail->Password = 'EmailPassword'; // Your password or App Password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 

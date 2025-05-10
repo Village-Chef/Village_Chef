@@ -37,7 +37,7 @@ if (isset($_POST['send_otp'])) {
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'villagechefparthiv@gmail.com';
-            $mail->Password = 'lkwp fbwk ehpw vbyd';
+            $mail->Password = 'EmailPassword';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
