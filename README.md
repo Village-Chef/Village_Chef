@@ -103,7 +103,7 @@
     - Create a new database named village_chef
     - Import the SQL file from:
       ```bash
-      /database/wdos_foodies.sql
+      wdos_foodies.sql
 4. Configure Database Connection
     - Open db.php
     - Update credentials if needed:
