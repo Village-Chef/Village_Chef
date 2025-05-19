@@ -120,7 +120,7 @@
   - Parthiv Shingala
   - MSc-IT | Charotar University of Science and Technology
   - 📧 parthivshingala@.com | purvvirpariya14@gmail.com
-  - 🔗 LinkedIn
+  - 💼 [LinkedIn](https://www.linkedin.com/in/parthiv-shingala-933224322/)  
  
 ## 📝 License
 - This project is for educational and academic purposes only.
