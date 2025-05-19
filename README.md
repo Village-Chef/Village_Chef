@@ -119,7 +119,7 @@
 - For queries, suggestions, or contributions:
   - Parthiv Shingala
   - MSc-IT | Charotar University of Science and Technology
-  - 📧 parthivshingala@.com | purvvirpariya14@gmail.com
+  - 📧 parthivshingala@gmail.com | purvvirpariya14@gmail.com
   - 💼 [LinkedIn](https://www.linkedin.com/in/parthiv-shingala-933224322/)  
  
 ## 📝 License
